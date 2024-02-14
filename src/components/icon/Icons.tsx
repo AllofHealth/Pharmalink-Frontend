@@ -17,6 +17,9 @@ import FooterYoutube from "../../../public/assets/svgs/footer-youtube.tsx";
 import Phone from "../../../public/assets/svgs/phone.tsx";
 import Email from "../../../public/assets/svgs/email.tsx";
 import Location from "../../../public/assets/svgs/location.tsx";
+import DesignateRoles from "../../../public/assets/svgs/designate-roles.tsx";
+import Institution from "../../../public/assets/svgs/institution.tsx";
+import LogOut from "../../../public/assets/svgs/log-out.tsx";
 
 const Menu = () => {
   return (
@@ -55,6 +58,21 @@ const Menu = () => {
   );
 };
 
+const closeBtn = () => (
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 12 12"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M6.0007 4.5865L10.2433 0.343835C10.6338 -0.0466928 11.267 -0.0466948 11.6575 0.343832C12.048 0.734352 12.048 1.36751 11.6575 1.75803L7.4149 6.0007L11.6575 10.2433C12.048 10.6338 12.048 11.267 11.6575 11.6575C11.267 12.048 10.6338 12.048 10.2433 11.6575L6.0007 7.4149L1.75803 11.6575C1.36751 12.048 0.734352 12.048 0.343832 11.6575C-0.0466948 11.267 -0.0466931 10.6338 0.343835 10.2433L4.5865 6.0007L0.343824 1.75803C-0.0466997 1.36751 -0.0466996 0.734347 0.343824 0.343824C0.734347 -0.0466996 1.36751 -0.0466991 1.75803 0.343825L6.0007 4.5865Z"
+      fill="#858FA5"
+    />
+  </svg>
+);
+
 const Icons = {
   Metamask,
   Near,
@@ -76,6 +94,10 @@ const Icons = {
   Phone,
   Email,
   Location,
+  DesignateRoles,
+  Institution,
+  LogOut,
+  closeBtn,
 };
 
 export type IconType = keyof typeof Icons;

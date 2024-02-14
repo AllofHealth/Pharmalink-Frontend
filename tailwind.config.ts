@@ -19,16 +19,33 @@ const config: Config = {
         blue1: "#316F86",
         blue2: "#017489",
         blue3: "#172048",
+        blue4: "#004B88",
         gray: {
           1: " #6D6D6D",
           2: "#7D7987",
           3: "#797979",
+          4: "#F5F4F4",
+          5: "#E9EAEF",
+          6: "#D9D9D9",
         },
         text: {
           black1: "#333",
           black2: "#414141",
           black3: "#111111",
           black4: "#0A142F",
+        },
+      },
+      keyframes: {
+        overlayShow: {
+          from: { opacity: "0" },
+          to: { opacity: "0.6" },
+        },
+        contentShow: {
+          from: {
+            opacity: "0",
+            transform: "translate(-50%, -48%) scale(0.96)",
+          },
+          to: { opacity: "1", transform: "translate(-50%, -50%) scale(1)" },
         },
       },
     },
