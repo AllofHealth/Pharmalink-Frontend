@@ -1,11 +1,11 @@
 "use client";
 import { Tabs } from "@/components/common";
-import SystemAdminLayout from "./layout";
+import SystemAdminLayout from "../layout";
 import { ReactElement } from "react";
 import ApproveInstitution from "@/page_components/SystemAdmin/ApproveInstitutionTable";
 import DesignateRoles from "@/page_components/SystemAdmin/DesignateRoles";
 import { Icon } from "@/components/icon/Icon";
-import LogOut from "../../../public/assets/svgs/log-out";
+import LogOut from "../../../../public/assets/svgs/log-out";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/rootReducer";
 import { setSystemAdminCurrentTab } from "@/lib/redux/slices/systemAdmin/systemAdminSlice";

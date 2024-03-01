@@ -1,23 +1,43 @@
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface ModalState {
-  isSystemAdminSidebarOpen: boolean;
+  isSidebarOpen: boolean;
   isApproveInstitutionModalOpen: boolean;
   isSuccessfullyAddedModalOpen: boolean;
   isAccessDeniedModalOpen: boolean;
   isActionNeededRoleModalOpen: boolean;
   isAcceptAdminModalOpen: boolean;
   isDeniedAdminModalOpen: boolean;
+  isInstitutionActionNeededModalOpen: boolean;
+  isInstitutionSuccessfullyModalOpen: boolean;
+  isInstitutionAccessDeniedModalOpen: boolean;
+  isSuccessfullyEditedMedicalRecordModalOpen: boolean;
+  isActionNeededSharePrescriptionModalOpen: boolean;
+  isAccessGrantedSharePrescriptionModalOpen: boolean;
+  isAcessGrantedToRecordModalOpen: boolean;
+  isGrantAccessToSpecificRecordsModalOpen: boolean;
+  isSuccessfullyGrantedAccessToSpecificRecordsModalOpen: boolean;
+  isDashboardSidebarOpen: boolean;
 }
 
 const initialState: ModalState = {
-  isSystemAdminSidebarOpen: false,
+  isSidebarOpen: false,
   isApproveInstitutionModalOpen: false,
   isSuccessfullyAddedModalOpen: false,
   isAccessDeniedModalOpen: false,
   isActionNeededRoleModalOpen: false,
   isAcceptAdminModalOpen: false,
   isDeniedAdminModalOpen: false,
+  isInstitutionActionNeededModalOpen: false,
+  isInstitutionSuccessfullyModalOpen: false,
+  isInstitutionAccessDeniedModalOpen: false,
+  isSuccessfullyEditedMedicalRecordModalOpen: false,
+  isActionNeededSharePrescriptionModalOpen: false,
+  isAccessGrantedSharePrescriptionModalOpen: false,
+  isAcessGrantedToRecordModalOpen: false,
+  isGrantAccessToSpecificRecordsModalOpen: false,
+  isSuccessfullyGrantedAccessToSpecificRecordsModalOpen: false,
+  isDashboardSidebarOpen: false,
 };
 
 const modalSlice = createSlice({
@@ -25,7 +45,7 @@ const modalSlice = createSlice({
   initialState,
   reducers: {
     toggleSystemAdminSidebar(state) {
-      state.isSystemAdminSidebarOpen = !state.isSystemAdminSidebarOpen;
+      state.isSidebarOpen = !state.isSidebarOpen;
     },
     toggleApproveInstitutionModal(state) {
       state.isApproveInstitutionModalOpen =
@@ -46,6 +66,45 @@ const modalSlice = createSlice({
     toggleDeniedAdminModal(state) {
       state.isDeniedAdminModalOpen = !state.isDeniedAdminModalOpen;
     },
+    toggleInstitutionActionNeededModal(state) {
+      state.isInstitutionActionNeededModalOpen =
+        !state.isInstitutionActionNeededModalOpen;
+    },
+    toggleInstitutionSuccessfullyAddedModal(state) {
+      state.isInstitutionSuccessfullyModalOpen =
+        !state.isInstitutionSuccessfullyModalOpen;
+    },
+    toggleInstitutionAccessDeniedModal(state) {
+      state.isInstitutionAccessDeniedModalOpen =
+        !state.isInstitutionAccessDeniedModalOpen;
+    },
+    toggleSuccessfullyEditedMedicalRecordModal(state) {
+      state.isSuccessfullyEditedMedicalRecordModalOpen =
+        !state.isSuccessfullyEditedMedicalRecordModalOpen;
+    },
+    toggleActionNeededSharePrescription(state) {
+      state.isActionNeededSharePrescriptionModalOpen =
+        !state.isActionNeededSharePrescriptionModalOpen;
+    },
+    toggleAccessGrantedSharePrescriptionModal(state) {
+      state.isAccessGrantedSharePrescriptionModalOpen =
+        !state.isAccessGrantedSharePrescriptionModalOpen;
+    },
+    toggleGrantAccessToRecord(state) {
+      state.isAcessGrantedToRecordModalOpen =
+        !state.isAcessGrantedToRecordModalOpen;
+    },
+    toggleGrantAccessToSpecificRecordsModal(state) {
+      state.isGrantAccessToSpecificRecordsModalOpen =
+        !state.isGrantAccessToSpecificRecordsModalOpen;
+    },
+    toggleSuccessfullyGrantedAccessToSpecificRecordsModal(state) {
+      state.isSuccessfullyGrantedAccessToSpecificRecordsModalOpen =
+        !state.isSuccessfullyGrantedAccessToSpecificRecordsModalOpen;
+    },
+    toggleDashboardSidebarOpen(state) {
+      state.isDashboardSidebarOpen = !state.isDashboardSidebarOpen;
+    },
   },
 });
 
@@ -57,5 +116,15 @@ export const {
   toggleActionNeededRoleModal,
   toggleAcceptAdminModal,
   toggleDeniedAdminModal,
+  toggleInstitutionActionNeededModal,
+  toggleInstitutionSuccessfullyAddedModal,
+  toggleInstitutionAccessDeniedModal,
+  toggleSuccessfullyEditedMedicalRecordModal,
+  toggleActionNeededSharePrescription,
+  toggleAccessGrantedSharePrescriptionModal,
+  toggleGrantAccessToRecord,
+  toggleGrantAccessToSpecificRecordsModal,
+  toggleSuccessfullyGrantedAccessToSpecificRecordsModal,
+  toggleDashboardSidebarOpen,
 } = modalSlice.actions;
 export default modalSlice.reducer;

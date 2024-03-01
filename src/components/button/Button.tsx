@@ -8,6 +8,8 @@ const VARIANT = {
     "bg-blue2 text-white disabled:text-gray-500 focus:outline-none focus-visible:rounded-md disabled:bg-gray-500 disabled:cursor-not-allowed",
   homepage:
     "bg-gradient-to-r from-teal-600 to-green-900 h-64 text-white disabled:text-gray-500 focus:outline-none focus-visible:rounded-md disabled:bg-gray-500 disabled:cursor-not-allowed",
+  wallet:
+    "bg-text-black5 text-white disabled:text-gray-500 focus:outline-none focus-visible:rounded-md disabled:bg-gray-500 disabled:cursor-not-allowed",
 };
 
 interface ButtonProps extends ComponentProps<"button"> {

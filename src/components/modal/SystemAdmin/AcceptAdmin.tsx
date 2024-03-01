@@ -15,7 +15,7 @@ const AcceptAdmin = ({
   const dispatch = useDispatch();
 
   const isAcceptAdminModalOpen = useSelector(
-    (state: RootState) => state.modal.isSuccessfullyAddedModalOpen
+    (state: RootState) => state.modal.isAcceptAdminModalOpen
   );
 
   const handleToggleModal = () => {

@@ -1,20 +1,21 @@
 "use client";
 import { Icon } from "@/components/icon/Icon";
-import SystemAdminSidebar from "@/components/modal/SystemAdmin/SystemAdminSidebar";
+import Sidebar from "@/components/sidebar/Sidebar";
 import { RootState } from "@/lib/redux/rootReducer";
 import { toggleSystemAdminSidebar } from "@/lib/redux/slices/modals/modalSlice";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
-  const systemAdminSidebarRef = useRef<HTMLDivElement | null>(null);
-  const [systemAdminSidebarContainer, setSystemAdminSidebarContainer] =
-    useState<HTMLElement | null>(null);
-
-  const isSystemAdminSidebarOpen = useSelector(
-    (state: RootState) => state.modal.isSystemAdminSidebarOpen
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
+  const [sidebarContainer, setSidebarContainer] = useState<HTMLElement | null>(
+    null
   );
-  console.log(isSystemAdminSidebarOpen);
+
+  const isSidebarOpen = useSelector(
+    (state: RootState) => state.modal.isSidebarOpen
+  );
+  console.log(isSidebarOpen);
 
   const dispatch = useDispatch();
 
@@ -23,10 +24,10 @@ const Header = () => {
   };
 
   useEffect(() => {
-    if (systemAdminSidebarRef.current) {
-      setSystemAdminSidebarContainer(systemAdminSidebarRef.current);
+    if (sidebarRef.current) {
+      setSidebarContainer(sidebarRef.current);
     }
-  }, [isSystemAdminSidebarOpen]);
+  }, [isSidebarOpen]);
 
   return (
     <>
@@ -41,8 +42,8 @@ const Header = () => {
           onClick={() => handleToggleSidebar()}
         />
       </header>
-      <div ref={systemAdminSidebarRef}>
-        <SystemAdminSidebar container={systemAdminSidebarContainer!} />
+      <div ref={sidebarRef}>
+        <Sidebar container={sidebarContainer!} />
       </div>
     </>
   );

@@ -17,7 +17,7 @@ const AllOfHealthTable = ({
           {labels?.map((label, id) => (
             <th
               scope="col"
-              className={`top-0 bg-inherit text-left text-xs lg:text-base font-semibold capitalize w-24 lg:w-auto
+              className={`top-0 bg-inherit text-left text-xs lg:text-base font-semibold capitalize w-20 lg:w-auto
               ${labels[0] === label ? "rounded-tl-xl pl-2 lg:pl-7" : ""}  ${
                 labels[labels.length - 1] === label
                   ? "rounded-tr-xl lg:pr-7"

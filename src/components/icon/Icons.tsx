@@ -20,6 +20,24 @@ import Location from "../../../public/assets/svgs/location.tsx";
 import DesignateRoles from "../../../public/assets/svgs/designate-roles.tsx";
 import Institution from "../../../public/assets/svgs/institution.tsx";
 import LogOut from "../../../public/assets/svgs/log-out.tsx";
+import Overview from "../../../public/assets/svgs/overview.tsx";
+import Wallet from "../../../public/assets/svgs/wallet.tsx";
+import Privacy from "../../../public/assets/svgs/privacy.tsx";
+import Asset from "../../../public/assets/svgs/asset.tsx";
+import Ellipse from "../../../public/assets/svgs/ellipse.tsx";
+import Export from "../../../public/assets/svgs/export.tsx";
+import Padlock from "../../../public/assets/svgs/padlock.tsx";
+import Home from "../../../public/assets/svgs/home.tsx";
+import RegistrationStatus from "../../../public/assets/svgs/registration-status.tsx";
+import Emergency from "../../../public/assets/svgs/emergency.tsx";
+import FamilyReg from "../../../public/assets/svgs/fam-reg.tsx";
+import FindDoctor from "../../../public/assets/svgs/find-doctor.tsx";
+import Prescription from "../../../public/assets/svgs/prescription.tsx";
+import StarBlue from "../../../public/assets/svgs/star-blue.tsx";
+import BlueFirstAidBox from "../../../public/assets/svgs/first-aid-box-blue.tsx";
+import GreenCross from "../../../public/assets/svgs/green-cross.tsx";
+import Revenue from "../../../public/assets/svgs/revenue.tsx";
+import Warning from "../../../public/assets/svgs/warning.tsx";
 
 const Menu = () => {
   return (
@@ -98,6 +116,24 @@ const Icons = {
   Institution,
   LogOut,
   closeBtn,
+  Overview,
+  Wallet,
+  Privacy,
+  Asset,
+  Ellipse,
+  Export,
+  Padlock,
+  Home,
+  RegistrationStatus,
+  Emergency,
+  FamilyReg,
+  Prescription,
+  FindDoctor,
+  StarBlue,
+  BlueFirstAidBox,
+  GreenCross,
+  Revenue,
+  Warning,
 };
 
 export type IconType = keyof typeof Icons;
