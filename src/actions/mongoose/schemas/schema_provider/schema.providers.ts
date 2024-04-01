@@ -5,10 +5,10 @@ import Doctor from '../doctor.schema'
 import Hospital from '../hospital.schema'
 import Pharmacist from '../pharmacist.schema'
 import Patient from '../patient.schema'
-import mongoose, { Schema } from 'mongoose'
 
+import { DbType } from '@/actions/shared/global'
 interface ISchema {
-  [key: string]: mongoose.Model<any, {}, {}, {}, any, any>
+  [key: string]: DbType['DB']
 }
 
 class SchemaProvider {
