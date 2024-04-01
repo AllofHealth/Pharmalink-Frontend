@@ -24,3 +24,15 @@ export interface HospitalType extends CreateHospitalType {
   pharmacists: PreviewType[]
   category: string
 }
+
+export interface ApprovePractitionerType {
+  practitionerAddress: string
+  adminAddress: string
+  hospitalId: number
+}
+
+export interface JoinHospitalType {
+  hospitalId: number
+  walletAddress: string
+  category: string
+}
