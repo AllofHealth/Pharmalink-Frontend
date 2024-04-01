@@ -1,6 +1,6 @@
 'use server'
 
-import { AdminError, ApprovalStatus } from '@/actions/shared/global'
+import { AdminError, ApprovalStatus, ErrorCodes } from '@/actions/shared/global'
 import { DatabaseProvider } from '../../providers/db.providers'
 import {
   AdminType,
@@ -50,7 +50,7 @@ export class AdminServices {
     try {
       const admin = await this.Provider.createNewAdmin(args)
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         admin,
         message: 'admin created successfully',
       }
@@ -74,7 +74,7 @@ export class AdminServices {
       }
 
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         admin,
         message: 'admin fetched successfully',
       }
@@ -108,7 +108,7 @@ export class AdminServices {
     try {
       await this.Provider.removeAdminByAddress(adminAddressToRemove)
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         message: 'admin removed successfully',
       }
     } catch (error) {
@@ -154,7 +154,7 @@ export class AdminServices {
       }
 
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         message: 'Hospital approved successfully',
       }
     } catch (error) {
@@ -202,7 +202,7 @@ export class AdminServices {
       }
 
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         message: 'Doctor removed from all hospitals',
       }
     } catch (error) {
@@ -234,7 +234,7 @@ export class AdminServices {
       await this.Hospital.removeHospital(hospitalId)
 
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         message: 'Hospital removed successfully',
       }
     } catch (error) {

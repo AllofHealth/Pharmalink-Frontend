@@ -1,5 +1,5 @@
 'use server'
-import { DoctorError, ProfileType } from '@/actions/shared/global'
+import { DoctorError, ErrorCodes, ProfileType } from '@/actions/shared/global'
 import { DatabaseProvider } from '../../providers/db.providers'
 import { CreateDoctorType, DoctorType } from '../interface/doctor.interface'
 import { PreviewType } from '../../hospital/interface/hospital.interface'
@@ -20,7 +20,7 @@ class DoctorHelpers {
       }
 
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         doctor,
       }
     } catch (error) {
@@ -37,13 +37,13 @@ class DoctorHelpers {
       const doctors = await this.DB.fetchDoctorWithPendingStatus()
       if (!doctors) {
         return {
-          success: 200,
+          success: ErrorCodes.NotFound,
           doctors: [],
         }
       }
 
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         doctors,
       }
     } catch (error) {
@@ -60,13 +60,13 @@ class DoctorHelpers {
       const doctors = await this.DB.fetchDoctorWithApprovedStatus()
       if (!doctors) {
         return {
-          success: 200,
+          success: ErrorCodes.NotFound,
           doctors: [],
         }
       }
 
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         doctors,
       }
     } catch (error) {
@@ -121,7 +121,9 @@ export class DoctorService {
   private static HospitalDB = DatabaseProvider.HospitalProvider
   private static Helper = DoctorHelpers
 
-  static async createDoctor(args: CreateDoctorType) {
+  static async createDoctor(
+    args: CreateDoctorType,
+  ): Promise<{ success: number; doctor: DoctorType; message: string }> {
     const requiredParams = [
       'id',
       'email',
@@ -181,7 +183,7 @@ export class DoctorService {
       await hospital.save()
 
       return {
-        success: true,
+        success: ErrorCodes.Success,
         doctor,
         message: 'Doctor created successfully',
       }
@@ -205,7 +207,7 @@ export class DoctorService {
 
       console.log(doctor)
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         doctor,
       }
     } catch (error) {
@@ -237,7 +239,7 @@ export class DoctorService {
       await doctor.save()
 
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         message: 'Profile picture updated successfully',
       }
     } catch (error) {
@@ -248,7 +250,7 @@ export class DoctorService {
 
   static async updateDoctorName(
     args: ProfileType,
-  ): Promise<{ success: 200; message: string }> {
+  ): Promise<{ success: number; message: string }> {
     const { address, info } = args
     if (!address || address.length > 42 || !info) {
       throw new DoctorError('Invalid address')
@@ -264,7 +266,7 @@ export class DoctorService {
       await doctor.save()
 
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         message: 'Name updated successfully',
       }
     } catch (error) {
@@ -298,7 +300,7 @@ export class DoctorService {
       await doctor.save()
 
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         message: 'Email updated successfully',
       }
     } catch (error) {
@@ -324,7 +326,7 @@ export class DoctorService {
       await doctor.save()
 
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         message: 'phone number updated successfully',
       }
     } catch (error) {
@@ -346,7 +348,7 @@ export class DoctorService {
       }
       doctor.specialty = info
       return {
-        success: 200,
+        success: ErrorCodes.Success,
         message: 'Specialty updated successfully',
       }
     } catch (error) {
