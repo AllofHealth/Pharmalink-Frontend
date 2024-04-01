@@ -19,6 +19,12 @@ enum RecordOwner {
   FamilyMember = 'family member',
 }
 
+enum ErrorCodes {
+  Success = 200,
+  NotFound = 404,
+  Error = 500,
+}
+
 type ProfileType = {
   address: string
   info: string
