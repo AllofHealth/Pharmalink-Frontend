@@ -14,6 +14,11 @@ export enum ApprovalStatus {
   Pending = 'pending',
 }
 
+export enum RecordOwner {
+  Patient = 'principal',
+  FamilyMember = 'family member',
+}
+
 export type DbType = {
   DB: mongoose.Model<any, {}, {}, {}, any, any>
 }
