@@ -1,11 +1,11 @@
 'use server'
 
-import { SchemaProvider } from '@/actions/mongoose/schemas/schema_provider/schema.providers'
+import { schemaProvider } from '@/actions/mongoose/schemas/schema_provider/schema.providers'
 import { Category } from '@/actions/shared/global'
 import { CreateAdminType } from '../interface/admin.interface'
 
 export class AdminDB {
-  static Admin = SchemaProvider.Admin
+  static Admin = schemaProvider.getSchema('Admin')
   static async createNewAdmin(admin: CreateAdminType) {
     return await this.Admin.create({
       id: admin.id,
