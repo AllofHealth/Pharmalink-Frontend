@@ -44,4 +44,8 @@ export class HospitalDB {
       status: ApprovalStatus.Approved,
     })
   }
+
+  static async removeHospital(id: number) {
+    return await this.Hospital.deleteOne({ id })
+  }
 }
