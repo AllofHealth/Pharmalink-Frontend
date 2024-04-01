@@ -18,7 +18,7 @@ class HospitalHelpers {
   static DB = DatabaseProvider.HospitalProvider
 }
 
-class HospitalReadOperations {
+export class HospitalReadOperations {
   static DB = DatabaseProvider.HospitalProvider
 
   static async fetchPendingDoctors(
@@ -96,6 +96,152 @@ class HospitalReadOperations {
         success: ErrorCodes.Success,
         pharmacists,
         message: 'pending pharmacists found',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error fetching pharmacists')
+    }
+  }
+
+  static async fetchApprovedDoctors(
+    hospitalId: number,
+  ): Promise<{
+    success: number
+    doctors: PreviewType[]
+    message: string
+  }> {
+    if (!Number.isInteger(hospitalId) || hospitalId <= 0) {
+      throw new HospitalError('Invalid or missing hospital id')
+    }
+
+    try {
+      const { hospital } = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError("hospital doesn't exists")
+      }
+
+      const doctors = hospital.doctors.filter((doctor: PreviewType) => {
+        return doctor.status === ApprovalStatus.Approved
+      })
+
+      if (doctors.length === 0) {
+        return {
+          success: ErrorCodes.NotFound,
+          doctors: [],
+          message: 'No approved doctors found',
+        }
+      }
+
+      console.log(doctors)
+
+      return {
+        success: ErrorCodes.Success,
+        doctors,
+        message: 'Approved doctors fetched successfully',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error fetching approved doctors')
+    }
+  }
+
+  static async fetchApprovedPharmacists(
+    hospitalId: number,
+  ): Promise<{
+    success: number
+    pharmacists: PreviewType[]
+    message: string
+  }> {
+    if (!Number.isInteger(hospitalId) || hospitalId <= 0) {
+      throw new HospitalError('Invalid or missing hospital id')
+    }
+
+    try {
+      const { hospital } = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError("hospital doesn't exists")
+      }
+
+      const pharmacists = hospital.pharmacists.filter(
+        (pharmacist: PreviewType) => {
+          return pharmacist.status === ApprovalStatus.Approved
+        },
+      )
+
+      if (pharmacists.length === 0) {
+        return {
+          success: ErrorCodes.NotFound,
+          pharmacists: [],
+          message: 'No approved pharmacists found',
+        }
+      }
+
+      return {
+        success: ErrorCodes.Success,
+        pharmacists,
+        message: 'Approved pharmacists fetched successfully',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new Error('Error fetching pharmacists')
+    }
+  }
+
+  static async fetchAllDoctors(
+    hospitalId: number,
+  ): Promise<{ success: number; doctors: PreviewType[] }> {
+    if (!Number.isInteger(hospitalId) || hospitalId <= 0) {
+      throw new HospitalError('Invalid or missing hospital id')
+    }
+
+    try {
+      const { hospital } = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError("hospital doesn't exist")
+      }
+
+      const doctors = hospital.doctors
+
+      if (!doctors) {
+        return {
+          success: ErrorCodes.NotFound,
+          doctors: [],
+        }
+      }
+
+      return {
+        success: ErrorCodes.Success,
+        doctors,
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error fetching approved doctors')
+    }
+  }
+
+  static async fetchAllPharmacists(
+    hospitalId: number,
+  ): Promise<{ success: number; pharmacists: PreviewType[] }> {
+    if (!Number.isInteger(hospitalId) || hospitalId <= 0) {
+      throw new HospitalError('Invalid or missing hospital id')
+    }
+
+    try {
+      const { hospital } = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError("hospital doesn't exist")
+      }
+      const pharmacists = hospital.pharmacists
+      if (!pharmacists) {
+        return {
+          success: ErrorCodes.NotFound,
+          pharmacists: [],
+        }
+      }
+
+      return {
+        success: ErrorCodes.Success,
+        pharmacists,
       }
     } catch (error) {
       console.error(error)
