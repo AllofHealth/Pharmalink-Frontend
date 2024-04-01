@@ -8,6 +8,12 @@ export enum Category {
   Patient = 'patient',
 }
 
+export enum ApprovalStatus {
+  Approved = 'approved',
+  Rejected = 'rejected',
+  Pending = 'pending',
+}
+
 export type DbType = {
   DB: mongoose.Model<any, {}, {}, {}, any, any>
 }
