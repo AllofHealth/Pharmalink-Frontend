@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-export enum Category {
+enum Category {
   Admin = 'admin',
   Doctor = 'doctor',
   Hospital = 'hospital',
@@ -8,18 +8,23 @@ export enum Category {
   Patient = 'patient',
 }
 
-export enum ApprovalStatus {
+enum ApprovalStatus {
   Approved = 'approved',
   Rejected = 'rejected',
   Pending = 'pending',
 }
 
-export enum RecordOwner {
+enum RecordOwner {
   Patient = 'principal',
   FamilyMember = 'family member',
 }
 
-export type DbType = {
+type ProfileType = {
+  address: string
+  info: string
+}
+
+type DbType = {
   DB: mongoose.Model<any, {}, {}, {}, any, any>
 }
 
