@@ -22,13 +22,13 @@ export class HospitalReadOperations {
   static DB = DatabaseProvider.HospitalProvider
 
   static async fetchPendingDoctors(
-    hospitalId: number,
+    hospitalId: string,
   ): Promise<{
     success: number
     doctors: PreviewType[]
     message: string
   }> {
-    if (!Number.isInteger(hospitalId) || hospitalId <= 0) {
+    if (!hospitalId) {
       throw new HospitalError('Invalid or missing hospital id')
     }
 
@@ -62,13 +62,13 @@ export class HospitalReadOperations {
   }
 
   static async fetchPendingPharmacist(
-    hospitalId: number,
+    hospitalId: string,
   ): Promise<{
     success: number
     pharmacists: PreviewType[]
     message: string
   }> {
-    if (!Number.isInteger(hospitalId) || hospitalId <= 0) {
+    if (!hospitalId) {
       throw new HospitalError('Invalid or missing hospital id')
     }
 
@@ -104,13 +104,13 @@ export class HospitalReadOperations {
   }
 
   static async fetchApprovedDoctors(
-    hospitalId: number,
+    hospitalId: string,
   ): Promise<{
     success: number
     doctors: PreviewType[]
     message: string
   }> {
-    if (!Number.isInteger(hospitalId) || hospitalId <= 0) {
+    if (!hospitalId) {
       throw new HospitalError('Invalid or missing hospital id')
     }
 
@@ -146,13 +146,13 @@ export class HospitalReadOperations {
   }
 
   static async fetchApprovedPharmacists(
-    hospitalId: number,
+    hospitalId: string,
   ): Promise<{
     success: number
     pharmacists: PreviewType[]
     message: string
   }> {
-    if (!Number.isInteger(hospitalId) || hospitalId <= 0) {
+    if (!hospitalId) {
       throw new HospitalError('Invalid or missing hospital id')
     }
 
@@ -188,9 +188,9 @@ export class HospitalReadOperations {
   }
 
   static async fetchAllDoctors(
-    hospitalId: number,
+    hospitalId: string,
   ): Promise<{ success: number; doctors: PreviewType[] }> {
-    if (!Number.isInteger(hospitalId) || hospitalId <= 0) {
+    if (!hospitalId) {
       throw new HospitalError('Invalid or missing hospital id')
     }
 
@@ -220,9 +220,9 @@ export class HospitalReadOperations {
   }
 
   static async fetchAllPharmacists(
-    hospitalId: number,
+    hospitalId: string,
   ): Promise<{ success: number; pharmacists: PreviewType[] }> {
-    if (!Number.isInteger(hospitalId) || hospitalId <= 0) {
+    if (!hospitalId) {
       throw new HospitalError('Invalid or missing hospital id')
     }
 
@@ -256,14 +256,14 @@ export class HospitalService {
   static DB = DatabaseProvider.HospitalProvider
 
   static async getHospitalById(
-    id: number,
+    _id: string,
   ): Promise<{ success: number; hospital: HospitalType }> {
-    if (!Number.isInteger(id) || id <= 0) {
+    if (!_id) {
       throw new HospitalError('Invalid or missing hospital id')
     }
 
     try {
-      const hospital = await this.DB.fetchHospital(id)
+      const hospital = await this.DB.fetchHospital(_id)
       if (!hospital) {
         throw new HospitalError("hospital doesn't exist")
       }
