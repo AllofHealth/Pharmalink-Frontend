@@ -16,9 +16,9 @@ import {
 import { DatabaseProvider } from '../../providers/db.providers'
 
 class HospitalHelpers {
-  static DB = DatabaseProvider.HospitalProvider
-  static DoctorDB = DatabaseProvider.DoctorProvider
-  static PharmacistDB = DatabaseProvider.PharmacistProvider
+  private static DB = DatabaseProvider.HospitalProvider
+  private static DoctorDB = DatabaseProvider.DoctorProvider
+  private static PharmacistDB = DatabaseProvider.PharmacistProvider
 
   static async returnDoctorFromHospital(
     hospital: HospitalType,
@@ -141,8 +141,8 @@ class HospitalHelpers {
   }
 }
 
-export class HospitalReadOperations {
-  static DB = DatabaseProvider.HospitalProvider
+class HospitalReadOperations {
+  private static DB = DatabaseProvider.HospitalProvider
 
   static async fetchPendingDoctors(
     hospitalId: string,
@@ -369,6 +369,79 @@ export class HospitalReadOperations {
     } catch (error) {
       console.error(error)
       throw new HospitalError('Error fetching pharmacists')
+    }
+  }
+}
+
+class HospitalWriteOperations {
+  private static DB = DatabaseProvider.HospitalProvider
+  private static DoctorDB = DatabaseProvider.DoctorProvider
+  private static PharmacistDB = DatabaseProvider.PharmacistProvider
+  private static Helper = HospitalHelpers
+
+  static async approveDoctor(
+    doctorAddress: string,
+  ): Promise<{ success: number; message: string }> {
+    if (!doctorAddress || doctorAddress.length > 42) {
+      throw new HospitalError('Missing required parameter')
+    }
+
+    try {
+      const doctor = await this.DoctorDB.fetchDoctorByAddress(doctorAddress)
+      if (!doctor) {
+        throw new HospitalError('Doctor not found')
+      }
+
+      if (doctor.status !== ApprovalStatus.Approved) {
+        doctor.status = ApprovalStatus.Approved
+        await doctor.save()
+        return {
+          success: ErrorCodes.Success,
+          message: 'Doctor approved',
+        }
+      } else {
+        return {
+          success: ErrorCodes.Error,
+          message: 'Doctor already approved',
+        }
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error approving doctor')
+    }
+  }
+
+  static async approvePharmacist(
+    pharmacistAddress: string,
+  ): Promise<{ success: number; message: string }> {
+    if (!pharmacistAddress || pharmacistAddress.length > 42) {
+      throw new HospitalError('Missing required parameter')
+    }
+
+    try {
+      const pharmacist = await this.PharmacistDB.fetchPharmacistByAddress(
+        pharmacistAddress,
+      )
+      if (!pharmacist) {
+        throw new HospitalError('Pharmacist not found')
+      }
+
+      if (pharmacist.status !== ApprovalStatus.Approved) {
+        pharmacist.status = ApprovalStatus.Approved
+        await pharmacist.save()
+        return {
+          success: ErrorCodes.Success,
+          message: 'Pharmacist approved',
+        }
+      } else {
+        return {
+          success: ErrorCodes.Error,
+          message: 'Pharmacist already approved',
+        }
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error approving pharmacist')
     }
   }
 }
