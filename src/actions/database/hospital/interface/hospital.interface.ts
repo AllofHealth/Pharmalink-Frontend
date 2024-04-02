@@ -35,7 +35,7 @@ export interface ApprovePractitionerType {
 }
 
 export interface JoinHospitalType {
-  hospitalId: number
+  hospitalId: string
   walletAddress: string
   category: string
 }
