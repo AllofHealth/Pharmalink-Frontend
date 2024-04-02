@@ -11,11 +11,65 @@ import {
   CreateHospitalType,
   PreviewType,
   ApprovePractitionerType,
+  JoinHospitalType,
 } from '../interface/hospital.interface'
 import { DatabaseProvider } from '../../providers/db.providers'
 
 class HospitalHelpers {
   static DB = DatabaseProvider.HospitalProvider
+  static DoctorDB = DatabaseProvider.DoctorProvider
+  static PharmacistDB = DatabaseProvider.PharmacistProvider
+
+  static async removeHospitalIdFromDoctorDocument(
+    hospital: HospitalType,
+    doctorAddress: string,
+  ) {
+    try {
+      const Doctor = await this.DoctorDB.fetchDoctorByAddress(doctorAddress)
+      if (!Doctor) {
+        throw new HospitalError("doctor doesn't exist")
+      }
+
+      Doctor.hospitalIds.splice(Doctor.hospitalIds.indexOf(hospital.id), 1)
+      if (Doctor.hospitalIds.length === 0) {
+        Doctor.hospitalIds = []
+        Doctor.status = ApprovalStatus.Pending
+      }
+      console.log('hospital id removed')
+      await Doctor.save()
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error removing hospital id from doctor')
+    }
+  }
+
+  static async removeHospitalIdFromPharmacistDocument(
+    hospital: HospitalType,
+    pharmacistAddress: string,
+  ) {
+    try {
+      const pharmacist = await this.PharmacistDB.fetchPharmacistByAddress(
+        pharmacistAddress,
+      )
+      if (!pharmacist) {
+        throw new HospitalError("pharmacist doesn't exist")
+      }
+
+      pharmacist.hospitalIds.splice(
+        pharmacist.hospitalIds.indexOf(hospital.id),
+        1,
+      )
+      if (pharmacist.hospitalIds.length === 0) {
+        pharmacist.hospitalIds = []
+        pharmacist.status = ApprovalStatus.Pending
+      }
+      console.info('hospital id removed')
+      await pharmacist.save()
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error removing hospital id from pharmacist')
+    }
+  }
 }
 
 export class HospitalReadOperations {
@@ -251,9 +305,135 @@ export class HospitalReadOperations {
 }
 
 export class HospitalService {
-  static Helpers = HospitalHelpers
+  static Helper = HospitalHelpers
   static Read = HospitalReadOperations
   static DB = DatabaseProvider.HospitalProvider
+  static DoctorDB = DatabaseProvider.DoctorProvider
+  static PharmacistDB = DatabaseProvider.PharmacistProvider
+
+  static async createHospital(
+    args: CreateHospitalType,
+  ): Promise<{ success: number; hospital: HospitalType; message: string }> {
+    const requiredParams = [
+      'id',
+      'name',
+      'admin',
+      'email',
+      'phoneNo',
+      'regNo',
+      'location',
+    ]
+
+    if (
+      !requiredParams.every((param) => args[param as keyof CreateHospitalType])
+    ) {
+      throw new HospitalError('Invalid or missing parameters')
+    }
+
+    try {
+      const hospital = await this.DB.createNewHospital(args)
+      return {
+        success: ErrorCodes.Success,
+        hospital,
+        message: 'Hospital created successfully',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error creating hospital')
+    }
+  }
+
+  static async joinHospital(
+    args: JoinHospitalType,
+  ): Promise<{ success: number; message: string }> {
+    const { hospitalId, walletAddress, category } = args
+    const requiredParams = ['hospitalId', 'walletAddress', 'category']
+
+    if (
+      !requiredParams.some((param) => args[param as keyof JoinHospitalType])
+    ) {
+      throw new HospitalError('Missing required parameter')
+    }
+    const sanitizedCategory = category.toLowerCase()
+
+    try {
+      const hospital = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError('Hospital not found')
+      }
+
+      switch (sanitizedCategory) {
+        case Category.Doctor:
+          const doctor = await this.DoctorDB.fetchDoctorByAddress(walletAddress)
+          if (!doctor) {
+            throw new HospitalError('Doctor not found')
+          }
+          const doctorPreview: PreviewType = {
+            walletAddress: doctor.walletAddress,
+            profilePicture: doctor.profilePicture,
+            name: doctor.name,
+            regNo: doctor.regNo,
+            status: ApprovalStatus.Pending,
+          }
+
+          doctor.hospitalIds.push(hospitalId)
+          await doctor.save()
+
+          try {
+            hospital.doctors.push(doctorPreview)
+          } catch (error) {
+            console.info('An error occurred while adding doctor to hospital')
+            await this.Helper.removeHospitalIdFromDoctorDocument(
+              hospital,
+              walletAddress,
+            )
+          }
+
+          break
+
+        case Category.Pharmacist:
+          const pharmacist = await this.PharmacistDB.fetchPharmacistByAddress(
+            walletAddress,
+          )
+          if (!pharmacist) {
+            throw new HospitalError('Pharmacist not found')
+          }
+          const pharmacistPreview: PreviewType = {
+            walletAddress: pharmacist.walletAddress,
+            profilePicture: pharmacist.profilePicture,
+            name: pharmacist.name,
+            regNo: pharmacist.regNo,
+            status: ApprovalStatus.Pending,
+          }
+          pharmacist.hospitalIds.push(hospitalId)
+          await pharmacist.save()
+
+          try {
+            hospital.pharmacists.push(pharmacistPreview)
+          } catch (error) {
+            console.info(
+              'An error occurred while adding pharmacist to hospital',
+            )
+            await this.Helper.removeHospitalIdFromPharmacistDocument(
+              hospital,
+              walletAddress,
+            )
+          }
+          break
+
+        default:
+          throw new Error('only practitioners can join hospital')
+      }
+      await hospital.save()
+      return {
+        success: ErrorCodes.Success,
+        message: 'Joined hospital',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new Error('Error joining hospital')
+    }
+  }
 
   static async getHospitalById(
     _id: string,
@@ -325,6 +505,22 @@ export class HospitalService {
     } catch (error) {
       console.error(error)
       throw new HospitalError('Error fetching approved hospitals')
+    }
+  }
+
+  static async fetchAllHospitals(): Promise<{
+    success: number
+    hospitals: HospitalType[]
+  }> {
+    try {
+      const hospitals = await this.DB.fetchAllHospitals()
+      return {
+        success: ErrorCodes.Success,
+        hospitals,
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error fetching all hospitals')
     }
   }
 }
