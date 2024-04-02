@@ -2,6 +2,7 @@
 import { schemaProvider } from '@/actions/mongoose/schemas/schema_provider/schema.providers'
 import { ApprovalStatus, Category } from '@/actions/shared/global'
 import { CreateHospitalType } from '../interface/hospital.interface'
+import mongoose from 'mongoose'
 
 export class HospitalDB {
   static Hospital = schemaProvider.getSchema('Hospital')
@@ -21,8 +22,10 @@ export class HospitalDB {
     })
   }
 
-  static async fetchHospital(id: number) {
-    return await this.Hospital.findOne({ id })
+  static async fetchHospital(_id: string) {
+    return await this.Hospital.findOne({
+      _id: new mongoose.Types.ObjectId(_id),
+    })
   }
 
   static async fetchHospitalByRegNo(regNo: string) {
