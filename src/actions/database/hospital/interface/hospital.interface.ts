@@ -1,3 +1,5 @@
+import mongoose from 'mongoose'
+
 export interface CreateHospitalType {
   id: number
   name: string
@@ -23,6 +25,7 @@ export interface HospitalType extends CreateHospitalType {
   doctors: PreviewType[]
   pharmacists: PreviewType[]
   category: string
+  _id: mongoose.Types.ObjectId
 }
 
 export interface ApprovePractitionerType {
