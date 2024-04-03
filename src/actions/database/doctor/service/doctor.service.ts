@@ -79,19 +79,14 @@ class DoctorHelpers {
     hospitalId: number,
     doctorAddress: string,
   ): Promise<boolean> {
-    if (
-      !Number.isInteger(hospitalId) ||
-      hospitalId <= 0 ||
-      !doctorAddress ||
-      doctorAddress.length < 5
-    ) {
+    if (!hospitalId) {
       throw new DoctorError('Invalid or missing doctor address')
     }
 
     let doctorExists: boolean = false
 
     try {
-      const hospital = await DatabaseProvider.HospitalProvider.fetchHospital(
+      const hospital = await DatabaseProvider.HospitalProvider.fetchHospitalWithBlockchainId(
         hospitalId,
       )
       if (!hospital) {
@@ -150,7 +145,7 @@ export class DoctorService {
     }
 
     try {
-      const hospital = await this.HospitalDB.fetchHospital(
+      const hospital = await this.HospitalDB.fetchHospitalWithBlockchainId(
         args.hospitalIds as number,
       )
 
