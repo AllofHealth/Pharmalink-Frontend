@@ -118,15 +118,10 @@ export class AdminServices {
   }
 
   static async approveHospital(
-    hospitalId: number,
+    hospitalId: string,
     adminAddress: string,
   ): Promise<{ success: number; message: string }> {
-    if (
-      !Number.isInteger(hospitalId) ||
-      hospitalId <= 0 ||
-      !adminAddress ||
-      adminAddress.length > 42
-    ) {
+    if (!hospitalId || !adminAddress || adminAddress.length < 42) {
       throw new AdminError('Invalid hospital or admin address')
     }
 
@@ -211,13 +206,8 @@ export class AdminServices {
     }
   }
 
-  static async removeHospital(hospitalId: number, adminAddress: string) {
-    if (
-      !Number.isInteger(hospitalId) ||
-      hospitalId <= 0 ||
-      !adminAddress ||
-      adminAddress.length > 42
-    ) {
+  static async removeHospital(hospitalId: string, adminAddress: string) {
+    if (!hospitalId || !adminAddress || adminAddress.length > 42) {
       throw new AdminError('Invalid hospital or admin address')
     }
 
