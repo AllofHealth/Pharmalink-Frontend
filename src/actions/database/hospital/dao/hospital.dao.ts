@@ -28,6 +28,10 @@ export class HospitalDB {
     })
   }
 
+  static async fetchHospitalWithBlockchainId(id: number) {
+    return await this.Hospital.findOne({ id: id })
+  }
+
   static async fetchHospitalByRegNo(regNo: string) {
     return await this.Hospital.findOne({ regNo })
   }
