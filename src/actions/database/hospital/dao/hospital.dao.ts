@@ -52,7 +52,9 @@ export class HospitalDB {
     })
   }
 
-  static async removeHospital(id: number) {
-    return await this.Hospital.deleteOne({ id })
+  static async removeHospital(_id: string) {
+    return await this.Hospital.deleteOne({
+      _id: new mongoose.Types.ObjectId(_id),
+    })
   }
 }
