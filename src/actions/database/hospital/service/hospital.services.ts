@@ -139,6 +139,26 @@ class HospitalHelpers {
       throw new HospitalError('Error removing hospital id from pharmacist')
     }
   }
+
+  static async validateHospitalAdmin(
+    hospital: HospitalType,
+    adminAddress: string,
+  ) {
+    if (!hospital || !adminAddress || adminAddress.length < 42) {
+      throw new HospitalError('Error validating parameters')
+    }
+
+    let isAdmin = false
+    try {
+      if (hospital.admin === adminAddress) {
+        isAdmin = true
+      }
+      return isAdmin
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error validating admin')
+    }
+  }
 }
 
 class HospitalReadOperations {
@@ -444,14 +464,113 @@ class HospitalWriteOperations {
       throw new HospitalError('Error approving pharmacist')
     }
   }
+
+  static async removeDoctor(
+    args: ApprovePractitionerType,
+  ): Promise<{ success: number; message: string }> {
+    const { practitionerAddress, adminAddress, hospitalId } = args
+    if (!practitionerAddress || practitionerAddress.length > 42) {
+      throw new HospitalError('Missing required parameter')
+    }
+
+    try {
+      const hospital = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError("hospital doesn't exist with given id")
+      }
+      const isAdmin = await this.Helper.validateHospitalAdmin(
+        hospital,
+        adminAddress,
+      )
+      if (!isAdmin) {
+        throw new HospitalError('Only admin can call this function')
+      }
+
+      const doctor = await this.Helper.returnDoctorFromHospital(
+        hospital,
+        practitionerAddress,
+      )
+
+      if (doctor) {
+        await this.Helper.removeDoctorFromHospital(
+          hospital,
+          practitionerAddress,
+        )
+        await this.Helper.removeHospitalIdFromDoctorDocument(
+          hospital,
+          practitionerAddress,
+        )
+        await hospital.save()
+      }
+
+      return {
+        success: ErrorCodes.Success,
+        message: 'doctor removed',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error removing Doctor')
+    }
+  }
+
+  static async removePharmacist(
+    args: ApprovePractitionerType,
+  ): Promise<{ success: number; message: string }> {
+    const { practitionerAddress, adminAddress, hospitalId } = args
+    if (!practitionerAddress || practitionerAddress.length < 42) {
+      throw new HospitalError('Missing required parameter')
+    }
+
+    try {
+      const hospital = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError("hospital doesn't exist with given id")
+      }
+
+      const isAdmin = await this.Helper.validateHospitalAdmin(
+        hospital,
+        adminAddress,
+      )
+      if (!isAdmin) {
+        throw new HospitalError('Only admin can call this function')
+      }
+
+      const pharmacist = await this.Helper.returnPharmacistFromHospital(
+        hospital,
+        practitionerAddress,
+      )
+
+      if (pharmacist) {
+        await this.Helper.removePharmacistFromHospital(
+          hospital,
+          practitionerAddress,
+        )
+        await hospital.save()
+
+        await this.Helper.removeHospitalIdFromPharmacistDocument(
+          hospital,
+          practitionerAddress,
+        )
+      }
+
+      return {
+        success: ErrorCodes.Success,
+        message: 'pharmacist removed',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error removing pharmacist')
+    }
+  }
 }
 
 export class HospitalService {
-  static Helper = HospitalHelpers
-  static Read = HospitalReadOperations
-  static DB = DatabaseProvider.HospitalProvider
-  static DoctorDB = DatabaseProvider.DoctorProvider
-  static PharmacistDB = DatabaseProvider.PharmacistProvider
+  private static Helper = HospitalHelpers
+  private static Read = HospitalReadOperations
+  private static Write = HospitalWriteOperations
+  private static DB = DatabaseProvider.HospitalProvider
+  private static DoctorDB = DatabaseProvider.DoctorProvider
+  private static PharmacistDB = DatabaseProvider.PharmacistProvider
 
   static async createHospital(
     args: CreateHospitalType,
@@ -574,6 +693,139 @@ export class HospitalService {
     } catch (error) {
       console.error(error)
       throw new Error('Error joining hospital')
+    }
+  }
+
+  static async approvePractitioner(
+    args: ApprovePractitionerType,
+  ): Promise<{ success: boolean; message: string }> {
+    const { practitionerAddress, adminAddress, hospitalId } = args
+    if (!practitionerAddress || practitionerAddress.length < 42) {
+      throw new HospitalError('Missing required parameter')
+    }
+
+    try {
+      const hospital = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError('Hospital not found')
+      }
+
+      const isAdmin = await this.Helper.validateHospitalAdmin(
+        hospital,
+        adminAddress,
+      )
+      if (!isAdmin) {
+        throw new HospitalError('Only admin can call this function')
+      }
+
+      const doctor = await this.Helper.returnDoctorFromHospital(
+        hospital,
+        practitionerAddress,
+      )
+      const pharmacist = await this.Helper.returnPharmacistFromHospital(
+        hospital,
+        practitionerAddress,
+      )
+
+      const practitionerValidation =
+        (!doctor && !pharmacist) ||
+        (doctor == undefined && pharmacist == undefined)
+
+      if (practitionerValidation) {
+        throw new Error('Practitioner not found')
+      }
+
+      switch (doctor?.status) {
+        case ApprovalStatus.Pending:
+          doctor.status = ApprovalStatus.Approved
+          const res = await this.Write.approveDoctor(practitionerAddress)
+          console.info(res.success)
+          break
+        case ApprovalStatus.Approved:
+          throw new Error('Doctor already approved')
+      }
+
+      switch (pharmacist?.status) {
+        case ApprovalStatus.Pending:
+          pharmacist.status = ApprovalStatus.Approved
+          const res = await this.Write.approvePharmacist(practitionerAddress)
+          console.info(res.success)
+          break
+        case ApprovalStatus.Approved:
+          throw new Error('Pharmacist already approved')
+      }
+
+      await hospital.save()
+      return {
+        success: true,
+        message: 'Practitioner approved',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new Error('Error approving practitioner')
+    }
+  }
+
+  static async rejectPractitioner(
+    args: ApprovePractitionerType,
+  ): Promise<{ success: number; message: string }> {
+    const { practitionerAddress, adminAddress, hospitalId } = args
+    if (!practitionerAddress || practitionerAddress.length < 42) {
+      throw new HospitalError('Missing required parameter')
+    }
+
+    try {
+      const hospital = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError('Hospital not found')
+      }
+      const isAdmin = await this.Helper.validateHospitalAdmin(
+        hospital,
+        adminAddress,
+      )
+      if (!isAdmin) {
+        throw new HospitalError('Only admin can call this function')
+      }
+      const doctor = await this.Helper.returnDoctorFromHospital(
+        hospital,
+        practitionerAddress,
+      )
+      const pharmacist = await this.Helper.returnPharmacistFromHospital(
+        hospital,
+        practitionerAddress,
+      )
+      if (!doctor && !pharmacist) {
+        throw new Error('Practitioner not found')
+      }
+
+      if (doctor) {
+        const res = await this.Write.removeDoctor(args)
+      } else if (pharmacist) {
+        const res = await this.Write.removePharmacist(args)
+      }
+
+      return {
+        success: ErrorCodes.Success,
+        message: 'Practitioner rejected',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error rejecting practitioner')
+    }
+  }
+
+  static async fetchAllPractitioners(
+    hospitalId: string,
+  ): Promise<PreviewType[]> {
+    try {
+      const { doctors } = await this.Read.fetchAllDoctors(hospitalId)
+      const { pharmacists } = await this.Read.fetchAllPharmacists(hospitalId)
+
+      const fullList = doctors.concat(pharmacists)
+      return fullList
+    } catch (error) {
+      console.error(error)
+      throw new Error('Error fetching all practitioners')
     }
   }
 
