@@ -1,3 +1,5 @@
+'use server'
+
 import mongoose from 'mongoose'
 
 export interface CreateHospitalType {
@@ -31,7 +33,8 @@ export interface HospitalType extends CreateHospitalType {
 export interface ApprovePractitionerType {
   practitionerAddress: string
   adminAddress: string
-  hospitalId: number
+  hospitalId: string
+  hospitalBlockchainId: number
 }
 
 export interface JoinHospitalType {
