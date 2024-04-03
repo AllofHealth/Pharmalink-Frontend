@@ -42,3 +42,9 @@ export interface JoinHospitalType {
   walletAddress: string
   category: string
 }
+
+export interface HospitalProfileType {
+  hospitalId: string
+  adminAddress: string
+  info: string
+}
