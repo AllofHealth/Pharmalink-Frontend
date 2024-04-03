@@ -12,6 +12,7 @@ import {
   PreviewType,
   ApprovePractitionerType,
   JoinHospitalType,
+  HospitalProfileType,
 } from '../interface/hospital.interface'
 import { DatabaseProvider } from '../../providers/db.providers'
 
@@ -696,6 +697,59 @@ export class HospitalService {
     }
   }
 
+  static async delegateAdminPosition(
+    newAdminAddress: string,
+    adminAddress: string,
+    hospitalId: string,
+  ): Promise<{ success: number; message: string }> {
+    if (
+      !newAdminAddress ||
+      newAdminAddress.length < 42 ||
+      !adminAddress ||
+      adminAddress.length < 42 ||
+      !hospitalId ||
+      newAdminAddress === adminAddress
+    ) {
+      throw new Error('Missing required parameter')
+    }
+    try {
+      const hospital = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError("Hospital doesn't exist")
+      }
+
+      if (!(await this.Helper.validateHospitalAdmin(hospital, adminAddress))) {
+        throw new HospitalError('not authorized')
+      }
+
+      const isAffiliated =
+        (await this.Helper.returnDoctorFromHospital(
+          hospital,
+          newAdminAddress,
+        )) ||
+        (await this.Helper.returnPharmacistFromHospital(
+          hospital,
+          newAdminAddress,
+        ))
+      if (!isAffiliated || isAffiliated.status !== ApprovalStatus.Approved) {
+        throw new Error(
+          'User is not affiliated with hospital or not yet approved',
+        )
+      }
+
+      hospital.admin = newAdminAddress
+      await hospital.save()
+
+      return {
+        success: ErrorCodes.Success,
+        message: 'Successfully delegated admin position',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new Error('Error delegating admin position')
+    }
+  }
+
   static async approvePractitioner(
     args: ApprovePractitionerType,
   ): Promise<{ success: boolean; message: string }> {
@@ -826,6 +880,103 @@ export class HospitalService {
     } catch (error) {
       console.error(error)
       throw new Error('Error fetching all practitioners')
+    }
+  }
+
+  static async updateHospitalProfilePicture(
+    args: HospitalProfileType,
+  ): Promise<{ success: number; message: string }> {
+    const { hospitalId, adminAddress, info } = args
+    if (
+      !hospitalId ||
+      !adminAddress ||
+      adminAddress.length < 42 ||
+      !info ||
+      !info.includes('.com')
+    ) {
+      throw new HospitalError('Missing required parameter')
+    }
+
+    try {
+      const hospital = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError('hospital does not exist')
+      }
+
+      if (!(await this.Helper.validateHospitalAdmin(hospital, adminAddress))) {
+        throw new HospitalError('not authorized')
+      }
+
+      hospital.profilePicture = info
+      await hospital.save()
+
+      return {
+        success: ErrorCodes.Success,
+        message: 'Profile picture updated',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error updating profile picture')
+    }
+  }
+
+  static async updateHospitalName(
+    args: HospitalProfileType,
+  ): Promise<{ success: number; message: string }> {
+    const { hospitalId, adminAddress, info } = args
+    if (!hospitalId || !adminAddress || adminAddress.length < 42 || !info) {
+      throw new HospitalError('Missing required parameter')
+    }
+
+    try {
+      const hospital = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError("hospital doesn't exist")
+      }
+      if (!(await this.Helper.validateHospitalAdmin(hospital, adminAddress))) {
+        throw new HospitalError('Only admin can call this function')
+      }
+
+      hospital.name = info
+      await hospital.save()
+
+      return {
+        success: ErrorCodes.Success,
+        message: 'Hospital name updated',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error updating hospital name')
+    }
+  }
+
+  static async updateHospitalLocation(
+    args: HospitalProfileType,
+  ): Promise<{ success: number; message: string }> {
+    const { hospitalId, adminAddress, info } = args
+    if (!hospitalId || !adminAddress || adminAddress.length < 42 || !info) {
+      throw new HospitalError('Missing required parameter')
+    }
+
+    try {
+      const hospital = await this.DB.fetchHospital(hospitalId)
+      if (!hospital) {
+        throw new HospitalError('hospital does not exist')
+      }
+      if (!(await this.Helper.validateHospitalAdmin(hospital, adminAddress))) {
+        throw new HospitalError('not authorized')
+      }
+
+      hospital.location = info
+      await hospital.save()
+
+      return {
+        success: ErrorCodes.Success,
+        message: 'Hospital location updated',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new HospitalError('Error updating hospital location')
     }
   }
 
