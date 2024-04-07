@@ -201,4 +201,27 @@ export class PharmacistService {
       throw new PharmacistError('An error ocurred while creating pharmacist')
     }
   }
+
+  static async fetchPharmacistByAddress(
+    address: string,
+  ): Promise<{ success: number; pharmacist: PharmacistType }> {
+    if (!address || address.length < 42) {
+      throw new PharmacistError('Invalid or missing pharmacist address')
+    }
+
+    try {
+      const pharmacist = await this.DB.fetchPharmacistByAddress(address)
+      if (!pharmacist) {
+        throw new PharmacistError('Pharmacist not found')
+      }
+
+      return {
+        success: ErrorCodes.Success,
+        pharmacist,
+      }
+    } catch (error) {
+      console.error(error)
+      throw new PharmacistError('Error fetching pharmacist by address')
+    }
+  }
 }
