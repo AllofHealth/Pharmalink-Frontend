@@ -19,6 +19,28 @@ enum RecordOwner {
   FamilyMember = 'family member',
 }
 
+enum Relationship {
+  Father = 'father',
+  Mother = 'mother',
+  Brother = 'brother',
+  Sister = 'sister',
+  Aunt = 'aunt',
+  Uncle = 'uncle',
+  Nephew = 'nephew',
+  Niece = 'niece',
+  GrandFather = 'grandfather',
+  GrandMother = 'grandmother',
+  Grandson = 'grandson',
+  Granddaughter = 'granddaughter',
+  Son = 'son',
+  Daughter = 'daughter',
+  Wife = 'wife',
+  Husband = 'husband',
+  Friend = 'friend',
+  Cousin = 'cousin',
+  Other = 'other',
+}
+
 enum ErrorCodes {
   Success = 200,
   NotFound = 404,
