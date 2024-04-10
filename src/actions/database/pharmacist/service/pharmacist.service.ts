@@ -1,6 +1,10 @@
 'use server'
 
-import { ErrorCodes, PharmacistError } from '@/actions/shared/global'
+import {
+  ErrorCodes,
+  PharmacistError,
+  ProfileType,
+} from '@/actions/shared/global'
 import { DatabaseProvider } from '../../providers/db.providers'
 import {
   CreatePharmacistType,
@@ -76,9 +80,69 @@ class PharmacistHelpers {
       throw new PharmacistError('Error checking if medicine group exists')
     }
   }
+
+  static async fetchInventory(args: PharmacistType) {
+    try {
+      const inventory: InventoryType = args.inventory
+      return inventory
+    } catch (error) {
+      console.error(error)
+      throw new PharmacistError('Error fetching inventory')
+    }
+  }
 }
 
-class PharmacistReadOperations {}
+export class PharmacistReadOperations {
+  private static Helper = PharmacistHelpers
+  private static DB = DatabaseProvider.PharmacistProvider
+  static async fetchPendingPharmacists(): Promise<{
+    success: number
+    pharmacist: PharmacistType[]
+  }> {
+    try {
+      const pharmacist = await this.DB.fetchPharmacistWithPendingStatus()
+
+      if (!pharmacist || pharmacist.length === 0) {
+        return {
+          success: ErrorCodes.NotFound,
+          pharmacist: [],
+        }
+      }
+
+      return {
+        success: ErrorCodes.Success,
+        pharmacist,
+      }
+    } catch (error) {
+      console.error(error)
+      throw new PharmacistError('Error fetching pharmacists')
+    }
+  }
+
+  static async fetchApprovedPharmacists(): Promise<{
+    success: number
+    pharmacists: PharmacistType[]
+  }> {
+    try {
+      const pharmacists = await this.DB.fetchPharmacistsWithApprovedStatus()
+
+      if (!pharmacists || pharmacists.length === 0) {
+        return {
+          success: ErrorCodes.NotFound,
+          pharmacists: [],
+        }
+      }
+
+      return {
+        success: ErrorCodes.Success,
+        pharmacists,
+      }
+    } catch (error) {
+      console.error(error)
+      throw new PharmacistError('Error fetching pharmacists')
+    }
+  }
+}
 
 class PharmacistWriteOperations {
   private static Helper = PharmacistHelpers
@@ -202,6 +266,111 @@ export class PharmacistService {
     }
   }
 
+  static async updatePharmacistProfilePicture(
+    args: ProfileType,
+  ): Promise<{ success: number; message: string }> {
+    const { address, info } = args
+    if (!address || address.length < 42 || !info) {
+      throw new PharmacistError('Invalid or missing address or profile picture')
+    }
+
+    try {
+      const { pharmacist } = await this.DB.fetchPharmacistByAddress(address)
+      if (!pharmacist) {
+        throw new PharmacistError("pharmacist doesn't exist")
+      }
+      pharmacist.profilePicture = info
+      await pharmacist.save()
+
+      return {
+        success: ErrorCodes.Success,
+        message: 'Profile picture updated',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new PharmacistError('Error fetching pharmacist')
+    }
+  }
+
+  static async updatePharmacistName(
+    args: ProfileType,
+  ): Promise<{ success: number; message: string }> {
+    const { address, info } = args
+    if (!address || address.length < 5 || !info) {
+      throw new PharmacistError('Invalid or missing address or name')
+    }
+
+    try {
+      const pharmacist = await this.DB.fetchPharmacistByAddress(address)
+      if (!pharmacist) {
+        throw new PharmacistError("pharmacist doesn't exist")
+      }
+
+      pharmacist.name = info
+      await pharmacist.save()
+      return {
+        success: ErrorCodes.Success,
+        message: 'Name updated successfully',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new PharmacistError('Error updating name, please try again')
+    }
+  }
+
+  static async updatePharmacistEmail(
+    args: ProfileType,
+  ): Promise<{ success: number; message: string }> {
+    const { address, info } = args
+    if (!address || address.length < 5 || !info) {
+      throw new PharmacistError('Invalid or missing address or email')
+    }
+
+    try {
+      const pharmacist = await this.DB.fetchPharmacistByAddress(address)
+      if (!pharmacist) {
+        throw new PharmacistError("pharmacist doesn't exist")
+      }
+
+      pharmacist.email = info
+      await pharmacist.save()
+
+      return {
+        success: ErrorCodes.Success,
+        message: 'Email updated successfully',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new PharmacistError('Error updating email, please try again')
+    }
+  }
+
+  static async updatePharmacistPhoneNumber(
+    args: ProfileType,
+  ): Promise<{ success: number; message: string }> {
+    const { address, info } = args
+    if (!address || address.length < 5 || !info) {
+      throw new PharmacistError('Invalid or missing address or phone number')
+    }
+
+    try {
+      const pharmacist = await this.DB.fetchPharmacistByAddress(address)
+      if (!pharmacist) {
+        throw new PharmacistError("pharmacist doesn't exist")
+      }
+      pharmacist.phoneNumber = info
+      await pharmacist.save()
+
+      return {
+        success: ErrorCodes.Success,
+        message: 'Phone number updated successfully',
+      }
+    } catch (error) {
+      console.error(error)
+      throw new PharmacistError('Error updating phone number, please try again')
+    }
+  }
+
   static async fetchPharmacistByAddress(
     address: string,
   ): Promise<{ success: number; pharmacist: PharmacistType }> {
@@ -222,6 +391,102 @@ export class PharmacistService {
     } catch (error) {
       console.error(error)
       throw new PharmacistError('Error fetching pharmacist by address')
+    }
+  }
+
+  static async addMedicine(
+    address: string,
+    args: MedicineType,
+  ): Promise<{ success: number; message: string }> {
+    const {
+      name,
+      price,
+      quantity,
+      description,
+      sideEffects,
+      image,
+      medicineGroup,
+    } = args
+    if (
+      !name ||
+      name.length < 5 ||
+      !address ||
+      address.length < 42 ||
+      !price ||
+      !quantity ||
+      !description ||
+      !sideEffects ||
+      !image ||
+      !medicineGroup
+    ) {
+      throw new PharmacistError('Invalid or missing parameter')
+    }
+
+    try {
+      const pharmacist = await this.DB.fetchPharmacistByAddress(address)
+      if (!pharmacist) {
+        throw new PharmacistError("pharmacist doesn't exist")
+      }
+
+      if (pharmacist.inventory) {
+        await this.Write.updateInventory(pharmacist, args)
+        await pharmacist.save()
+        return {
+          success: ErrorCodes.Success,
+          message: 'Updated existing inventory',
+        }
+      } else {
+        await this.Write.createInventory(pharmacist, args)
+        await pharmacist.save()
+        return {
+          success: ErrorCodes.Success,
+          message: 'Created new inventory',
+        }
+      }
+    } catch (error) {
+      console.error(error)
+      throw new PharmacistError('Error adding medicine')
+    }
+  }
+
+  static async fetchInventory(
+    address: string,
+  ): Promise<{
+    numberOfMedicine: number
+    numberOfMedicineGroup: number
+    numberOfMedicineSold: number
+    medicines: MedicineType[]
+  }> {
+    {
+      if (!address || address.length < 42) {
+        throw new PharmacistError('Invalid or missing address')
+      }
+
+      try {
+        const pharmacist = await this.DB.fetchPharmacistByAddress(address)
+        if (!pharmacist) {
+          throw new PharmacistError("pharmacist doesn't exist")
+        }
+        const inventory = await this.Helper.fetchInventory(pharmacist)
+        if (!inventory) {
+          return {
+            numberOfMedicine: 0,
+            numberOfMedicineGroup: 0,
+            numberOfMedicineSold: 0,
+            medicines: [],
+          }
+        }
+
+        return {
+          numberOfMedicine: inventory.numberOfMedicine,
+          numberOfMedicineGroup: inventory.numberOfMedicineGroup,
+          numberOfMedicineSold: inventory.numberOfMedicineSold,
+          medicines: inventory.medicines,
+        }
+      } catch (error) {
+        console.error(error)
+        throw new PharmacistError('Error fetching inventory')
+      }
     }
   }
 }
