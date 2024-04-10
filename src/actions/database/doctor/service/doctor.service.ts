@@ -4,7 +4,7 @@ import { DatabaseProvider } from '../../providers/db.providers'
 import { CreateDoctorType, DoctorType } from '../interface/doctor.interface'
 import { PreviewType } from '../../hospital/interface/hospital.interface'
 
-class DoctorHelpers {
+export class DoctorHelpers {
   static DB = DatabaseProvider.DoctorProvider
   static async getDoctorById(
     id: number,
@@ -104,6 +104,18 @@ class DoctorHelpers {
     } catch (error) {
       console.error(error)
       throw new DoctorError('Error validating doctor exists in hospital')
+    }
+  }
+
+  static async validateDoctorExists(address: string) {
+    try {
+      const doctor = await this.DB.fetchDoctorByAddress(address)
+
+      if (!doctor) throw new DoctorError('Doctor not found')
+      return doctor
+    } catch (error) {
+      console.error(error)
+      throw new DoctorError('Error validating doctor exists')
     }
   }
 }
