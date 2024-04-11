@@ -1,5 +1,10 @@
 'use server'
 
+/**
+ * @author 3illBaby
+ * @description Admin Services
+ */
+
 import { AdminError, ApprovalStatus, ErrorCodes } from '@/actions/shared/global'
 import { DatabaseProvider } from '../../providers/db.providers'
 import {
@@ -10,7 +15,7 @@ import {
 import { PreviewType } from '../../hospital/interface/hospital.interface'
 
 export class AdminHelpers {
-  static Provider = DatabaseProvider.AdminProvider
+  private static Provider = DatabaseProvider.AdminProvider
 
   static async validateAdminExists(address: string): Promise<boolean> {
     let adminExists: boolean = false
@@ -30,9 +35,9 @@ export class AdminHelpers {
 }
 
 export class AdminServices {
-  static Provider = DatabaseProvider.AdminProvider
-  static Hospital = DatabaseProvider.HospitalProvider
-  static Helper = AdminHelpers
+  private static Provider = DatabaseProvider.AdminProvider
+  private static Hospital = DatabaseProvider.HospitalProvider
+  private static Helper = AdminHelpers
 
   static async createAdmin(args: CreateAdminType) {
     const requiredParams = ['id', 'name', 'email', 'walletAddress']
@@ -63,7 +68,7 @@ export class AdminServices {
   static async fetchAdmin(
     address: string,
   ): Promise<{ success: number; admin: AdminType; message: string }> {
-    if (!address || address.length > 42) {
+    if (!address || address.length !== 42) {
       throw new AdminError('Invalid address')
     }
 
@@ -91,9 +96,9 @@ export class AdminServices {
 
     if (
       !adminAddressToAuthorize ||
-      adminAddressToAuthorize.length > 42 ||
+      adminAddressToAuthorize.length !== 42 ||
       !adminAddressToRemove ||
-      adminAddressToRemove.length > 42
+      adminAddressToRemove.length !== 42
     ) {
       throw new AdminError('Invalid admin address')
     }
@@ -121,7 +126,7 @@ export class AdminServices {
     hospitalId: string,
     adminAddress: string,
   ): Promise<{ success: number; message: string }> {
-    if (!hospitalId || !adminAddress || adminAddress.length < 42) {
+    if (!hospitalId || !adminAddress || adminAddress.length !== 42) {
       throw new AdminError('Invalid hospital or admin address')
     }
 
@@ -164,9 +169,9 @@ export class AdminServices {
   ): Promise<{ success: number; message: string }> {
     if (
       !doctorAddress ||
-      doctorAddress.length > 42 ||
+      doctorAddress.length !== 42 ||
       !adminAddress ||
-      adminAddress.length > 42
+      adminAddress.length !== 42
     ) {
       throw new AdminError('Invalid doctor or admin address')
     }
@@ -179,7 +184,6 @@ export class AdminServices {
       const hospitals = await this.Hospital.fetchAllHospitals()
       for (const hospital of hospitals) {
         if (!hospital) {
-          console.log('Hospital not found')
           continue
         }
 
@@ -191,7 +195,7 @@ export class AdminServices {
           hospital.doctors = hospital.doctors.filter(
             (doctor: PreviewType) => doctor.walletAddress !== doctorAddress,
           )
-          console.log('Doctor removed from hospital')
+
           await hospital.save()
         }
       }
@@ -207,7 +211,7 @@ export class AdminServices {
   }
 
   static async removeHospital(hospitalId: string, adminAddress: string) {
-    if (!hospitalId || !adminAddress || adminAddress.length > 42) {
+    if (!hospitalId || !adminAddress || adminAddress.length !== 42) {
       throw new AdminError('Invalid hospital or admin address')
     }
 
