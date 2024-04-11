@@ -1,4 +1,10 @@
 'use server'
+
+/**
+ * @author 3illBaby
+ * @description Database func for Hospital
+ */
+
 import { schemaProvider } from '@/actions/mongoose/schemas/schema_provider/schema.providers'
 import { ApprovalStatus, Category } from '@/actions/shared/global'
 import { CreateHospitalType } from '../interface/hospital.interface'

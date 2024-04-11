@@ -1,5 +1,10 @@
 'use server'
 
+/**
+ * @author 3illBaby
+ * @description Service funcs for hospitals
+ */
+
 import {
   ApprovalStatus,
   Category,
@@ -95,18 +100,18 @@ class HospitalHelpers {
     doctorAddress: string,
   ) {
     try {
-      const Doctor = await this.DoctorDB.fetchDoctorByAddress(doctorAddress)
-      if (!Doctor) {
+      const doctor = await this.DoctorDB.fetchDoctorByAddress(doctorAddress)
+      if (!doctor) {
         throw new HospitalError("doctor doesn't exist")
       }
 
-      Doctor.hospitalIds.splice(Doctor.hospitalIds.indexOf(hospital.id), 1)
-      if (Doctor.hospitalIds.length === 0) {
-        Doctor.hospitalIds = []
-        Doctor.status = ApprovalStatus.Pending
+      doctor.hospitalIds.splice(doctor.hospitalIds.indexOf(hospital.id), 1)
+      if (doctor.hospitalIds.length === 0) {
+        doctor.hospitalIds = []
+        doctor.status = ApprovalStatus.Pending
       }
-      console.log('hospital id removed')
-      await Doctor.save()
+
+      await doctor.save()
     } catch (error) {
       console.error(error)
       throw new HospitalError('Error removing hospital id from doctor')
@@ -133,7 +138,7 @@ class HospitalHelpers {
         pharmacist.hospitalIds = []
         pharmacist.status = ApprovalStatus.Pending
       }
-      console.info('hospital id removed')
+
       await pharmacist.save()
     } catch (error) {
       console.error(error)
@@ -145,7 +150,7 @@ class HospitalHelpers {
     hospital: HospitalType,
     adminAddress: string,
   ) {
-    if (!hospital || !adminAddress || adminAddress.length < 42) {
+    if (!hospital || !adminAddress || adminAddress.length !== 42) {
       throw new HospitalError('Error validating parameters')
     }
 
@@ -612,7 +617,8 @@ export class HospitalService {
     const requiredParams = ['hospitalId', 'walletAddress', 'category']
 
     if (
-      !requiredParams.some((param) => args[param as keyof JoinHospitalType])
+      !requiredParams.some((param) => args[param as keyof JoinHospitalType]) ||
+      walletAddress.length !== 42
     ) {
       throw new HospitalError('Missing required parameter')
     }
@@ -644,11 +650,15 @@ export class HospitalService {
           try {
             hospital.doctors.push(doctorPreview)
           } catch (error) {
-            console.info('An error occurred while adding doctor to hospital')
             await this.Helper.removeHospitalIdFromDoctorDocument(
               hospital,
               walletAddress,
             )
+
+            return {
+              success: ErrorCodes.Error,
+              message: 'Error adding doctor to hospital',
+            }
           }
 
           break
@@ -673,13 +683,15 @@ export class HospitalService {
           try {
             hospital.pharmacists.push(pharmacistPreview)
           } catch (error) {
-            console.info(
-              'An error occurred while adding pharmacist to hospital',
-            )
             await this.Helper.removeHospitalIdFromPharmacistDocument(
               hospital,
               walletAddress,
             )
+
+            return {
+              success: ErrorCodes.Error,
+              message: 'Error adding pharmacist to hospital',
+            }
           }
           break
 
@@ -704,9 +716,9 @@ export class HospitalService {
   ): Promise<{ success: number; message: string }> {
     if (
       !newAdminAddress ||
-      newAdminAddress.length < 42 ||
+      newAdminAddress.length !== 42 ||
       !adminAddress ||
-      adminAddress.length < 42 ||
+      adminAddress.length !== 42 ||
       !hospitalId ||
       newAdminAddress === adminAddress
     ) {
@@ -731,7 +743,11 @@ export class HospitalService {
           hospital,
           newAdminAddress,
         ))
-      if (!isAffiliated || isAffiliated.status !== ApprovalStatus.Approved) {
+      if (
+        !isAffiliated ||
+        isAffiliated == undefined ||
+        isAffiliated.status !== ApprovalStatus.Approved
+      ) {
         throw new Error(
           'User is not affiliated with hospital or not yet approved',
         )
@@ -754,7 +770,7 @@ export class HospitalService {
     args: ApprovePractitionerType,
   ): Promise<{ success: boolean; message: string }> {
     const { practitionerAddress, adminAddress, hospitalId } = args
-    if (!practitionerAddress || practitionerAddress.length < 42) {
+    if (!practitionerAddress || practitionerAddress.length !== 42) {
       throw new HospitalError('Missing required parameter')
     }
 
@@ -824,7 +840,7 @@ export class HospitalService {
     args: ApprovePractitionerType,
   ): Promise<{ success: number; message: string }> {
     const { practitionerAddress, adminAddress, hospitalId } = args
-    if (!practitionerAddress || practitionerAddress.length < 42) {
+    if (!practitionerAddress || practitionerAddress.length !== 42) {
       throw new HospitalError('Missing required parameter')
     }
 
@@ -890,7 +906,7 @@ export class HospitalService {
     if (
       !hospitalId ||
       !adminAddress ||
-      adminAddress.length < 42 ||
+      adminAddress.length !== 42 ||
       !info ||
       !info.includes('.com')
     ) {
@@ -924,7 +940,7 @@ export class HospitalService {
     args: HospitalProfileType,
   ): Promise<{ success: number; message: string }> {
     const { hospitalId, adminAddress, info } = args
-    if (!hospitalId || !adminAddress || adminAddress.length < 42 || !info) {
+    if (!hospitalId || !adminAddress || adminAddress.length !== 42 || !info) {
       throw new HospitalError('Missing required parameter')
     }
 
@@ -954,7 +970,7 @@ export class HospitalService {
     args: HospitalProfileType,
   ): Promise<{ success: number; message: string }> {
     const { hospitalId, adminAddress, info } = args
-    if (!hospitalId || !adminAddress || adminAddress.length < 42 || !info) {
+    if (!hospitalId || !adminAddress || adminAddress.length !== 42 || !info) {
       throw new HospitalError('Missing required parameter')
     }
 
