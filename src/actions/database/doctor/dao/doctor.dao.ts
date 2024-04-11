@@ -1,10 +1,15 @@
 'use server'
+/**
+ * @author 3illBaby
+ * @description Database functions for doctors
+ */
+
 import { schemaProvider } from '@/actions/mongoose/schemas/schema_provider/schema.providers'
 import { ApprovalStatus, Category } from '@/actions/shared/global'
 import { CreateDoctorType } from '../interface/doctor.interface'
 
 export class DoctorDB {
-  static Doctor = schemaProvider.getSchema('Doctor')
+  private static Doctor = schemaProvider.getSchema('Doctor')
 
   static async createNewDoctor(doctor: CreateDoctorType) {
     return await this.Doctor.create({
@@ -21,10 +26,6 @@ export class DoctorDB {
       status: ApprovalStatus.Pending,
       category: Category.Doctor,
     })
-  }
-
-  static async fetchDoctor(id: number) {
-    return await this.Doctor.findOne({ id })
   }
 
   static async fetchDoctorByAddress(address: string) {
