@@ -1,5 +1,10 @@
 'use server'
 
+/**
+ * @author 3illBaby
+ * @description Database funcs for patient
+ */
+
 import { Category } from '@/actions/shared/global'
 import { CreatePatientType } from '../interface/patient.interface'
 import Patient from '@/actions/mongoose/schemas/patient.schema'
