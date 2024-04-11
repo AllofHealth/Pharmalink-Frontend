@@ -94,8 +94,6 @@ class PatientHelpers {
     } catch (error) {
       doctor.numberOfApprovals--
       patient.appointmentCount--
-
-      console.info('An error occurred while adding active approval to doctor')
     }
   }
 }
@@ -141,7 +139,7 @@ export class PatientService {
       !address ||
       !city ||
       !walletAddress ||
-      walletAddress.length < 42 ||
+      walletAddress.length !== 42 ||
       !bloodGroup ||
       !genotype
     ) {
@@ -150,7 +148,7 @@ export class PatientService {
     try {
       const patient = await this.DB.createNewPatient(args)
       return {
-        success: true,
+        success: ErrorCodes.Success,
         patient,
         message: 'Patient created successfully',
       }
@@ -185,7 +183,8 @@ export class PatientService {
       !address ||
       !bloodGroup ||
       !genotype ||
-      !walletAddress
+      !walletAddress ||
+      walletAddress.length !== 42
     ) {
       throw new PatientError('Invalid parameter')
     }
@@ -225,7 +224,7 @@ export class PatientService {
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
-    if (!address || !info) {
+    if (!address || address.length !== 42 || !info) {
       throw new PatientError('Invalid parameter')
     }
 
@@ -250,7 +249,7 @@ export class PatientService {
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
-    if (!address || !info) {
+    if (!address || address.length !== 42 || !info) {
       throw new PatientError('Invalid parameter')
     }
 
@@ -276,7 +275,7 @@ export class PatientService {
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
-    if (!address || !info) {
+    if (!address || address.length !== 42 || !info) {
       throw new PatientError('Invalid parameter')
     }
 
@@ -307,7 +306,7 @@ export class PatientService {
       !Number.isInteger(familyMemberId) ||
       familyMemberId <= 0 ||
       !address ||
-      address.length < 42 ||
+      address.length !== 42 ||
       !info
     ) {
       throw new PatientError('Invalid parameter')
@@ -344,7 +343,7 @@ export class PatientService {
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
-    if (!address || address.length < 42 || !info) {
+    if (!address || address.length !== 42 || !info) {
       throw new PatientError('Invalid parameter')
     }
 
@@ -379,7 +378,7 @@ export class PatientService {
   static async fetchPatientByAddress(
     walletAddress: string,
   ): Promise<PatientType> {
-    if (!walletAddress || walletAddress.length < 42)
+    if (!walletAddress || walletAddress.length !== 42)
       throw new PatientError('Invalid parameter')
     try {
       const patient = await this.DB.fetchPatientByAddress(walletAddress)
@@ -445,7 +444,13 @@ export class PatientService {
     args: ApprovalInputType,
   ): Promise<{ success: number; message: string }> {
     const { patientAddress, doctorAddress, approvalType, recordId } = args
-    if (!patientAddress || !doctorAddress || !approvalType) {
+    if (
+      !patientAddress ||
+      patientAddress.length !== 42 ||
+      !doctorAddress ||
+      doctorAddress.length !== 42 ||
+      !approvalType
+    ) {
       throw new PatientError('Invalid parameter')
     }
 
@@ -514,7 +519,9 @@ export class PatientService {
     } = args
     if (
       !patientAddress ||
+      patientAddress.length !== 42 ||
       !doctorAddress ||
+      doctorAddress.length !== 42 ||
       !approvalType ||
       !Number.isInteger(familyMemberId)
     ) {
