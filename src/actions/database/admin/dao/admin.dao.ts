@@ -10,7 +10,7 @@ import { Category } from '@/actions/shared/global'
 import { CreateAdminType } from '../interface/admin.interface'
 
 export class AdminDB {
-  static Admin = schemaProvider.getSchema('Admin')
+  private static Admin = schemaProvider.getSchema('Admin')
   static async createNewAdmin(admin: CreateAdminType) {
     return await this.Admin.create({
       id: admin.id,
