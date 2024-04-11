@@ -1,33 +1,17 @@
 'use server'
+
+/**
+ * @author 3illBaby
+ * @description service functions for doctors
+ */
+
 import { DoctorError, ErrorCodes, ProfileType } from '@/actions/shared/global'
 import { DatabaseProvider } from '../../providers/db.providers'
 import { CreateDoctorType, DoctorType } from '../interface/doctor.interface'
 import { PreviewType } from '../../hospital/interface/hospital.interface'
 
 export class DoctorHelpers {
-  static DB = DatabaseProvider.DoctorProvider
-  static async getDoctorById(
-    id: number,
-  ): Promise<{ success: number; doctor: DoctorType }> {
-    if (!Number.isInteger(id) || id <= 0) {
-      throw new Error('Invalid id: ID must be a positive integer')
-    }
-
-    try {
-      const doctor = await this.DB.fetchDoctor(id)
-      if (!doctor) {
-        throw new DoctorError("Doctor doesn't exist")
-      }
-
-      return {
-        success: ErrorCodes.Success,
-        doctor,
-      }
-    } catch (error) {
-      console.error(error)
-      throw new DoctorError('An error ocurred while fetching doctor')
-    }
-  }
+  private static DB = DatabaseProvider.DoctorProvider
 
   static async fetchPendingDoctors(): Promise<{
     success: number
@@ -121,7 +105,7 @@ export class DoctorHelpers {
 }
 
 /**
- * @todo implement function to add to patient record
+ * todo implement function to add to patient record
  */
 export class DoctorService {
   private static DB = DatabaseProvider.DoctorProvider
@@ -181,7 +165,6 @@ export class DoctorService {
       try {
         hospital.doctors.push(doctorPreview)
       } catch (error) {
-        console.info('error adding doctor to hospital')
         await this.DB.deleteDoctor(args.walletAddress)
         throw new Error('Error adding doctor to hospital')
       }
@@ -201,7 +184,7 @@ export class DoctorService {
   }
 
   static async getDoctorByAddress(address: string) {
-    if (!address || address.length > 42) {
+    if (!address || address.length !== 42) {
       throw new Error('Invalid address')
     }
 
@@ -229,7 +212,7 @@ export class DoctorService {
     const { address, info } = args
     if (
       !address ||
-      address.length > 42 ||
+      address.length !== 42 ||
       !info ||
       (!info.includes('.com') && !info.includes('https://'))
     ) {
@@ -259,7 +242,7 @@ export class DoctorService {
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
-    if (!address || address.length > 42 || !info) {
+    if (!address || address.length !== 42 || !info) {
       throw new DoctorError('Invalid address')
     }
 
@@ -288,7 +271,7 @@ export class DoctorService {
     const { address, info } = args
     if (
       !address ||
-      address.length < 5 ||
+      address.length !== 42 ||
       !info ||
       info.length < 5 ||
       !info.includes('@') ||
@@ -320,7 +303,7 @@ export class DoctorService {
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
-    if (!address || address.length > 42 || !info || info.length < 5) {
+    if (!address || address.length !== 42 || !info || info.length < 5) {
       throw new DoctorError('Invalid address or phone number')
     }
 
@@ -344,7 +327,7 @@ export class DoctorService {
 
   static async updateDoctorSpecialty(args: ProfileType) {
     const { address, info } = args
-    if (!address || address.length > 42 || !info) {
+    if (!address || address.length !== 42 || !info) {
       throw new DoctorError('Invalid address')
     }
 
