@@ -1,5 +1,10 @@
 'use server'
 
+/**
+ * @author 3illbaby
+ * @description Admin database
+ */
+
 import { schemaProvider } from '@/actions/mongoose/schemas/schema_provider/schema.providers'
 import { Category } from '@/actions/shared/global'
 import { CreateAdminType } from '../interface/admin.interface'
