@@ -13,6 +13,8 @@
     "jsx": "preserve",
     "incremental": true,
     "allowImportingTsExtensions": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "plugins": [
       {
         "name": "next"
