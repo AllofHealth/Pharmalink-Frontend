@@ -119,7 +119,9 @@ export class PatientService {
   private static Read = PatientReadOperations
   private static DoctorHelpers = DoctorHelpers
 
-  static async createNewPatient(args: CreatePatientType) {
+  static async createNewPatient(
+    args: CreatePatientType,
+  ): Promise<{ success: number; patient: PatientType; message: string }> {
     const {
       id,
       name,
