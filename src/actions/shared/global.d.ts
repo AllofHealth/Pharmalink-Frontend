@@ -47,6 +47,14 @@ enum ErrorCodes {
   Error = 500,
 }
 
+export enum ContractEvents {
+  PatientAdded = 'event PatientAdded(address indexed patient, uint256 indexed patientId)',
+}
+
+export enum EventNames {
+  PatientAdded = 'PatientAdded',
+}
+
 type ProfileType = {
   address: string
   info: string
@@ -88,5 +96,12 @@ class PharmacistError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'PharmacistError'
+  }
+}
+
+class MetamaskError extends Error {
+  constructor(message?: string) {
+    super(message ? message : 'Metamask is not installed')
+    this.name = 'MetamaskError'
   }
 }
