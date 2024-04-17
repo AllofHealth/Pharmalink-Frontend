@@ -78,6 +78,13 @@ class PatientError extends Error {
   }
 }
 
+class PatientServiceError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'PatientServiceError'
+  }
+}
+
 class DoctorError extends Error {
   constructor(message: string) {
     super(message)
@@ -103,5 +110,12 @@ class MetamaskError extends Error {
   constructor(message?: string) {
     super(message ? message : 'Metamask is not installed')
     this.name = 'MetamaskError'
+  }
+}
+
+class ContractError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'ContractError'
   }
 }
