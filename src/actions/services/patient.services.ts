@@ -3,6 +3,7 @@
 import { PatientService } from '../contract/patient/patient.service.c'
 import { ContractProvider } from '../contract/provider/contract.provider'
 import { DatabaseServiceProviders } from '../database/providers/db.providers'
+import { RegisterPatient } from '../interfaces/Patient/app.patient.interface'
 import {
   ContractError,
   PatientError,
@@ -10,14 +11,8 @@ import {
 } from '../shared/global'
 
 class SuperPatientService {
-  async createPatient(
-    name: string,
-    age: number,
-    address: string,
-    city: string,
-    bloodGroup: string,
-    genotype: string,
-  ) {
+  async createPatient(args: RegisterPatient) {
+    const { name, age, address, city, bloodGroup, genotype } = args
     try {
       const signer = await ContractProvider.Factory().getSigner()
       const walletAddress = await signer.getAddress()
