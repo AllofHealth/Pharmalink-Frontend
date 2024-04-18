@@ -896,6 +896,12 @@ export const abi = [
         indexed: true,
         internalType: 'uint256',
       },
+      {
+        name: 'doctorId',
+        type: 'uint256',
+        indexed: true,
+        internalType: 'uint256',
+      },
     ],
     anonymous: false,
   },
