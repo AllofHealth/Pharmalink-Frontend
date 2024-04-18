@@ -20,16 +20,16 @@ class SuperPatientService {
       const walletAddress = await signer.getAddress()
 
       if (!walletAddress) {
-        throw new PatientServiceError('Wallet address not found')
+        throw new PatientServiceError(
+          'Wallet address not found, please connect wallet',
+        )
       }
 
-      // Attempt to add patient to the contract
       const { patientId } = await PatientService.addPatient()
       if (!patientId) {
         throw new ContractError('Failed to add patient to contract')
       }
 
-      // If the contract call was successful, proceed to save the patient in the database
       return await DatabaseServiceProviders.PatientDatabaseServices.createNewPatient(
         {
           id: patientId,
