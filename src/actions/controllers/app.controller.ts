@@ -1,5 +1,6 @@
 'use server'
 
+import { RegisterDoctor } from '../interfaces/Doctor/app.doctor.interface'
 import { RegisterPatient } from '../interfaces/Patient/app.patient.interface'
 import { SuperServicesProvider } from '../providers/services.providers'
 
@@ -11,5 +12,9 @@ import { SuperServicesProvider } from '../providers/services.providers'
 export class AppControllers {
   async registerPatient(args: RegisterPatient) {
     return SuperServicesProvider.SuperPatientService.createPatient(args)
+  }
+
+  async registerDoctor(args: RegisterDoctor) {
+    return SuperServicesProvider.SuperDoctorService.createDoctor(args)
   }
 }
