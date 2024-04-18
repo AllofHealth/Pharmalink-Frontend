@@ -6,6 +6,7 @@ import { DoctorDB } from '../doctor/dao/doctor.dao'
 import { PharmacistDB } from '../pharmacist/dao/pharmacist.dao'
 import { PatientDB } from '../patient/dao/patient.dao'
 import { PatientService } from '../patient/service/patient.service'
+import { DoctorService } from '../doctor/service/doctor.service'
 
 export const DatabaseProvider = {
   AdminProvider: AdminDB,
@@ -17,4 +18,5 @@ export const DatabaseProvider = {
 
 export const DatabaseServiceProviders = {
   PatientDatabaseServices: PatientService,
+  DoctorDatabaseServices: DoctorService,
 }
