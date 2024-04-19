@@ -50,11 +50,13 @@ enum ErrorCodes {
 export enum ContractEvents {
   PatientAdded = 'event PatientAdded(address indexed patient, uint256 indexed patientId)',
   DoctorAdded = 'event DoctorAdded(address indexed doctor, uint256 indexed hospitalId, uint256 indexed doctorId)',
+  PharmacistAdded = 'event PharmacistAdded(address indexed pharmacist, uint256 indexed hospitalId, uint256 indexed pharmacistId',
 }
 
 export enum EventNames {
   PatientAdded = 'PatientAdded',
   DoctorAdded = 'DoctorAdded',
+  PharmacistAdded = 'PharmacistAdded',
 }
 
 type ProfileType = {
@@ -94,6 +96,19 @@ class DoctorServiceError extends Error {
   }
 }
 
+class PharmacistServiceError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'PharmacistServiceError'
+  }
+}
+
+class HospitalServiceError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'HospitalServiceError'
+  }
+}
 class DoctorError extends Error {
   constructor(message: string) {
     super(message)
