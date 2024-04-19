@@ -193,7 +193,11 @@ contract AllofHealthv2 {
     event HospitalRejected(uint256 indexed hospitalId);
     event AdminAdded(address indexed admin);
     event AdminRemoved(address indexed admin);
-    event DoctorAdded(address indexed doctor, uint256 indexed hospitalId, uint256 indexed doctorId);
+    event DoctorAdded(
+        address indexed doctor,
+        uint256 indexed hospitalId,
+        uint256 indexed doctorId
+    );
     event DoctorRejected(address indexed doctor, uint256 indexed doctorId);
     event HospitalRemovedDoctor(
         address indexed doctor,
@@ -216,7 +220,8 @@ contract AllofHealthv2 {
     );
     event PharmacistAdded(
         address indexed pharmacist,
-        uint256 indexed hospitalId
+        uint256 indexed hospitalId,
+        uint256 indexed pharmacistId
     );
     event PharmacistRejected(
         address indexed pharmacist,
@@ -628,7 +633,7 @@ contract AllofHealthv2 {
         pharmacists[pharmacistCount] = pharmacist;
         isPharmacist[_pharmacistAddress] = true;
 
-        emit PharmacistAdded(_pharmacistAddress, _hospitalId);
+        emit PharmacistAdded(_pharmacistAddress, _hospitalId, pharmacistCount);
     }
 
     function approvePharmacist(
