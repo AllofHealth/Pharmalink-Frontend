@@ -1,3 +1,5 @@
+'use server'
+
 import { DoctorService } from '../contract/doctor/doctor.service.c'
 import { ContractProvider } from '../contract/provider/contract.provider'
 import { DatabaseServiceProviders } from '../database/providers/db.providers'
