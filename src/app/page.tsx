@@ -14,6 +14,7 @@ import OurTeam from "@/page_components/homepage/OurTeam";
 import SubscribeNewsLetters from "@/page_components/homepage/SubscribeNewsLetters";
 import Testimonials from "@/page_components/homepage/Testimonials";
 import WhyAllofHealth from "@/page_components/homepage/WhyAllofHealth";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -22,6 +23,7 @@ export default function Home() {
   const [sidebarContainer, setSidebarContainer] = useState<HTMLElement | null>(
     null
   );
+  const router = useRouter();
 
   const isDashboardSidebarOpen = useSelector(
     (state: RootState) => state.modal.isDashboardSidebarOpen
@@ -64,7 +66,11 @@ export default function Home() {
               Contact
             </li>
           </ul>
-          <Button variant="homepage" className="rounded-[40px] h-14">
+          <Button
+            variant="homepage"
+            className="rounded-[40px] h-14"
+            onClick={() => router.push("/sign-in")}
+          >
             Connect Wallet
           </Button>
         </nav>

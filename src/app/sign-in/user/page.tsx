@@ -3,13 +3,39 @@ import { Select } from "@/components/common";
 import { Field } from "@/components/common/forms/Field";
 import { Icon } from "@/components/icon/Icon";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function UserSignIn() {
+  const [selectedUserType, setSelectedUserType] = useState("");
+  const router = useRouter();
+  console.log(selectedUserType);
+
   const options = [
     { value: "Patient", label: "Patient" },
     { value: "Doctor", label: "Doctor" },
     { value: "Pharmacist", label: "Pharmacist" },
   ];
+
+  useEffect(() => {
+    if (selectedUserType) {
+      switch (selectedUserType) {
+        case "Patient":
+          router.push("/dashboard/patient");
+          break;
+        case "Doctor":
+          router.push("/dashboard/doctor");
+          break;
+        case "Pharmacist":
+          router.push("/dashboard/pharmacist");
+          break;
+        default:
+          // Default route if needed
+          break;
+      }
+    }
+  }, [selectedUserType, router]);
+
   return (
     <div className="flex">
       <Image
@@ -27,7 +53,11 @@ export default function UserSignIn() {
           </h2>
           <p className="mb-10 text-center">Choose user type</p>
           <Field label="User type">
-            <Select options={options} className="w-80 xl:w-96" />
+            <Select
+              options={options}
+              className="w-80 xl:w-96"
+              onChange={(option) => setSelectedUserType(option?.value ?? "")}
+            />
           </Field>
         </div>
       </section>

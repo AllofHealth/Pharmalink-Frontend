@@ -7,7 +7,7 @@ const FirstAidBox = () => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_913_2351)">
+      <g clipPath="url(#clip0_913_2351)">
         <path
           d="M66.4754 14.0398H13.2583V71.1564H66.4754V14.0398Z"
           fill="url(#paint0_linear_913_2351)"
