@@ -14,7 +14,7 @@ export const ContractProvider = {
         }
 
         const provider = new ethers.BrowserProvider((window as any).ethereum)
-        const signer = await provider.getSigner()
+        const signer = provider.getSigner()
 
         return signer
       },
