@@ -10,13 +10,14 @@ import {
 import { string2Bytes32 } from '@/actions/shared/utils/bytes.utils'
 
 class Doctor {
+  private provider = ContractProvider.Factory()
   async addDoctor(
     hospitalIds: number,
     regNo: string,
   ): Promise<{ success: number; doctorId: number }> {
     try {
-      const contract = await ContractProvider.Factory().provideContract()
-      const signer = await ContractProvider.Factory().getSigner()
+      const contract = await this.provider.provideContract()
+      const signer = await this.provider.getSigner()
       const address = await signer.getAddress()
       const transaction = await contract.createDoctor(
         hospitalIds,
