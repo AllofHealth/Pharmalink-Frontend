@@ -51,12 +51,14 @@ export enum ContractEvents {
   PatientAdded = 'event PatientAdded(address indexed patient, uint256 indexed patientId)',
   DoctorAdded = 'event DoctorAdded(address indexed doctor, uint256 indexed hospitalId, uint256 indexed doctorId)',
   PharmacistAdded = 'event PharmacistAdded(address indexed pharmacist, uint256 indexed hospitalId, uint256 indexed pharmacistId',
+  HospitalCreated = ' event HospitalCreated(address indexed admin, uint256 indexed hospitalId)',
 }
 
 export enum EventNames {
   PatientAdded = 'PatientAdded',
   DoctorAdded = 'DoctorAdded',
   PharmacistAdded = 'PharmacistAdded',
+  HospitalCreated = 'HospitalCreated',
 }
 
 type ProfileType = {
