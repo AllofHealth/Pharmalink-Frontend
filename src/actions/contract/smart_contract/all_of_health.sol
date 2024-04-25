@@ -147,6 +147,7 @@ contract AllofHealthv2 {
     uint256 public approvedPharmacistCount;
     uint256 public pharmacistCount;
     uint256 public patientCount;
+    uint256 public systemAdminCount;
 
     mapping(address => bool) public systemAdmins;
     mapping(address => bool) public isDoctor;
@@ -193,6 +194,8 @@ contract AllofHealthv2 {
     event HospitalRejected(uint256 indexed hospitalId);
     event AdminAdded(address indexed admin);
     event AdminRemoved(address indexed admin);
+    event SystemAdminAdded(address indexed admin, uint256 indexed adminId);
+    event SystemAdminRemoved(address indexed admin, uint256 indexed adminId);
     event DoctorAdded(
         address indexed doctor,
         uint256 indexed hospitalId,
@@ -404,11 +407,15 @@ contract AllofHealthv2 {
     function addSystemAdmin(address _admin) external onlyAdmin {
         require(_admin != address(0), "Invalid address");
         systemAdmins[_admin] = true;
+        systemAdminCount++;
+        emit SystemAdminAdded(_admin, systemAdminCount);
     }
 
     function removeSystemAdmin(address _admin) external onlyAdmin {
         require(_admin != address(0), "Invalid address");
         systemAdmins[_admin] = false;
+        systemAdminCount--;
+        emit SystemAdminRemoved(_admin, systemAdminCount + 1);
     }
 
     function createHospital(bytes32 _regNo) external {
