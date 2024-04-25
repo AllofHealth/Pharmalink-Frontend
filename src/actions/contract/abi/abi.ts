@@ -810,6 +810,13 @@ export const abi = [
   },
   {
     type: 'function',
+    name: 'systemAdminCount',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     name: 'systemAdmins',
     inputs: [{ name: '', type: 'address', internalType: 'address' }],
     outputs: [{ name: '', type: 'bool', internalType: 'bool' }],
@@ -1263,6 +1270,44 @@ export const abi = [
       },
       {
         name: 'medicalRecordId',
+        type: 'uint256',
+        indexed: true,
+        internalType: 'uint256',
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: 'event',
+    name: 'SystemAdminAdded',
+    inputs: [
+      {
+        name: 'admin',
+        type: 'address',
+        indexed: true,
+        internalType: 'address',
+      },
+      {
+        name: 'adminId',
+        type: 'uint256',
+        indexed: true,
+        internalType: 'uint256',
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: 'event',
+    name: 'SystemAdminRemoved',
+    inputs: [
+      {
+        name: 'admin',
+        type: 'address',
+        indexed: true,
+        internalType: 'address',
+      },
+      {
+        name: 'adminId',
         type: 'uint256',
         indexed: true,
         internalType: 'uint256',
