@@ -8,6 +8,7 @@
 import { Category } from '@/actions/shared/global'
 import { CreatePatientType } from '../interface/patient.interface'
 import Patient from '@/actions/mongoose/schemas/patient.schema'
+import { PROFILE_PLACEHOLDER } from '@/actions/shared/constants/constant'
 
 export class PatientDB {
   static async createNewPatient(patient: CreatePatientType) {
@@ -16,7 +17,9 @@ export class PatientDB {
       appointmentCount: 0,
       name: patient.name,
       age: patient.age,
-      profilePicture: patient.profilePicture ? patient.profilePicture : '',
+      profilePicture: patient.profilePicture
+        ? patient.profilePicture
+        : PROFILE_PLACEHOLDER,
       address: patient.address,
       city: patient.city,
       walletAddress: patient.walletAddress,

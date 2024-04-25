@@ -3,6 +3,7 @@
 import { schemaProvider } from '@/actions/mongoose/schemas/schema_provider/schema.providers'
 import { ApprovalStatus } from '@/actions/shared/global'
 import { CreatePharmacistType } from '../interface/pharmacist.interface'
+import { PROFILE_PLACEHOLDER } from '@/actions/shared/constants/constant'
 
 export class PharmacistDB {
   static Pharmacists = schemaProvider.getSchema('Pharmacist')
@@ -14,7 +15,7 @@ export class PharmacistDB {
       email: pharmacist.email,
       profilePicture: pharmacist.profilePicture
         ? pharmacist.profilePicture
-        : '',
+        : PROFILE_PLACEHOLDER,
       location: pharmacist.location,
       phoneNumber: pharmacist.phoneNumber,
       walletAddress: pharmacist.walletAddress,

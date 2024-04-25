@@ -7,6 +7,7 @@
 import { schemaProvider } from '@/actions/mongoose/schemas/schema_provider/schema.providers'
 import { ApprovalStatus, Category } from '@/actions/shared/global'
 import { CreateDoctorType } from '../interface/doctor.interface'
+import { PROFILE_PLACEHOLDER } from '@/actions/shared/constants/constant'
 
 export class DoctorDB {
   private static Doctor = schemaProvider.getSchema('Doctor')
@@ -16,7 +17,7 @@ export class DoctorDB {
       id: doctor.id,
       name: doctor.name,
       email: doctor.email,
-      profilePicture: doctor.profilePicture || '',
+      profilePicture: doctor.profilePicture || PROFILE_PLACEHOLDER,
       specialty: doctor.specialty,
       location: doctor.location,
       phoneNumber: doctor.phoneNumber,

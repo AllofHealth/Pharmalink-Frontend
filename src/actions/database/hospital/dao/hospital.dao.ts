@@ -9,6 +9,7 @@ import { schemaProvider } from '@/actions/mongoose/schemas/schema_provider/schem
 import { ApprovalStatus, Category } from '@/actions/shared/global'
 import { CreateHospitalType } from '../interface/hospital.interface'
 import mongoose from 'mongoose'
+import { HOSPITAL_PLACEHOLDER } from '@/actions/shared/constants/constant'
 
 export class HospitalDB {
   static Hospital = schemaProvider.getSchema('Hospital')
@@ -21,7 +22,9 @@ export class HospitalDB {
       phoneNo: hospital.phoneNo,
       regNo: hospital.regNo,
       location: hospital.location,
-      profilePicture: hospital.profilePicture ? hospital.profilePicture : '',
+      profilePicture: hospital.profilePicture
+        ? hospital.profilePicture
+        : HOSPITAL_PLACEHOLDER,
       description: hospital.description,
       status: ApprovalStatus.Pending,
       category: Category.Hospital,
