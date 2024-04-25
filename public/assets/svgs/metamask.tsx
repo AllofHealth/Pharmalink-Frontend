@@ -8,7 +8,7 @@ const Metamask = () => {
       xmlns="http://www.w3.org/2000/svg"
     >
       <ellipse cx="26" cy="27.5" rx="26" ry="27" fill="white" />
-      <g clip-path="url(#clip0_937_352)">
+      <g clipPath="url(#clip0_937_352)">
         <path
           d="M40.3043 12.5L27.4316 22.6599L29.8254 16.6724L40.3043 12.5Z"
           fill="#E17726"
