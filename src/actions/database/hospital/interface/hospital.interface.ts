@@ -12,7 +12,7 @@ export interface CreateHospitalType {
   location: string
   profilePicture?: string
   description?: string
-  status: string
+  status?: string
 }
 
 export interface PreviewType {
