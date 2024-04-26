@@ -1,5 +1,6 @@
 'use server'
 
+import { superAdminService } from '../services/admin.services'
 import { superDoctorService } from '../services/doctor.services'
 import { superHospitalService } from '../services/hospital.services'
 import { superPatientService } from '../services/patient.services'
@@ -10,4 +11,5 @@ export const SuperServicesProvider = {
   SuperDoctorService: superDoctorService,
   SuperPharmacistService: superPharmacistService,
   SuperHospitalService: superHospitalService,
+  SuperAdminService: superAdminService,
 }
