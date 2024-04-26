@@ -147,3 +147,10 @@ class ContractError extends Error {
     this.name = 'ContractError'
   }
 }
+
+class AdminServiceError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'AdminServiceError'
+  }
+}
