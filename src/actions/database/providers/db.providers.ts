@@ -9,6 +9,7 @@ import { PatientService } from '../patient/service/patient.service'
 import { DoctorService } from '../doctor/service/doctor.service'
 import { PharmacistService } from '../pharmacist/service/pharmacist.service'
 import { HospitalService } from '../hospital/service/hospital.services'
+import { AdminServices } from '../admin/service/admin.service'
 
 export const DatabaseProvider = {
   AdminProvider: AdminDB,
@@ -23,4 +24,5 @@ export const DatabaseServiceProviders = {
   DoctorDatabaseServices: DoctorService,
   PharmacistDatabaseServices: PharmacistService,
   HospitalDatabaseServices: HospitalService,
+  AdminDatabaseServices: AdminServices,
 }
