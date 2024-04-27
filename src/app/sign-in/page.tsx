@@ -46,11 +46,11 @@ export default function SignIn() {
             </Button> */}
             <Button
               variant="primary"
-              className="w-80 xl:w-96 rounded-xl"
+              className="w-80 xl:w-96 rounded-xl pl-[5vw]"
               onClick={() => open()}
             >
-              <Icon name="Metamask" />
-              Sign in with Metamask
+              <Icon name="WalletConnect" width={50} height={50} />
+              Sign in with WalletConnect
             </Button>
           </div>
         </div>

@@ -1,10 +1,11 @@
 "use client";
+import Button from "@/components/button/Button";
 import { Select } from "@/components/common";
 import { Field } from "@/components/common/forms/Field";
 import { Icon } from "@/components/icon/Icon";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function UserSignIn() {
   const [selectedUserType, setSelectedUserType] = useState("");
@@ -17,7 +18,7 @@ export default function UserSignIn() {
     { value: "Pharmacist", label: "Pharmacist" },
   ];
 
-  useEffect(() => {
+  const signIn = () => {
     if (selectedUserType) {
       switch (selectedUserType) {
         case "Patient":
@@ -34,7 +35,7 @@ export default function UserSignIn() {
           break;
       }
     }
-  }, [selectedUserType, router]);
+  };
 
   return (
     <div className="flex">
@@ -59,6 +60,13 @@ export default function UserSignIn() {
               onChange={(option) => setSelectedUserType(option?.value ?? "")}
             />
           </Field>
+          <Button
+            variant="primary"
+            onClick={() => signIn()}
+            className="mt-5 w-max mx-auto px-10"
+          >
+            Sign in
+          </Button>
         </div>
       </section>
     </div>
