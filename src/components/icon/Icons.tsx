@@ -38,6 +38,7 @@ import BlueFirstAidBox from "../../../public/assets/svgs/first-aid-box-blue.tsx"
 import GreenCross from "../../../public/assets/svgs/green-cross.tsx";
 import Revenue from "../../../public/assets/svgs/revenue.tsx";
 import Warning from "../../../public/assets/svgs/warning.tsx";
+import WalletConnect from "../../../public/assets/svgs/walletconnect.tsx";
 
 const Menu = () => {
   return (
@@ -134,6 +135,7 @@ const Icons = {
   GreenCross,
   Revenue,
   Warning,
+  WalletConnect,
 };
 
 export type IconType = keyof typeof Icons;

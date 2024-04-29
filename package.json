@@ -29,7 +29,7 @@
     "sonner": "^1.4.0",
     "tailwind-merge": "^2.2.1",
     "viem": "^2.9.28",
-    "wagmi": "^2.6.0",
+    "wagmi": "^2.7.0",
     "web3modal": "^1.9.12"
   },
   "devDependencies": {

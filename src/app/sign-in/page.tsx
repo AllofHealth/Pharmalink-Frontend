@@ -1,29 +1,23 @@
 "use client";
-import Button from "@/components/button/Button";
+// import Button from "@/components/button/Button";
 import { Icon } from "@/components/icon/Icon";
-import {
-  useWalletInfo,
-  useWeb3Modal,
-  useWeb3ModalAccount,
-} from "@web3modal/ethers5/react";
 import Image from "next/image";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export default function SignIn() {
-  const { open } = useWeb3Modal();
-  const { walletInfo } = useWalletInfo();
-  const { address, chainId, isConnected } = useWeb3ModalAccount();
-
   const router = useRouter();
+  const { isConnected } = useAccount();
 
   useEffect(() => {
     if (isConnected) {
-      toast.success("Connected Wallet Succesfully");
+      // Redirect to a different page if a wallet is connected
       router.push("/sign-in/user");
     }
   }, [isConnected, router]);
+
   return (
     <div className="flex">
       <Image
@@ -44,14 +38,7 @@ export default function SignIn() {
               <Icon name="Near" />
               Sign in with NEAR Blockchain
             </Button> */}
-            <Button
-              variant="primary"
-              className="w-80 xl:w-96 rounded-xl"
-              onClick={() => open()}
-            >
-              <Icon name="Metamask" />
-              Sign in with Metamask
-            </Button>
+            <ConnectButton />
           </div>
         </div>
       </section>

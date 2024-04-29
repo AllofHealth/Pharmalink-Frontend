@@ -1,12 +1,12 @@
-'use client';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from '@/lib/redux/rootReducer';
-// import { Web3Modal } from '@/lib/context/web3Modal';
-import { RainbowKit } from '@/lib/context/rainbowKit';
+"use client";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "@/lib/redux/rootReducer";
+import "@rainbow-me/rainbowkit/styles.css";
+import { Providers } from "./providers";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,7 +23,7 @@ export default function RootLayout({
     <Provider store={store}>
       <html lang="en">
         <body className={inter.className}>
-          <RainbowKit>{children}</RainbowKit>
+          <Providers>{children}</Providers>
         </body>
       </html>
     </Provider>
