@@ -11,9 +11,9 @@ import { CreateHospitalType } from '../interface/hospital.interface'
 import mongoose from 'mongoose'
 import { HOSPITAL_PLACEHOLDER } from '@/actions/shared/constants/constant'
 
-export class HospitalDB {
-  static Hospital = schemaProvider.getSchema('Hospital')
-  static async createNewHospital(hospital: CreateHospitalType) {
+class hospitalDB {
+  private Hospital = schemaProvider.getSchema('Hospital')
+  async createNewHospital(hospital: CreateHospitalType) {
     return await this.Hospital.create({
       id: hospital.id,
       name: hospital.name,
@@ -31,39 +31,41 @@ export class HospitalDB {
     })
   }
 
-  static async fetchHospital(_id: string) {
+  async fetchHospital(_id: string) {
     return await this.Hospital.findOne({
       _id: new mongoose.Types.ObjectId(_id),
     })
   }
 
-  static async fetchHospitalWithBlockchainId(id: number) {
+  async fetchHospitalWithBlockchainId(id: number) {
     return await this.Hospital.findOne({ id: id })
   }
 
-  static async fetchHospitalByRegNo(regNo: string) {
+  async fetchHospitalByRegNo(regNo: string) {
     return await this.Hospital.findOne({ regNo })
   }
 
-  static async fetchAllHospitals() {
+  async fetchAllHospitals() {
     return await this.Hospital.find()
   }
 
-  static async fetchHospitalWithPendingStatus() {
+  async fetchHospitalWithPendingStatus() {
     return await this.Hospital.find({
       status: ApprovalStatus.Pending,
     })
   }
 
-  static async fetchHospitalWithApprovedStatus() {
+  async fetchHospitalWithApprovedStatus() {
     return await this.Hospital.find({
       status: ApprovalStatus.Approved,
     })
   }
 
-  static async removeHospital(_id: string) {
+  async removeHospital(_id: string) {
     return await this.Hospital.deleteOne({
       _id: new mongoose.Types.ObjectId(_id),
     })
   }
 }
+
+export const HospitalDB = new hospitalDB()

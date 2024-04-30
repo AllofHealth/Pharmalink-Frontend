@@ -1,15 +1,15 @@
 'use server'
 
-import { processEvent } from '@/actions/shared/utils/EventLogger/event.processor'
+import { processEvent } from '../../shared/utils/EventLogger/event.processor'
 import { ContractProvider } from '../provider/contract.provider'
 import {
   AdminError,
   ContractEvents,
   ErrorCodes,
   EventNames,
-} from '@/actions/shared/global'
+} from '../../shared/global'
 
-export class Admin {
+class Admin {
   private provider = ContractProvider.Factory()
 
   async createSystemAdmin(

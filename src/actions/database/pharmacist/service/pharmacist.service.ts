@@ -14,11 +14,11 @@ import {
 } from '../interface/pharmacist.interface'
 import { PreviewType } from '../../hospital/interface/hospital.interface'
 
-class PharmacistHelpers {
-  private static DB = DatabaseProvider.PharmacistProvider
-  private static HospitalDB = DatabaseProvider.HospitalProvider
+class pharmacistHelpers {
+  private DB = DatabaseProvider.PharmacistProvider
+  private HospitalDB = DatabaseProvider.HospitalProvider
 
-  static async validatePharmacistExistsInHospital(
+  async validatePharmacistExistsInHospital(
     hospitalId: number,
     pharmacistAddress: string,
   ) {
@@ -59,7 +59,7 @@ class PharmacistHelpers {
     }
   }
 
-  static async checkIfMedicineGroupExist(
+  async checkIfMedicineGroupExist(
     pharmacist: PharmacistType,
     groupName: string,
   ): Promise<boolean> {
@@ -81,7 +81,7 @@ class PharmacistHelpers {
     }
   }
 
-  static async fetchInventory(args: PharmacistType) {
+  async fetchInventory(args: PharmacistType) {
     try {
       const inventory: InventoryType = args.inventory
       return inventory
@@ -92,10 +92,12 @@ class PharmacistHelpers {
   }
 }
 
-export class PharmacistReadOperations {
-  private static Helper = PharmacistHelpers
-  private static DB = DatabaseProvider.PharmacistProvider
-  static async fetchPendingPharmacists(): Promise<{
+export const PharmacistHelpers = new pharmacistHelpers()
+
+class pharmacistReadOperations {
+  private Helper = PharmacistHelpers
+  private DB = DatabaseProvider.PharmacistProvider
+  async fetchPendingPharmacists(): Promise<{
     success: number
     pharmacist: PharmacistType[]
   }> {
@@ -119,7 +121,7 @@ export class PharmacistReadOperations {
     }
   }
 
-  static async fetchApprovedPharmacists(): Promise<{
+  async fetchApprovedPharmacists(): Promise<{
     success: number
     pharmacists: PharmacistType[]
   }> {
@@ -144,9 +146,10 @@ export class PharmacistReadOperations {
   }
 }
 
-class PharmacistWriteOperations {
-  private static Helper = PharmacistHelpers
-  static async createInventory(pharmacist: PharmacistType, args: MedicineType) {
+export const PharmacistReadOperations = new pharmacistReadOperations()
+class pharmacistWriteOperations {
+  private Helper = PharmacistHelpers
+  async createInventory(pharmacist: PharmacistType, args: MedicineType) {
     try {
       const newMedicine = {
         ...args,
@@ -163,7 +166,7 @@ class PharmacistWriteOperations {
     }
   }
 
-  static async updateInventory(pharmacist: PharmacistType, args: MedicineType) {
+  async updateInventory(pharmacist: PharmacistType, args: MedicineType) {
     try {
       const newMedicine = {
         ...args,
@@ -186,14 +189,16 @@ class PharmacistWriteOperations {
     }
   }
 }
-export class PharmacistService {
-  private static DB = DatabaseProvider.PharmacistProvider
-  private static Helper = PharmacistHelpers
-  private static Read = PharmacistReadOperations
-  private static Write = PharmacistWriteOperations
-  private static HospitalDB = DatabaseProvider.HospitalProvider
 
-  static async createPharmacist(args: CreatePharmacistType) {
+export const PharmacistWriteOperations = new pharmacistWriteOperations()
+class pharmacistService {
+  private DB = DatabaseProvider.PharmacistProvider
+  private Helper = PharmacistHelpers
+  private Read = PharmacistReadOperations
+  private Write = PharmacistWriteOperations
+  private HospitalDB = DatabaseProvider.HospitalProvider
+
+  async createPharmacist(args: CreatePharmacistType) {
     const requiredParams = [
       'id',
       'hospitalIds',
@@ -266,7 +271,7 @@ export class PharmacistService {
     }
   }
 
-  static async updatePharmacistProfilePicture(
+  async updatePharmacistProfilePicture(
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
@@ -292,7 +297,7 @@ export class PharmacistService {
     }
   }
 
-  static async updatePharmacistName(
+  async updatePharmacistName(
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
@@ -318,7 +323,7 @@ export class PharmacistService {
     }
   }
 
-  static async updatePharmacistEmail(
+  async updatePharmacistEmail(
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
@@ -345,7 +350,7 @@ export class PharmacistService {
     }
   }
 
-  static async updatePharmacistPhoneNumber(
+  async updatePharmacistPhoneNumber(
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
@@ -371,7 +376,7 @@ export class PharmacistService {
     }
   }
 
-  static async fetchPharmacistByAddress(
+  async fetchPharmacistByAddress(
     address: string,
   ): Promise<{ success: number; pharmacist: PharmacistType }> {
     if (!address || address.length < 42) {
@@ -394,7 +399,7 @@ export class PharmacistService {
     }
   }
 
-  static async addMedicine(
+  async addMedicine(
     address: string,
     args: MedicineType,
   ): Promise<{ success: number; message: string }> {
@@ -449,7 +454,7 @@ export class PharmacistService {
     }
   }
 
-  static async fetchInventory(
+  async fetchInventory(
     address: string,
   ): Promise<{
     numberOfMedicine: number
@@ -490,3 +495,5 @@ export class PharmacistService {
     }
   }
 }
+
+export const PharmacistService = new pharmacistService()

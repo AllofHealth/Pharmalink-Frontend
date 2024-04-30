@@ -10,10 +10,10 @@ import { DatabaseProvider } from '../../providers/db.providers'
 import { CreateDoctorType, DoctorType } from '../interface/doctor.interface'
 import { PreviewType } from '../../hospital/interface/hospital.interface'
 
-export class DoctorHelpers {
-  private static DB = DatabaseProvider.DoctorProvider
+class doctorHelpers {
+  private DB = DatabaseProvider.DoctorProvider
 
-  static async fetchPendingDoctors(): Promise<{
+  async fetchPendingDoctors(): Promise<{
     success: number
     doctors: DoctorType[]
   }> {
@@ -36,7 +36,7 @@ export class DoctorHelpers {
     }
   }
 
-  static async fetchApprovedDoctors(): Promise<{
+  async fetchApprovedDoctors(): Promise<{
     success: number
     doctors: DoctorType[]
   }> {
@@ -59,7 +59,7 @@ export class DoctorHelpers {
     }
   }
 
-  static async validateDoctorExistsInHospital(
+  async validateDoctorExistsInHospital(
     hospitalId: number,
     doctorAddress: string,
   ): Promise<boolean> {
@@ -91,7 +91,7 @@ export class DoctorHelpers {
     }
   }
 
-  static async validateDoctorExists(address: string) {
+  async validateDoctorExists(address: string) {
     try {
       const doctor = await this.DB.fetchDoctorByAddress(address)
 
@@ -104,15 +104,17 @@ export class DoctorHelpers {
   }
 }
 
+export const DoctorHelpers = new doctorHelpers()
+
 /**
  * todo implement function to add to patient record
  */
-export class DoctorService {
-  private static DB = DatabaseProvider.DoctorProvider
-  private static HospitalDB = DatabaseProvider.HospitalProvider
-  private static Helper = DoctorHelpers
+class doctorService {
+  private DB = DatabaseProvider.DoctorProvider
+  private HospitalDB = DatabaseProvider.HospitalProvider
+  private Helper = DoctorHelpers
 
-  static async createDoctor(
+  async createDoctor(
     args: CreateDoctorType,
   ): Promise<{ success: number; doctor: DoctorType; message: string }> {
     const requiredParams = [
@@ -183,7 +185,7 @@ export class DoctorService {
     }
   }
 
-  static async getDoctorByAddress(address: string) {
+  async getDoctorByAddress(address: string) {
     if (!address || address.length !== 42) {
       throw new Error('Invalid address')
     }
@@ -206,7 +208,7 @@ export class DoctorService {
     }
   }
 
-  static async updateDoctorProfilePicture(
+  async updateDoctorProfilePicture(
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
@@ -238,7 +240,7 @@ export class DoctorService {
     }
   }
 
-  static async updateDoctorName(
+  async updateDoctorName(
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
@@ -265,7 +267,7 @@ export class DoctorService {
     }
   }
 
-  static async updateDoctorEmail(
+  async updateDoctorEmail(
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
@@ -299,7 +301,7 @@ export class DoctorService {
     }
   }
 
-  static async updateDoctorPhoneNumber(
+  async updateDoctorPhoneNumber(
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
@@ -325,7 +327,7 @@ export class DoctorService {
     }
   }
 
-  static async updateDoctorSpecialty(args: ProfileType) {
+  async updateDoctorSpecialty(args: ProfileType) {
     const { address, info } = args
     if (!address || address.length !== 42 || !info) {
       throw new DoctorError('Invalid address')
@@ -347,5 +349,7 @@ export class DoctorService {
     }
   }
 
-  static async addToPatientRecord() {}
+  async addToPatientRecord() {}
 }
+
+export const DoctorService = new doctorService()

@@ -15,7 +15,7 @@ import { RegisterAdminArgs } from '../interfaces/Admin/app.admin.interface'
 /**
  * Provides methods to register various entities in the health system, including patients, doctors, pharmacists, and hospitals.
  */
-export class AppControllers {
+class AppControllers {
   async registerPatient(args: RegisterPatient) {
     return SuperServicesProvider.SuperPatientService.createPatient(args)
   }
@@ -36,3 +36,5 @@ export class AppControllers {
     return SuperServicesProvider.SuperAdminService.createAdmin(args)
   }
 }
+
+export const appController = new AppControllers()

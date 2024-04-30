@@ -5,10 +5,10 @@ import { ApprovalStatus } from '@/actions/shared/global'
 import { CreatePharmacistType } from '../interface/pharmacist.interface'
 import { PROFILE_PLACEHOLDER } from '@/actions/shared/constants/constant'
 
-export class PharmacistDB {
-  static Pharmacists = schemaProvider.getSchema('Pharmacist')
+class pharmacistDB {
+  private Pharmacists = schemaProvider.getSchema('Pharmacist')
 
-  static async createNewPharmacist(pharmacist: CreatePharmacistType) {
+  async createNewPharmacist(pharmacist: CreatePharmacistType) {
     return await this.Pharmacists.create({
       id: pharmacist.id,
       name: pharmacist.name,
@@ -24,27 +24,29 @@ export class PharmacistDB {
     })
   }
 
-  static async fetchPharmacist(id: number) {
+  async fetchPharmacist(id: number) {
     return await this.Pharmacists.findOne({ id })
   }
 
-  static async fetchPharmacistByAddress(address: string) {
+  async fetchPharmacistByAddress(address: string) {
     return await this.Pharmacists.findOne({ walletAddress: address })
   }
 
-  static async fetchAllPharmacist() {
+  async fetchAllPharmacist() {
     return await this.Pharmacists.find()
   }
 
-  static async fetchPharmacistWithPendingStatus() {
+  async fetchPharmacistWithPendingStatus() {
     return await this.Pharmacists.find({ status: ApprovalStatus.Pending })
   }
 
-  static async fetchPharmacistsWithApprovedStatus() {
+  async fetchPharmacistsWithApprovedStatus() {
     return await this.Pharmacists.find({ status: ApprovalStatus.Approved })
   }
 
-  static async removePharmacist(address: string) {
+  async removePharmacist(address: string) {
     return await this.Pharmacists.deleteOne({ walletAddress: address })
   }
 }
+
+export const PharmacistDB = new pharmacistDB()

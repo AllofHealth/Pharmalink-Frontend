@@ -9,10 +9,10 @@ import { ApprovalStatus, Category } from '@/actions/shared/global'
 import { CreateDoctorType } from '../interface/doctor.interface'
 import { PROFILE_PLACEHOLDER } from '@/actions/shared/constants/constant'
 
-export class DoctorDB {
-  private static Doctor = schemaProvider.getSchema('Doctor')
+class doctorDB {
+  private Doctor = schemaProvider.getSchema('Doctor')
 
-  static async createNewDoctor(doctor: CreateDoctorType) {
+  async createNewDoctor(doctor: CreateDoctorType) {
     return await this.Doctor.create({
       id: doctor.id,
       name: doctor.name,
@@ -29,23 +29,25 @@ export class DoctorDB {
     })
   }
 
-  static async fetchDoctorByAddress(address: string) {
+  async fetchDoctorByAddress(address: string) {
     return await this.Doctor.findOne({ walletAddress: address })
   }
 
-  static async fetchAllDoctors() {
+  async fetchAllDoctors() {
     return await this.Doctor.find()
   }
 
-  static async fetchDoctorWithPendingStatus() {
+  async fetchDoctorWithPendingStatus() {
     return await this.Doctor.find({ status: ApprovalStatus.Pending })
   }
 
-  static async fetchDoctorWithApprovedStatus() {
+  async fetchDoctorWithApprovedStatus() {
     return await this.Doctor.find({ status: ApprovalStatus.Approved })
   }
 
-  static async deleteDoctor(address: string) {
+  async deleteDoctor(address: string) {
     return await this.Doctor.deleteOne({ walletAddress: address })
   }
 }
+
+export const DoctorDB = new doctorDB()

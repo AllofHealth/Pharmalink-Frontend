@@ -21,12 +21,12 @@ import {
 } from '../interface/hospital.interface'
 import { DatabaseProvider } from '../../providers/db.providers'
 
-class HospitalHelpers {
-  private static DB = DatabaseProvider.HospitalProvider
-  private static DoctorDB = DatabaseProvider.DoctorProvider
-  private static PharmacistDB = DatabaseProvider.PharmacistProvider
+class hospitalHelpers {
+  private DB = DatabaseProvider.HospitalProvider
+  private DoctorDB = DatabaseProvider.DoctorProvider
+  private PharmacistDB = DatabaseProvider.PharmacistProvider
 
-  static async returnDoctorFromHospital(
+  async returnDoctorFromHospital(
     hospital: HospitalType,
     walletAddress: string,
   ): Promise<PreviewType | undefined> {
@@ -46,7 +46,7 @@ class HospitalHelpers {
     }
   }
 
-  static async returnPharmacistFromHospital(
+  async returnPharmacistFromHospital(
     hospital: HospitalType,
     walletAddress: string,
   ): Promise<PreviewType | undefined> {
@@ -65,7 +65,7 @@ class HospitalHelpers {
     }
   }
 
-  static async removeDoctorFromHospital(
+  async removeDoctorFromHospital(
     hospital: HospitalType,
     doctorAddress: string,
   ) {
@@ -80,7 +80,7 @@ class HospitalHelpers {
     }
   }
 
-  static async removePharmacistFromHospital(
+  async removePharmacistFromHospital(
     hospital: HospitalType,
     pharmacistAddress: string,
   ) {
@@ -95,7 +95,7 @@ class HospitalHelpers {
     }
   }
 
-  static async removeHospitalIdFromDoctorDocument(
+  async removeHospitalIdFromDoctorDocument(
     hospital: HospitalType,
     doctorAddress: string,
   ) {
@@ -118,7 +118,7 @@ class HospitalHelpers {
     }
   }
 
-  static async removeHospitalIdFromPharmacistDocument(
+  async removeHospitalIdFromPharmacistDocument(
     hospital: HospitalType,
     pharmacistAddress: string,
   ) {
@@ -146,10 +146,7 @@ class HospitalHelpers {
     }
   }
 
-  static async validateHospitalAdmin(
-    hospital: HospitalType,
-    adminAddress: string,
-  ) {
+  async validateHospitalAdmin(hospital: HospitalType, adminAddress: string) {
     if (!hospital || !adminAddress || adminAddress.length !== 42) {
       throw new HospitalError('Error validating parameters')
     }
@@ -167,10 +164,12 @@ class HospitalHelpers {
   }
 }
 
-class HospitalReadOperations {
-  private static DB = DatabaseProvider.HospitalProvider
+export const HospitalHelpers = new hospitalHelpers()
 
-  static async fetchPendingDoctors(
+class hospitalReadOperations {
+  private DB = DatabaseProvider.HospitalProvider
+
+  async fetchPendingDoctors(
     hospitalId: string,
   ): Promise<{
     success: number
@@ -210,7 +209,7 @@ class HospitalReadOperations {
     }
   }
 
-  static async fetchPendingPharmacist(
+  async fetchPendingPharmacist(
     hospitalId: string,
   ): Promise<{
     success: number
@@ -252,7 +251,7 @@ class HospitalReadOperations {
     }
   }
 
-  static async fetchApprovedDoctors(
+  async fetchApprovedDoctors(
     hospitalId: string,
   ): Promise<{
     success: number
@@ -294,7 +293,7 @@ class HospitalReadOperations {
     }
   }
 
-  static async fetchApprovedPharmacists(
+  async fetchApprovedPharmacists(
     hospitalId: string,
   ): Promise<{
     success: number
@@ -336,7 +335,7 @@ class HospitalReadOperations {
     }
   }
 
-  static async fetchAllDoctors(
+  async fetchAllDoctors(
     hospitalId: string,
   ): Promise<{ success: number; doctors: PreviewType[] }> {
     if (!hospitalId) {
@@ -368,7 +367,7 @@ class HospitalReadOperations {
     }
   }
 
-  static async fetchAllPharmacists(
+  async fetchAllPharmacists(
     hospitalId: string,
   ): Promise<{ success: number; pharmacists: PreviewType[] }> {
     if (!hospitalId) {
@@ -399,13 +398,15 @@ class HospitalReadOperations {
   }
 }
 
-class HospitalWriteOperations {
-  private static DB = DatabaseProvider.HospitalProvider
-  private static DoctorDB = DatabaseProvider.DoctorProvider
-  private static PharmacistDB = DatabaseProvider.PharmacistProvider
-  private static Helper = HospitalHelpers
+export const HospitalReadOperations = new hospitalReadOperations()
 
-  static async approveDoctor(
+class hospitalWriteOperations {
+  private DB = DatabaseProvider.HospitalProvider
+  private DoctorDB = DatabaseProvider.DoctorProvider
+  private PharmacistDB = DatabaseProvider.PharmacistProvider
+  private Helper = HospitalHelpers
+
+  async approveDoctor(
     doctorAddress: string,
   ): Promise<{ success: number; message: string }> {
     if (!doctorAddress || doctorAddress.length > 42) {
@@ -437,7 +438,7 @@ class HospitalWriteOperations {
     }
   }
 
-  static async approvePharmacist(
+  async approvePharmacist(
     pharmacistAddress: string,
   ): Promise<{ success: number; message: string }> {
     if (!pharmacistAddress || pharmacistAddress.length > 42) {
@@ -471,7 +472,7 @@ class HospitalWriteOperations {
     }
   }
 
-  static async removeDoctor(
+  async removeDoctor(
     args: ApprovePractitionerType,
   ): Promise<{ success: number; message: string }> {
     const { practitionerAddress, adminAddress, hospitalId } = args
@@ -519,7 +520,7 @@ class HospitalWriteOperations {
     }
   }
 
-  static async removePharmacist(
+  async removePharmacist(
     args: ApprovePractitionerType,
   ): Promise<{ success: number; message: string }> {
     const { practitionerAddress, adminAddress, hospitalId } = args
@@ -570,15 +571,17 @@ class HospitalWriteOperations {
   }
 }
 
-export class HospitalService {
-  private static Helper = HospitalHelpers
-  private static Read = HospitalReadOperations
-  private static Write = HospitalWriteOperations
-  private static DB = DatabaseProvider.HospitalProvider
-  private static DoctorDB = DatabaseProvider.DoctorProvider
-  private static PharmacistDB = DatabaseProvider.PharmacistProvider
+export const HospitalWriteOperations = new hospitalWriteOperations()
 
-  static async createHospital(
+class hospitalService {
+  private Helper = HospitalHelpers
+  private Read = HospitalReadOperations
+  private Write = HospitalWriteOperations
+  private DB = DatabaseProvider.HospitalProvider
+  private DoctorDB = DatabaseProvider.DoctorProvider
+  private PharmacistDB = DatabaseProvider.PharmacistProvider
+
+  async createHospital(
     args: CreateHospitalType,
   ): Promise<{ success: number; hospital: HospitalType; message: string }> {
     const requiredParams = [
@@ -610,7 +613,7 @@ export class HospitalService {
     }
   }
 
-  static async joinHospital(
+  async joinHospital(
     args: JoinHospitalType,
   ): Promise<{ success: number; message: string }> {
     const { hospitalId, walletAddress, category } = args
@@ -709,7 +712,7 @@ export class HospitalService {
     }
   }
 
-  static async delegateAdminPosition(
+  async delegateAdminPosition(
     newAdminAddress: string,
     adminAddress: string,
     hospitalId: string,
@@ -766,7 +769,7 @@ export class HospitalService {
     }
   }
 
-  static async approvePractitioner(
+  async approvePractitioner(
     args: ApprovePractitionerType,
   ): Promise<{ success: boolean; message: string }> {
     const { practitionerAddress, adminAddress, hospitalId } = args
@@ -836,7 +839,7 @@ export class HospitalService {
     }
   }
 
-  static async rejectPractitioner(
+  async rejectPractitioner(
     args: ApprovePractitionerType,
   ): Promise<{ success: number; message: string }> {
     const { practitionerAddress, adminAddress, hospitalId } = args
@@ -884,9 +887,7 @@ export class HospitalService {
     }
   }
 
-  static async fetchAllPractitioners(
-    hospitalId: string,
-  ): Promise<PreviewType[]> {
+  async fetchAllPractitioners(hospitalId: string): Promise<PreviewType[]> {
     try {
       const { doctors } = await this.Read.fetchAllDoctors(hospitalId)
       const { pharmacists } = await this.Read.fetchAllPharmacists(hospitalId)
@@ -899,7 +900,7 @@ export class HospitalService {
     }
   }
 
-  static async updateHospitalProfilePicture(
+  async updateHospitalProfilePicture(
     args: HospitalProfileType,
   ): Promise<{ success: number; message: string }> {
     const { hospitalId, adminAddress, info } = args
@@ -936,7 +937,7 @@ export class HospitalService {
     }
   }
 
-  static async updateHospitalName(
+  async updateHospitalName(
     args: HospitalProfileType,
   ): Promise<{ success: number; message: string }> {
     const { hospitalId, adminAddress, info } = args
@@ -966,7 +967,7 @@ export class HospitalService {
     }
   }
 
-  static async updateHospitalLocation(
+  async updateHospitalLocation(
     args: HospitalProfileType,
   ): Promise<{ success: number; message: string }> {
     const { hospitalId, adminAddress, info } = args
@@ -996,7 +997,7 @@ export class HospitalService {
     }
   }
 
-  static async getHospitalById(
+  async getHospitalById(
     _id: string,
   ): Promise<{ success: number; hospital: HospitalType }> {
     if (!_id) {
@@ -1019,7 +1020,7 @@ export class HospitalService {
     }
   }
 
-  static async fetchPendingHospitals(): Promise<{
+  async fetchPendingHospitals(): Promise<{
     success: number
     Hospital: HospitalType[]
   }> {
@@ -1042,7 +1043,7 @@ export class HospitalService {
     }
   }
 
-  static async fetchApprovedHospitals(): Promise<{
+  async fetchApprovedHospitals(): Promise<{
     success: number
     hospitals: HospitalType[]
   }> {
@@ -1069,7 +1070,7 @@ export class HospitalService {
     }
   }
 
-  static async fetchAllHospitals(): Promise<{
+  async fetchAllHospitals(): Promise<{
     success: number
     hospitals: HospitalType[]
   }> {
@@ -1085,3 +1086,5 @@ export class HospitalService {
     }
   }
 }
+
+export const HospitalService = new hospitalService()

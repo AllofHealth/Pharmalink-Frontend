@@ -2,19 +2,20 @@
 
 import { connectDB } from '../mongoose/db.service'
 
-export function EnsureDbConnection(
-  target: Object,
-  propertyName: string | symbol,
-  descriptor: TypedPropertyDescriptor<any>,
-): TypedPropertyDescriptor<any> | void {
-  const originalMethod = descriptor.value
+export async function EnsureConnection() {
+  return async function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) {
+    await connectDB()
 
-  if (originalMethod) {
+    const originalMethod = descriptor.value
+
     descriptor.value = async function (...args: any[]) {
-      await connectDB()
       return originalMethod.apply(this, args)
     }
-  }
 
-  return descriptor
+    return descriptor
+  }
 }

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-enum Category {
+export enum Category {
   Admin = 'admin',
   Doctor = 'doctor',
   Hospital = 'hospital',
@@ -8,18 +8,18 @@ enum Category {
   Patient = 'patient',
 }
 
-enum ApprovalStatus {
+export enum ApprovalStatus {
   Approved = 'approved',
   Rejected = 'rejected',
   Pending = 'pending',
 }
 
-enum RecordOwner {
+export enum RecordOwner {
   Patient = 'principal',
   FamilyMember = 'family member',
 }
 
-enum Relationship {
+export enum Relationship {
   Father = 'father',
   Mother = 'mother',
   Brother = 'brother',
@@ -41,7 +41,7 @@ enum Relationship {
   Other = 'other',
 }
 
-enum ErrorCodes {
+export enum ErrorCodes {
   Success = 200,
   NotFound = 404,
   Error = 500,
@@ -63,92 +63,92 @@ export enum EventNames {
   SystemAdminAdded = 'SystemAdminAdded',
 }
 
-type ProfileType = {
+export type ProfileType = {
   address: string
   info: string
 }
 
-type DbType = {
+export type DbType = {
   DB: mongoose.Model<any, {}, {}, {}, any, any>
 }
 
-class AdminError extends Error {
+export class AdminError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'AdminError'
   }
 }
 
-class PatientError extends Error {
+export class PatientError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'PatientError'
   }
 }
 
-class PatientServiceError extends Error {
+export class PatientServiceError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'PatientServiceError'
   }
 }
 
-class DoctorServiceError extends Error {
+export class DoctorServiceError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'DoctorServiceError'
   }
 }
 
-class PharmacistServiceError extends Error {
+export class PharmacistServiceError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'PharmacistServiceError'
   }
 }
 
-class HospitalServiceError extends Error {
+export class HospitalServiceError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'HospitalServiceError'
   }
 }
-class DoctorError extends Error {
+export class DoctorError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'DoctorError'
   }
 }
 
-class HospitalError extends Error {
+export class HospitalError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'HospitalError'
   }
 }
 
-class PharmacistError extends Error {
+export class PharmacistError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'PharmacistError'
   }
 }
 
-class MetamaskError extends Error {
+export class MetamaskError extends Error {
   constructor(message?: string) {
     super(message ? message : 'Metamask is not installed')
     this.name = 'MetamaskError'
   }
 }
 
-class ContractError extends Error {
+export class ContractError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'ContractError'
   }
 }
 
-class AdminServiceError extends Error {
+export class AdminServiceError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'AdminServiceError'

@@ -25,7 +25,7 @@ class Patient {
 
       return {
         success: ErrorCodes.Success,
-        patientId: eventResult.patientId.toNumber(),
+        patientId: eventResult.patientId,
       }
     } catch (error) {
       console.error(error)

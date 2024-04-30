@@ -23,10 +23,8 @@ import {
   DoctorType,
 } from '../../doctor/interface/doctor.interface'
 
-class PatientHelpers {
-  static async sanitizeRelationship(
-    relationship: string,
-  ): Promise<RelationShipType> {
+class patientHelpers {
+  async sanitizeRelationship(relationship: string): Promise<RelationShipType> {
     if (!relationship) {
       throw new PatientError('relationship not passed')
     }
@@ -84,7 +82,7 @@ class PatientHelpers {
     }
   }
 
-  static async addActiveApproval(
+  async addActiveApproval(
     doctor: DoctorType,
     patient: PatientType,
     activeApproval: ActiveApprovalType,
@@ -98,8 +96,10 @@ class PatientHelpers {
   }
 }
 
-class PatientReadOperations {
-  static async returnPatientFamilyMember(
+export const PatientHelpers = new patientHelpers()
+
+class patientReadOperations {
+  async returnPatientFamilyMember(
     patient: PatientType,
     id: number,
   ): Promise<FamilyMemberType> {
@@ -113,13 +113,15 @@ class PatientReadOperations {
   }
 }
 
-export class PatientService {
-  private static DB = DatabaseProvider.PatientProvider
-  private static Helper = PatientHelpers
-  private static Read = PatientReadOperations
-  private static DoctorHelpers = DoctorHelpers
+export const PatientReadOperations = new patientReadOperations()
 
-  static async createNewPatient(
+class patientService {
+  private DB = DatabaseProvider.PatientProvider
+  private Helper = PatientHelpers
+  private Read = PatientReadOperations
+  private DoctorHelpers = DoctorHelpers
+
+  async createNewPatient(
     args: CreatePatientType,
   ): Promise<{ success: number; patient: PatientType; message: string }> {
     const {
@@ -160,7 +162,7 @@ export class PatientService {
     }
   }
 
-  static async addFamilyMember(
+  async addFamilyMember(
     walletAddress: string,
     args: FamilyMemberType,
   ): Promise<{ success: number; message: string }> {
@@ -222,7 +224,7 @@ export class PatientService {
     }
   }
 
-  static async updateName(
+  async updateName(
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
@@ -247,7 +249,7 @@ export class PatientService {
     }
   }
 
-  static async updateProfilePicture(
+  async updateProfilePicture(
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
@@ -273,7 +275,7 @@ export class PatientService {
     }
   }
 
-  static async updateAddress(
+  async updateAddress(
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
@@ -299,7 +301,7 @@ export class PatientService {
     }
   }
 
-  static async updateFamilyMemberName(
+  async updateFamilyMemberName(
     familyMemberId: number,
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
@@ -341,7 +343,7 @@ export class PatientService {
     }
   }
 
-  static async updateCity(
+  async updateCity(
     args: ProfileType,
   ): Promise<{ success: number; message: string }> {
     const { address, info } = args
@@ -367,7 +369,7 @@ export class PatientService {
     }
   }
 
-  static async fetchAllPatients(): Promise<PatientType[]> {
+  async fetchAllPatients(): Promise<PatientType[]> {
     try {
       const allPatients = await this.DB.fetchAllPatients()
       return allPatients
@@ -377,9 +379,7 @@ export class PatientService {
     }
   }
 
-  static async fetchPatientByAddress(
-    walletAddress: string,
-  ): Promise<PatientType> {
+  async fetchPatientByAddress(walletAddress: string): Promise<PatientType> {
     if (!walletAddress || walletAddress.length !== 42)
       throw new PatientError('Invalid parameter')
     try {
@@ -396,7 +396,7 @@ export class PatientService {
     }
   }
 
-  static async fetchAllFamilyMembers(
+  async fetchAllFamilyMembers(
     walletAddress: string,
   ): Promise<FamilyMemberType[]> {
     if (!walletAddress || walletAddress.length < 42) {
@@ -417,7 +417,7 @@ export class PatientService {
     }
   }
 
-  static async fetchFamilyMember(
+  async fetchFamilyMember(
     walletAddress: string,
     id: number,
   ): Promise<FamilyMemberType> {
@@ -442,7 +442,7 @@ export class PatientService {
     }
   }
 
-  static async approveRecordAccess(
+  async approveRecordAccess(
     args: ApprovalInputType,
   ): Promise<{ success: number; message: string }> {
     const { patientAddress, doctorAddress, approvalType, recordId } = args
@@ -509,7 +509,7 @@ export class PatientService {
     }
   }
 
-  static async approveFamilyRecordAccess(
+  async approveFamilyRecordAccess(
     args: FamilyMemberApprovalInputType,
   ): Promise<{ success: number; message: string }> {
     const {
@@ -592,3 +592,5 @@ export class PatientService {
     }
   }
 }
+
+export const PatientService = new patientService()

@@ -10,8 +10,8 @@ import { CreatePatientType } from '../interface/patient.interface'
 import Patient from '@/actions/mongoose/schemas/patient.schema'
 import { PROFILE_PLACEHOLDER } from '@/actions/shared/constants/constant'
 
-export class PatientDB {
-  static async createNewPatient(patient: CreatePatientType) {
+class patientDB {
+  async createNewPatient(patient: CreatePatientType) {
     return await Patient.create({
       id: patient.id,
       appointmentCount: 0,
@@ -29,15 +29,17 @@ export class PatientDB {
     })
   }
 
-  static async fetchPatientByAddress(walletAddress: string) {
+  async fetchPatientByAddress(walletAddress: string) {
     return await Patient.findOne({ walletAddress })
   }
 
-  static async fetchAllPatients() {
+  async fetchAllPatients() {
     return await Patient.find()
   }
 
-  static async DeletePatient(walletAddress: string) {
+  async DeletePatient(walletAddress: string) {
     return await Patient.deleteOne({ walletAddress })
   }
 }
+
+export const PatientDB = new patientDB()

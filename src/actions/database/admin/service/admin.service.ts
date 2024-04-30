@@ -14,10 +14,10 @@ import {
 } from '../interface/admin.interface'
 import { PreviewType } from '../../hospital/interface/hospital.interface'
 
-export class AdminHelpers {
-  private static Provider = DatabaseProvider.AdminProvider
+class adminHelpers {
+  private Provider = DatabaseProvider.AdminProvider
 
-  static async validateAdminExists(address: string): Promise<boolean> {
+  async validateAdminExists(address: string): Promise<boolean> {
     let adminExists: boolean = false
     try {
       const admin = await this.Provider.fetchAdminByAddress(address)
@@ -34,12 +34,14 @@ export class AdminHelpers {
   }
 }
 
-export class AdminServices {
-  private static Provider = DatabaseProvider.AdminProvider
-  private static Hospital = DatabaseProvider.HospitalProvider
-  private static Helper = AdminHelpers
+export const AdminHelpers = new adminHelpers()
 
-  static async createAdmin(args: CreateAdminType) {
+class adminServices {
+  private Provider = DatabaseProvider.AdminProvider
+  private Hospital = DatabaseProvider.HospitalProvider
+  private Helper = AdminHelpers
+
+  async createAdmin(args: CreateAdminType) {
     const requiredParams = ['id', 'name', 'email', 'walletAddress']
 
     if (
@@ -65,7 +67,7 @@ export class AdminServices {
     }
   }
 
-  static async fetchAdmin(
+  async fetchAdmin(
     address: string,
   ): Promise<{ success: number; admin: AdminType; message: string }> {
     if (!address || address.length !== 42) {
@@ -89,7 +91,7 @@ export class AdminServices {
     }
   }
 
-  static async removeAdmin(
+  async removeAdmin(
     args: RemoveAdminType,
   ): Promise<{ success: number; message: string }> {
     const { adminAddressToAuthorize, adminAddressToRemove } = args
@@ -122,7 +124,7 @@ export class AdminServices {
     }
   }
 
-  static async approveHospital(
+  async approveHospital(
     hospitalId: string,
     adminAddress: string,
   ): Promise<{ success: number; message: string }> {
@@ -163,7 +165,7 @@ export class AdminServices {
     }
   }
 
-  static async removeDoctorFromAllHospitals(
+  async removeDoctorFromAllHospitals(
     doctorAddress: string,
     adminAddress: string,
   ): Promise<{ success: number; message: string }> {
@@ -210,7 +212,7 @@ export class AdminServices {
     }
   }
 
-  static async removeHospital(hospitalId: string, adminAddress: string) {
+  async removeHospital(hospitalId: string, adminAddress: string) {
     if (!hospitalId || !adminAddress || adminAddress.length !== 42) {
       throw new AdminError('Invalid hospital or admin address')
     }
@@ -237,3 +239,5 @@ export class AdminServices {
     }
   }
 }
+
+export const AdminServices = new adminServices()
