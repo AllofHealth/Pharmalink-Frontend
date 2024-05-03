@@ -1,8 +1,25 @@
-import { Icon } from "@/components/icon/Icon";
-import PatientSignUpForm from "@/page_components/patientSignUp/patientSignUpForm";
-import Image from "next/image";
+'use client';
+
+import addPatient from '@/actions/contract/patient/patient.service.c';
+import { Icon } from '@/components/icon/Icon';
+import PatientSignUpForm from '@/page_components/patientSignUp/patientSignUpForm';
+import Image from 'next/image';
 
 export default function HealthProfessionalSignUp() {
+  const testSignUp = async () => {
+    const result = await addPatient();
+    //This returns an id which will be passed to the database when calling the function
+    console.log(Number(result.patientId));
+  };
+  const handleTestSignUp = () => {
+    testSignUp()
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   return (
     <div className="flex">
       <Image
@@ -22,6 +39,13 @@ export default function HealthProfessionalSignUp() {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
             lobortis maximus
           </p>
+          {/**Demo signup button */}
+          <button
+            onClick={handleTestSignUp}
+            className="w-80 xl:w-96 rounded-xl bg-primary-500 text-blue-500 font-medium"
+          >
+            Sign up test
+          </button>
           <PatientSignUpForm />
         </div>
       </section>
