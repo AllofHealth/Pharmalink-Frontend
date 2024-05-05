@@ -23,7 +23,7 @@ async function createSystemAdmin(
 
     return {
       success: ErrorCodes.Success,
-      adminId: eventResult.adminId.toNumber(),
+      adminId: Number(eventResult.adminId),
     }
   } catch (error) {
     console.error(error)
@@ -31,4 +31,28 @@ async function createSystemAdmin(
   }
 }
 
-export default createSystemAdmin
+async function approveHospital(hospitalId: number) {
+  try {
+    const contract = await provideContract()
+    const transaction = await contract.approveHospital(hospitalId)
+
+    const receipt = await transaction.wait()
+    const eventResult = await processEvent(
+      receipt,
+      EventNames.HospitalApproved,
+      ContractEvents.HospitalApproved,
+    )
+
+    return {
+      success: ErrorCodes.Success,
+      hospitalId: Number(eventResult.hospitalId),
+    }
+  } catch (error) {
+    console.error(error)
+    throw new AdminError(
+      'An error occurred while approving hospital, are you admin?',
+    )
+  }
+}
+
+export { createSystemAdmin, approveHospital }
