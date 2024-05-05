@@ -44,7 +44,7 @@ const SuccessfullyAddedModal = ({
                 {title}
               </Modal.Title>
               <p className="lg:my-2 text-[10px] lg:text-base">
-                You have accepted Hadas Health Centre into All of Health
+                You have accepted Hadas Health Centre into AllOf Health
               </p>
             </div>
             <div className="flex items-center justify-center gap-2">

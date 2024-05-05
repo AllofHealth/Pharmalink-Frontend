@@ -62,7 +62,7 @@ const Tracking = () => {
         opacity="0.1"
         d="M69.4225 4.33934V90.7346C69.4225 93.1186 67.4963 95.0448 65.1122 95.0448H4.31029C1.92621 95.029 0 93.1028 0 90.7346V89.2346C37.0874 73.9197 54.3601 15.1861 58.2599 0.0290527H65.1122C67.4963 0.0290527 69.4225 1.95526 69.4225 4.33934Z"
         fill="#1A6FB5"
-        fill-opacity="0.4"
+        fillOpacity="0.4"
       />
       <defs>
         <linearGradient
@@ -73,8 +73,8 @@ const Tracking = () => {
           y2="-5.47095"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.3061" stop-color="#5BA7FC" />
-          <stop offset="1" stop-color="#69B8FC" />
+          <stop offset="0.3061" stopColor="#5BA7FC" />
+          <stop offset="1" stopColor="#69B8FC" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_913_2328"
@@ -84,8 +84,8 @@ const Tracking = () => {
           y2="78.0603"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.3061" stop-color="white" />
-          <stop offset="1" stop-color="white" />
+          <stop offset="0.3061" stopColor="white" />
+          <stop offset="1" stopColor="white" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_913_2328"
@@ -95,9 +95,9 @@ const Tracking = () => {
           y2="34.0291"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#B0F4FF" />
-          <stop offset="0.368525" stop-color="#80E4FD" />
-          <stop offset="1" stop-color="#6CDDFC" />
+          <stop stopColor="#B0F4FF" />
+          <stop offset="0.368525" stopColor="#80E4FD" />
+          <stop offset="1" stopColor="#6CDDFC" />
         </linearGradient>
         <linearGradient
           id="paint3_linear_913_2328"
@@ -107,8 +107,8 @@ const Tracking = () => {
           y2="38.2364"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint4_linear_913_2328"
@@ -118,8 +118,8 @@ const Tracking = () => {
           y2="15.6135"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint5_linear_913_2328"
@@ -129,8 +129,8 @@ const Tracking = () => {
           y2="23.2906"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint6_linear_913_2328"
@@ -140,8 +140,8 @@ const Tracking = () => {
           y2="46.8609"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint7_linear_913_2328"
@@ -151,8 +151,8 @@ const Tracking = () => {
           y2="55.4851"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint8_linear_913_2328"
@@ -162,8 +162,8 @@ const Tracking = () => {
           y2="64.1097"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint9_linear_913_2328"
@@ -173,8 +173,8 @@ const Tracking = () => {
           y2="72.7343"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint10_linear_913_2328"
@@ -184,8 +184,8 @@ const Tracking = () => {
           y2="81.3587"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
       </defs>
     </svg>

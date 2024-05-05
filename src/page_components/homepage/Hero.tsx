@@ -11,15 +11,14 @@ const Hero = () => {
           Journey
         </h1>
         <p className="mb-4 xl:text-[18px] xl:w-[70%]">
-          All Of Health is dedicated to changing the way you experience
-          healthcare. Our cutting-edge technology is created with your health
-          and happiness in mind, giving you the tools and resources you need to
-          live a better, happier life.
+          Unlock the power of seamless medical record access, secure sharing,
+          and a patient-centric system with AllOf Health – transforming
+          healthcare for hospitals, pharmacies, and patients alike.
         </p>
         <Button variant="homepage" className="h-14 mx-auto xl:mx-0 mb-7">
           Get Started
         </Button>
-        <div className="flex items-center justify-between xl:w-[400px]">
+        {/* <div className="flex items-center justify-between xl:w-[400px]">
           <div>
             <span className="text-3xl font-bold flex items-center lg:text-4xl">
               200 <span className="text-blue2">+</span>
@@ -44,7 +43,7 @@ const Hero = () => {
               Active Pharmacy
             </span>
           </div>
-        </div>
+        </div> */}
       </div>
       <Image
         src="/assets/images/hero-img.png"

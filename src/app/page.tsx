@@ -80,7 +80,7 @@ export default function Home() {
       <OurMainServices />
       <OurQualifiedDoctors />
       <AboutAllofHealth />
-      <OurTeam />
+      {/* <OurTeam /> */}
       <GetStarted />
       <Testimonials />
       <SubscribeNewsLetters />

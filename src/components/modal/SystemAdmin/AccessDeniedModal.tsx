@@ -44,7 +44,7 @@ const AccessDeniedModal = ({
                 {title}
               </Modal.Title>
               <p className="lg:my-2 text-[10px] lg:text-base">
-                You have denied Hadas Health Centre access to All Of Health
+                You have denied Hadas Health Centre access to AllOf Health
               </p>
             </div>
             <div className="flex items-center justify-center gap-2">

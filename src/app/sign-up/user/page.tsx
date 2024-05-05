@@ -3,6 +3,7 @@ import { Icon } from "@/components/icon/Icon";
 import Image from "next/image";
 import { Select } from "@/components/common";
 import { Field } from "@/components/common/forms/Field";
+import { useAccount } from "wagmi";
 
 export default function UserSignUp() {
   const options = [
@@ -10,6 +11,9 @@ export default function UserSignUp() {
     { value: "Doctor", label: "Doctor" },
     { value: "Pharmacist", label: "Pharmacist" },
   ];
+
+  const { address, isConnected } = useAccount();
+  console.log(address, isConnected);
   return (
     <div className="flex">
       <Image
