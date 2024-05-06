@@ -16,6 +16,7 @@
     "@reduxjs/toolkit": "^2.1.0",
     "@tanstack/react-query": "^5.32.0",
     "antd": "^5.14.0",
+    "axios": "^1.6.8",
     "dotenv": "^16.4.5",
     "ethers": "6.11.1",
     "mongoose": "^8.2.4",
@@ -28,6 +29,7 @@
     "react-select": "^5.8.0",
     "sonner": "^1.4.0",
     "tailwind-merge": "^2.2.1",
+    "use-debounce": "^10.0.0",
     "viem": "^2.9.28",
     "wagmi": "^2.7.0",
     "web3modal": "^1.9.12"

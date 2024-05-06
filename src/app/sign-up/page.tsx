@@ -1,4 +1,5 @@
 "use client";
+import Button from "@/components/button/Button";
 import { Icon } from "@/components/icon/Icon";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
@@ -10,12 +11,19 @@ export default function SignUp() {
   const router = useRouter();
   const { isConnected } = useAccount();
 
-  useEffect(() => {
+  const signUp = () => {
     if (isConnected) {
       // Redirect to a different page if a wallet is connected
       router.push("/sign-up/user");
     }
-  }, [isConnected, router]);
+  };
+
+  // useEffect(() => {
+  //   if (isConnected) {
+  //     // Redirect to a different page if a wallet is connected
+  //     router.push("/sign-up/user");
+  //   }
+  // }, [isConnected, router]);
 
   return (
     <div className="flex">
@@ -42,6 +50,13 @@ export default function SignUp() {
               Sign Up with Metamask
             </Button> */}
             <ConnectButton />
+            <Button
+              variant="primary"
+              className="rounded-xl text-center justify-self-center w-max mx-auto"
+              onClick={() => signUp()}
+            >
+              Sign Up
+            </Button>
           </div>
         </div>
       </section>
