@@ -31,7 +31,7 @@ async function addPharmacist(
 
     return {
       success: ErrorCodes.Success,
-      pharmacistId: eventResult.pharmacistId.toNumber(),
+      pharmacistId: eventResult.pharmacistId,
       address,
     }
   } catch (error) {
