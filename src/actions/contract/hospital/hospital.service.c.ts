@@ -10,7 +10,7 @@ import {
 import {
   ApproveDoctorType,
   ApprovePharmacistType,
-} from '@/actions/interfaces/Doctor/app.doctor.interface'
+} from '@/actions/interfaces/Hospital/app.hospital.interface'
 
 /**
  * todo: implement high order function to determine role of wallet address and serve the correct function to approve practitioner
