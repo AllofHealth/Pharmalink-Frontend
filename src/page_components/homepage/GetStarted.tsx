@@ -2,7 +2,7 @@ import Button from "@/components/button/Button";
 
 const GetStarted = () => {
   return (
-    <section className="px-7 mt-14">
+    <section className="px-7 mt-20">
       <h3 className="gradient-text font-bold text-4xl lg:text-6xl text-center">
         Get started with AllOf Health
       </h3>

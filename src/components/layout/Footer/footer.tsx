@@ -18,15 +18,15 @@ export default function Footer() {
           >
             <Icon name="FooterX" />
           </Link>
-          <Link href={"https://allofhealth.xyz"}>
-            <Icon name="FooterGoogle" />
-          </Link>
           <Link
             href={
               "https://www.instagram.com/allof_health?igshid=OGQ5ZDc2ODk2ZA=="
             }
           >
-            <Icon name="FooterYoutube" />
+            <Icon name="FooterInstagram" />
+          </Link>
+          <Link href={"https://www.linkedin.com/company/allof-health/"}>
+            <Icon name="FooterLinkedIn" />
           </Link>
         </div>
         <div className="flex justify-between mt-8 lg:col-start-2 lg:row-start-1">

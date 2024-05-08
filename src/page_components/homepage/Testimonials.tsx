@@ -22,7 +22,7 @@ const Testimonials = () => {
           />
           <div>
             <h4 className="text-white font-semibold">Edward Newgate</h4>
-            <p className="text-white">Founder Circle</p>
+            {/* <p className="text-white">Founder Circle</p> */}
           </div>
         </div>
         <p className="hidden lg:block w-[420px] text-white">

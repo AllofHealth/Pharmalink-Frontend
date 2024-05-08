@@ -5,15 +5,16 @@ const Hero = () => {
   return (
     <section className="px-5 xl:flex lg:items-center xl:px-16">
       <div className="xl:w-[60vw]">
-        <h1 className="text-[32px] font-bold text-blue3 mb-4 lg:text-[64px]">
-          We Are Ready to <br />
-          <span className="gradient-text">Empower your health</span> <br />
-          Journey
+        <h1 className="text-[32px] font-bold gradient-text mb-4 lg:text-[64px]">
+          Revolutionizing <br />
+          <span className="gradient-text">Health Data with</span> <br />
+          Blockchain
         </h1>
-        <p className="mb-4 xl:text-[18px] xl:w-[70%]">
+        <p className="mb-4 xl:text-[18px] xl:w-[60%]">
           Unlock the power of seamless medical record access, secure sharing,
           and a patient-centric system with AllOf Health – transforming
-          healthcare for hospitals, pharmacies, and patients alike.
+          healthcare for health institutions, health professionals
+          and patients alike.
         </p>
         <Button variant="homepage" className="h-14 mx-auto xl:mx-0 mb-7">
           Get Started

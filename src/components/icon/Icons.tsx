@@ -39,6 +39,8 @@ import GreenCross from "../../../public/assets/svgs/green-cross.tsx";
 import Revenue from "../../../public/assets/svgs/revenue.tsx";
 import Warning from "../../../public/assets/svgs/warning.tsx";
 import WalletConnect from "../../../public/assets/svgs/walletconnect.tsx";
+import FooterInstagram from "../../../public/assets/svgs/footer-instagram.tsx";
+import FooterLinkedIn from "../../../public/assets/svgs/footer-linkedin.tsx";
 
 const Menu = () => {
   return (
@@ -136,6 +138,8 @@ const Icons = {
   Revenue,
   Warning,
   WalletConnect,
+  FooterInstagram,
+  FooterLinkedIn,
 };
 
 export type IconType = keyof typeof Icons;

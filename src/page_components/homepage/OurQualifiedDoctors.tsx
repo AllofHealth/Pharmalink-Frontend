@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const OurQualifiedDoctors = () => {
   return (
-    <section className="mt-10 px-7 lg:px-20 lg:mt-20">
+    <section className="mt-20 px-7 lg:px-20 lg:mt-20">
       <div className="lg:flex lg:items-center lg:gap-20 xl:justify-between">
         <div>
           <h3 className="text-center lg:text-start text-4xl lg:text-5xl font-bold">
