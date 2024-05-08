@@ -31,7 +31,7 @@ async function addDoctor(
 
     return {
       success: ErrorCodes.Success,
-      doctorId: eventResult.doctorId.toNumber(),
+      doctorId: eventResult.doctorId,
     }
   } catch (error) {
     console.error(error)
