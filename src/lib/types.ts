@@ -91,3 +91,14 @@ export interface GetPharmacistNotExistMessage {
   success: number;
   message: string;
 }
+
+export interface CreatePatientValues {
+  name: string;
+  age: number;
+  email: string;
+  address: string;
+  city: string;
+  walletAddress: string;
+  bloodGroup: string;
+  genotype: string;
+}

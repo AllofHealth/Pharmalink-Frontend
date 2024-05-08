@@ -19,7 +19,6 @@ export const useGetPatientByAddress = ({
     GetPatientMessage | GetPatientNotExistMessage
   >({
     endpoint: `api/patient/getPatientByAddress?walletAddress=${address}`,
-    method: "GET",
   });
 
   if (!connected) {
@@ -48,7 +47,6 @@ export const useGetDoctorByAddress = ({
     GetDoctorMessage | GetDoctorNotExistMessage
   >({
     endpoint: `api/doctor/doctorByAddress??walletAddress=${address}`,
-    method: "GET",
   });
 
   if (!connected) {
@@ -77,7 +75,6 @@ export const useGetPharmacistByAddress = ({
     GetPharmacistMessage | GetPharmacistNotExistMessage
   >({
     endpoint: `api/pharmacist/getPharmacist?walletAddress=${address}`,
-    method: "GET",
   });
 
   if (!connected) {
