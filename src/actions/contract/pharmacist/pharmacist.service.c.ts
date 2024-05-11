@@ -40,4 +40,15 @@ async function addPharmacist(
   }
 }
 
-export default addPharmacist
+async function fetchPharmacistId(address: string) {
+  try {
+    const contract = await provideContract()
+    const pharmacist = await contract.pharmacists(address)
+    return Number(pharmacist.pharmacistId)
+  } catch (error) {
+    console.error(error)
+    throw new PharmacistError('Error fetching pharmacist id from contract')
+  }
+}
+
+export { addPharmacist, fetchPharmacistId }
