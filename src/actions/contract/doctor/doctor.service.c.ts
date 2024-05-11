@@ -39,4 +39,15 @@ async function addDoctor(
   }
 }
 
-export default addDoctor
+async function fetchDoctorId(address: string) {
+  try {
+    const contract = await provideContract()
+    const doctor = await contract.doctors(address)
+    return Number(doctor.doctorId)
+  } catch (error) {
+    console.error(error)
+    throw new DoctorError('Error fetching doctor id from contract')
+  }
+}
+
+export { addDoctor, fetchDoctorId }
