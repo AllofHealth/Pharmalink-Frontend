@@ -38,4 +38,15 @@ async function addPatient(): Promise<{
   }
 }
 
-export default addPatient
+async function fetchPatientId(address: string) {
+  try {
+    const contract = await provideContract()
+    const patient = await contract.patients(address)
+    return Number(patient.patientId)
+  } catch (error) {
+    console.error(error)
+    throw new PatientError('Error fetching patient from contract')
+  }
+}
+
+export { addPatient, fetchPatientId }
