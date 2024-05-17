@@ -57,8 +57,8 @@ const Consultation = () => {
           y2="50.4829"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_913_2272"
@@ -68,12 +68,12 @@ const Consultation = () => {
           y2="34.6976"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#B0F4FF" />
-          <stop offset="0.0856277" stop-color="#A3F0FE" />
-          <stop offset="0.2972" stop-color="#8AE7FD" />
-          <stop offset="0.5161" stop-color="#77E1FD" />
-          <stop offset="0.7451" stop-color="#6DDDFC" />
-          <stop offset="1" stop-color="#69DCFC" />
+          <stop stopColor="#B0F4FF" />
+          <stop offset="0.0856277" stopColor="#A3F0FE" />
+          <stop offset="0.2972" stopColor="#8AE7FD" />
+          <stop offset="0.5161" stopColor="#77E1FD" />
+          <stop offset="0.7451" stopColor="#6DDDFC" />
+          <stop offset="1" stopColor="#69DCFC" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_913_2272"
@@ -83,8 +83,8 @@ const Consultation = () => {
           y2="49.286"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint3_linear_913_2272"
@@ -94,8 +94,8 @@ const Consultation = () => {
           y2="59.6168"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint4_linear_913_2272"
@@ -105,8 +105,8 @@ const Consultation = () => {
           y2="65.8091"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint5_linear_913_2272"
@@ -116,8 +116,8 @@ const Consultation = () => {
           y2="71.5413"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <clipPath id="clip0_913_2272">
           <rect

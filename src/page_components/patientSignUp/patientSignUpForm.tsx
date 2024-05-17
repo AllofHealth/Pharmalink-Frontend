@@ -2,9 +2,13 @@
 import { Form, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import Button from "@/components/button/Button";
+import { useAccount } from "wagmi";
+import addPatient from "@/actions/contract/patient/patient.service.c";
+import { createPatient } from "@/lib/mutations/auth";
+import useAxios, { useAxiosInstance } from "@/lib/hooks/useAxios";
+import type { CreatePatientValues } from "@/lib/types";
 
 export interface ISignIn {
   email: string;
@@ -15,31 +19,40 @@ export default function PatientSignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [form] = Form.useForm();
-  const values = Form.useWatch([], form);
+  const values = Form.useWatch<CreatePatientValues>([], form);
   const [submittable, setSubmittable] = useState(false);
+  const { address } = useAccount();
+  const [patientId, setPatientId] = useState(0);
+  const { axiosInstance } = useAxiosInstance({});
 
-  const onFinish = (values: any) => {
-    handleSignIn(values);
+  const createPatientId = async () => {
+    const result = await addPatient();
+
+    //This returns an id which will be passed to the database when calling the function
+    setPatientId(Number(result.patientId));
+    console.log(Number(result.patientId));
   };
 
-  const handleSignIn = async (data: ISignIn) => {
-    const { email, password } = data;
+  const handleSignIn = async () => {
     setIsLoading(true);
-    // router.prefetch("./app/user-management")
-    const res = await signIn("credentials", {
-      email,
-      password,
-      callbackUrl: "/app/user-management?usertype=verified_users",
-      redirect: false,
-      type: "admin",
-    });
 
-    if (res?.ok) {
-      router.push(res.url!);
-      setIsLoading(false);
-    } else {
-      toast.error(res?.error);
-      setIsLoading(false);
+    await createPatientId();
+
+    if (patientId !== 0) {
+      const { data, error } = await createPatient({
+        patientId,
+        patientValues: values,
+        axios: axiosInstance,
+      });
+
+      if (error) {
+        toast.error("Failed to create patient: " + error.message); // Show error message
+        setIsLoading(false);
+      } else if (data) {
+        toast.success("Patient created successfully!"); // Success message
+        router.push("/patients"); // Navigate to another page
+        setIsLoading(false);
+      }
     }
   };
 
@@ -54,14 +67,9 @@ export default function PatientSignUpForm() {
     );
   }, [values]);
 
-  const InstitutionType = [
-    { value: "Public", label: "Public" },
-    { value: "Private", label: "Private" },
-  ];
-
   return (
     <Form
-      onFinish={onFinish}
+      onFinish={handleSignIn}
       initialValues={{ email: "" }}
       layout="vertical"
       form={form}
@@ -70,19 +78,35 @@ export default function PatientSignUpForm() {
     >
       <Form.Item
         className="mb-8"
-        name="full_name"
+        name="name"
         label={
           <span className="text-[18px] font-normal text-text-black2">
             Full Name
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="full_name"
+          name="name"
           className="border p-3 rounded-xl h-14"
           placeholder="Enter your full name"
+        />
+      </Form.Item>
+
+      <Form.Item
+        className="mb-8"
+        name="age"
+        label={
+          <span className="text-[18px] font-normal text-text-black2">Age</span>
+        }
+        rules={[{ required: true }]}
+      >
+        <Input
+          type="number"
+          name="age"
+          className="border p-3 rounded-xl h-14"
+          placeholder="Enter your Age"
         />
       </Form.Item>
 
@@ -94,7 +118,7 @@ export default function PatientSignUpForm() {
             What&apos;s your email?
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="email"
@@ -106,17 +130,17 @@ export default function PatientSignUpForm() {
 
       <Form.Item
         className="mb-8"
-        name="physical_address"
+        name="address"
         label={
           <span className="text-[18px] font-normal text-text-black2">
             Physical Address
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="physical_address"
+          name="address"
           className="border p-3 rounded-xl h-14"
           placeholder="Enter your physical address"
         />
@@ -128,11 +152,11 @@ export default function PatientSignUpForm() {
         label={
           <span className="text-[18px] font-normal text-text-black2">City</span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="physical_address"
+          name="city"
           className="border p-3 rounded-xl h-14"
           placeholder="Enter your city"
         />
@@ -140,37 +164,57 @@ export default function PatientSignUpForm() {
 
       <Form.Item
         className="mb-8"
-        name="phone_number"
+        name="bloodGroup"
         label={
           <span className="text-[18px] font-normal text-text-black2">
-            Phone number
+            Blood Group
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="phone_number"
+          name="bloodGroup"
           className="border p-3 rounded-xl h-14"
-          placeholder="Enter your phone number"
+          placeholder="Provide your Blood Group"
         />
       </Form.Item>
 
       <Form.Item
         className="mb-8"
-        name="wallet_address"
+        name="genotype"
+        label={
+          <span className="text-[18px] font-normal text-text-black2">
+            Genotype
+          </span>
+        }
+        rules={[{ required: true }]}
+      >
+        <Input
+          type="text"
+          name="genotype"
+          className="border p-3 rounded-xl h-14"
+          placeholder="Provide your Genotype"
+        />
+      </Form.Item>
+
+      <Form.Item
+        className="mb-8"
+        name="walletAddress"
         label={
           <span className="text-[18px] font-normal text-text-black2">
             Wallet Address
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
+        initialValue={address}
       >
         <Input
           type="text"
-          name="institution_wallet_address"
+          name="walletAddress"
           className="border p-3 rounded-xl h-14"
           placeholder="Provide your Wallet Address"
+          defaultValue={address}
         />
       </Form.Item>
       <Form.Item>
@@ -178,7 +222,7 @@ export default function PatientSignUpForm() {
           variant="secondary"
           type="submit"
           className="w-full rounded-[40px] h-14 justify-center text-xl font-normal"
-          // disabled={!submittable}
+          disabled={!submittable}
         >
           {isLoading ? "Loading..." : "Register"}
         </Button>

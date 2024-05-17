@@ -3,14 +3,14 @@ import Image from "next/image";
 
 const OurQualifiedDoctors = () => {
   return (
-    <section className="mt-10 px-7 lg:px-20 lg:mt-20">
+    <section className="mt-20 px-7 lg:px-20 lg:mt-20">
       <div className="lg:flex lg:items-center lg:gap-20 xl:justify-between">
         <div>
           <h3 className="text-center lg:text-start text-4xl lg:text-5xl font-bold">
-            Our <br /> <span className="gradient-text">Qualified Doctors</span>
+            OUR <br /> <span className="gradient-text">PARTNERS</span>
           </h3>
           <p className="text-center my-4 lg:text-start lg:w-[483px]">
-            Learn about TrustaHealth. Discover our journey, principles, and
+            Learn about AllOf Health. Discover our journey, principles, and
             committed team as we work to reinvent healthcare through new
             technology and personalised solutions.
           </p>

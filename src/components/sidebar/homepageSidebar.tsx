@@ -30,7 +30,7 @@ const HomepageSidebar = ({ container }: { container: HTMLElement }) => {
 
             <Image
               src="/assets/images/all-of-health-logo.png"
-              alt="All of health"
+              alt="AllOf health"
               width={159}
               height={93}
               className="mx-auto"

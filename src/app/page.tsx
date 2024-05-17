@@ -78,9 +78,9 @@ export default function Home() {
       <Hero />
       <WhyAllofHealth />
       <OurMainServices />
-      <OurQualifiedDoctors />
+      {/* <OurQualifiedDoctors /> */}
       <AboutAllofHealth />
-      <OurTeam />
+      {/* <OurTeam /> */}
       <GetStarted />
       <Testimonials />
       <SubscribeNewsLetters />

@@ -51,7 +51,7 @@ const ApproveInstitutionModal = ({
                 {title}
               </Modal.Title>
               <p className="lg:my-2 text-[10px] lg:text-base">
-                Approve Hadas health centre into all of health?
+                Approve Hadas health centre into AllOf health?
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">

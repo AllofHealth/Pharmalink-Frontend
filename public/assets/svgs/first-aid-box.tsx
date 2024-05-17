@@ -58,8 +58,8 @@ const FirstAidBox = () => {
           y2="42.5947"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#B0F4FF" />
-          <stop offset="1" stop-color="#69DCFC" />
+          <stop stopColor="#B0F4FF" />
+          <stop offset="1" stopColor="#69DCFC" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_913_2351"
@@ -69,8 +69,8 @@ const FirstAidBox = () => {
           y2="42.6037"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_913_2351"
@@ -80,8 +80,8 @@ const FirstAidBox = () => {
           y2="7.03755"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint3_linear_913_2351"
@@ -91,8 +91,8 @@ const FirstAidBox = () => {
           y2="42.598"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint4_linear_913_2351"
@@ -102,8 +102,8 @@ const FirstAidBox = () => {
           y2="42.6073"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <clipPath id="clip0_913_2351">
           <rect

@@ -12,15 +12,15 @@ const WhyAllofHealth = () => {
       />
       <div>
         <h2 className="text-[40px] font-bold w-[300px] text-center mx-auto lg:w-auto">
-          Why Choose <span className="gradient-text">All of Health?</span>
+          Why Choose <span className="gradient-text">AllOf Health?</span>
         </h2>
-        <p className="w-[300px] text-center mx-auto my-4 lg:w-[500px]">
+        <p className="w-[300px] mx-auto mt-6 mb-10 lg:w-[400px] lg:mx-0 leading-8">
           Whether you&apos;re managing a chronic condition, striving for better
-          fitness, or simply looking to improve your overall well-being, Trusta
-          Health is here to support you every step of the way.
+          fitness, or simply looking to improve your overall well-being,
+          AllOfHealth is here to support you every step of the way.
         </p>
         <Image
-          src="/assets/images/why-all-of-health.jpeg"
+          src="/assets/images/solution-desktop-img.png"
           alt="A pharmacist smiling"
           className="lg:hidden rounded-t-[150px] mx-auto my-6"
           width={267}
@@ -30,66 +30,56 @@ const WhyAllofHealth = () => {
           <ul className="mx-auto grid gap-8 w-[205px] lg:grid-cols-2 lg:gap-x-10 lg:w-auto">
             <li className="mx-auto">
               <Image
-                src="/assets/images/solution-img.png"
+                src="/assets/images/dataaccess.png"
                 alt=""
                 width={62}
                 height={62}
               />
-              <h3 className="text-[20px] font-bold my-4">
-                Innovative Solution
-              </h3>
+              <h3 className="text-[20px] font-bold my-4">Data access</h3>
               <p className="text-xs w-[205px]">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare
-                tellus malesuada odio blandit. Sit duis eu nisi habitant lorem
-                egestas.{" "}
+                Facilitating seamless data access and retrieval at any time and
+                location.
               </p>
             </li>
             <li className="mx-auto">
               <Image
-                src="/assets/images/solution-img.png"
+                src="/assets/images/secure-sharing.png"
                 alt=""
                 width={62}
                 height={62}
               />
-              <h3 className="text-[20px] font-bold my-4">
-                Innovative Solution
-              </h3>
+              <h3 className="text-[20px] font-bold my-4">Secure sharing</h3>
               <p className="text-xs w-[205px]">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare
-                tellus malesuada odio blandit. Sit duis eu nisi habitant lorem
-                egestas.{" "}
+                Ensuring sharing of medical data within and across healthcare
+                institutions.
               </p>
             </li>
             <li className="mx-auto">
               <Image
-                src="/assets/images/solution-img.png"
+                src="/assets/images/patient-centric.png"
                 alt=""
                 width={62}
                 height={62}
               />
-              <h3 className="text-[20px] font-bold my-4">
-                Innovative Solution
-              </h3>
+              <h3 className="text-[20px] font-bold my-4">Patient-centric</h3>
               <p className="text-xs w-[205px]">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare
-                tellus malesuada odio blandit. Sit duis eu nisi habitant lorem
-                egestas.{" "}
+                Adopting a patient-centric approach placing you at the
+                center of health care.
               </p>
             </li>
             <li className="mx-auto">
               <Image
-                src="/assets/images/solution-img.png"
+                src="/assets/images/health-care.png"
                 alt=""
                 width={62}
                 height={62}
               />
               <h3 className="text-[20px] font-bold my-4">
-                Innovative Solution
+                HealthCare On the Go
               </h3>
               <p className="text-xs w-[205px]">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare
-                tellus malesuada odio blandit. Sit duis eu nisi habitant lorem
-                egestas.{" "}
+                Access Telemedicine services: For medical consultation and
+                delivery.
               </p>
             </li>
           </ul>

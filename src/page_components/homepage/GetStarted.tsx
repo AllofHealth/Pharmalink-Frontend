@@ -2,14 +2,15 @@ import Button from "@/components/button/Button";
 
 const GetStarted = () => {
   return (
-    <section className="px-7 mt-14">
+    <section className="px-7 mt-20">
       <h3 className="gradient-text font-bold text-4xl lg:text-6xl text-center">
-        Get started with TrustaHealth
+        Get started with AllOf Health
       </h3>
-      <p className="text-[18px] lg:text-4xl text-center my-4 max-w-[600px] mx-auto">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sodales morbi
-        tristique libero urna sem vitae. Viverra facilisis rhoncus et, nibh
-        nullam vitae laoreet
+      <p className="text-[18px] lg:text-4xl text-center my-4 max-w-[80vw] mx-auto">
+        At AllOf Health, we believe that true wellness is a holistic journey
+        that encompasses mind, body, and spirit. Our mission is to empower you
+        with the tools, resources, and support you need to live a healthier,
+        happier life.
       </p>
       <Button
         variant="homepage"

@@ -56,8 +56,8 @@ const Drugs = () => {
           y2="90.2234"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_913_2293"
@@ -67,12 +67,12 @@ const Drugs = () => {
           y2="2.05112"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#B0F4FF" />
-          <stop offset="0.0525488" stop-color="#A9F2FF" />
-          <stop offset="0.2879" stop-color="#8DE8FE" />
-          <stop offset="0.5247" stop-color="#79E1FD" />
-          <stop offset="0.7618" stop-color="#6DDDFC" />
-          <stop offset="1" stop-color="#69DCFC" />
+          <stop stopColor="#B0F4FF" />
+          <stop offset="0.0525488" stopColor="#A9F2FF" />
+          <stop offset="0.2879" stopColor="#8DE8FE" />
+          <stop offset="0.5247" stopColor="#79E1FD" />
+          <stop offset="0.7618" stopColor="#6DDDFC" />
+          <stop offset="1" stopColor="#69DCFC" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_913_2293"
@@ -82,12 +82,12 @@ const Drugs = () => {
           y2="6.14206"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#B0F4FF" />
-          <stop offset="0.0525488" stop-color="#A9F2FF" />
-          <stop offset="0.2879" stop-color="#8DE8FE" />
-          <stop offset="0.5247" stop-color="#79E1FD" />
-          <stop offset="0.7618" stop-color="#6DDDFC" />
-          <stop offset="1" stop-color="#69DCFC" />
+          <stop stopColor="#B0F4FF" />
+          <stop offset="0.0525488" stopColor="#A9F2FF" />
+          <stop offset="0.2879" stopColor="#8DE8FE" />
+          <stop offset="0.5247" stopColor="#79E1FD" />
+          <stop offset="0.7618" stopColor="#6DDDFC" />
+          <stop offset="1" stopColor="#69DCFC" />
         </linearGradient>
         <linearGradient
           id="paint3_linear_913_2293"
@@ -97,8 +97,8 @@ const Drugs = () => {
           y2="53.9416"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#43C8D0" />
-          <stop offset="1" stop-color="#097EA1" />
+          <stop stopColor="#43C8D0" />
+          <stop offset="1" stopColor="#097EA1" />
         </linearGradient>
         <linearGradient
           id="paint4_linear_913_2293"
@@ -108,8 +108,8 @@ const Drugs = () => {
           y2="45.6999"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <linearGradient
           id="paint5_linear_913_2293"
@@ -119,8 +119,8 @@ const Drugs = () => {
           y2="51.5612"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6CBCFC" />
-          <stop offset="1" stop-color="#458DFC" />
+          <stop stopColor="#6CBCFC" />
+          <stop offset="1" stopColor="#458DFC" />
         </linearGradient>
         <clipPath id="clip0_913_2293">
           <rect
