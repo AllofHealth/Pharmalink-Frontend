@@ -6,21 +6,15 @@ import {
   ErrorCodes,
   EventNames,
 } from '@/actions/shared/global'
-import { string2Bytes32 } from '@/actions/shared/utils/bytes.utils'
 
 async function addDoctor(
   hospitalIds: number,
-  regNo: string,
 ): Promise<{ success: number; doctorId: number }> {
   try {
     const contract = await provideContract()
     const signer = await getSigner()
     const address = await signer.getAddress()
-    const transaction = await contract.createDoctor(
-      hospitalIds,
-      address,
-      string2Bytes32(regNo),
-    )
+    const transaction = await contract.createDoctor(hospitalIds, address)
 
     const receipt = await transaction.wait()
     const eventResult = await processEvent(
