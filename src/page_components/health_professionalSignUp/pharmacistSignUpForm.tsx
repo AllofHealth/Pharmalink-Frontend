@@ -2,46 +2,62 @@
 import { Form, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { toast } from "sonner";
 import Button from "@/components/button/Button";
+import type { CreatePharmacistValues, Institution } from "@/lib/types";
+import { useAccount } from "wagmi";
+import useAxios from "@/lib/hooks/useAxios";
+import { useGetInstitutions } from "@/lib/queries/institutions";
+import { BiLoaderAlt } from "react-icons/bi";
+import { addPharmacist } from "@/actions/contract/pharmacist/pharmacist.service.c";
+import { createPharmacist } from "@/lib/mutations/auth";
 
-export interface ISignIn {
-  email: string;
-  password: string;
-}
+type InstitutionType = {
+  value: number;
+  label: string;
+};
 
-export default function HealthProfessionalSignUpForm() {
+export default function PharmacistSignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [form] = Form.useForm();
-  const values = Form.useWatch([], form);
+  const values = Form.useWatch<CreatePharmacistValues>([], form);
   const [submittable, setSubmittable] = useState(false);
+  const { address } = useAccount();
+  const [pharmacistId, setPharmacistId] = useState(0);
+  const { axios } = useAxios({});
+  const { loading, institutions, error } = useGetInstitutions();
 
-  const onFinish = (values: any) => {
-    handleSignIn(values);
+  const InstitutionType: InstitutionType[] =
+    institutions?.hospitals.map((institution: Institution) => ({
+      value: institution.id,
+      label: institution.name,
+    })) ?? [];
+  console.log(values);
+
+  const createDoctorId = async () => {
+    const result = await addPharmacist(Number(values.hospitalIds));
+
+    //This returns an id which will be passed to the database when calling the function
+    setPharmacistId(Number(result.pharmacistId));
   };
 
-  const handleSignIn = async (data: ISignIn) => {
-    const { email, password } = data;
+  const handleDoctorSignUp = async () => {
     setIsLoading(true);
-    // router.prefetch("./app/user-management")
-    const res = await signIn("credentials", {
-      email,
-      password,
-      callbackUrl: "/app/user-management?usertype=verified_users",
-      redirect: false,
-      type: "admin",
-    });
-
-    if (res?.ok) {
-      router.push(res.url!);
-      setIsLoading(false);
-    } else {
-      toast.error(res?.error);
-      setIsLoading(false);
-    }
+    await createDoctorId();
   };
+
+  useEffect(() => {
+    if (pharmacistId > 0) {
+      createPharmacist({
+        pharmacistId,
+        pharmacistValues: values,
+        axios,
+        router,
+        address,
+      });
+    }
+    console.log(pharmacistId);
+  }, [pharmacistId]);
 
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
@@ -54,15 +70,8 @@ export default function HealthProfessionalSignUpForm() {
     );
   }, [values]);
 
-  const InstitutionType = [
-    { value: "Public", label: "Public" },
-    { value: "Private", label: "Private" },
-  ];
-
   return (
     <Form
-      onFinish={onFinish}
-      initialValues={{ email: "" }}
       layout="vertical"
       form={form}
       autoComplete="on"
@@ -70,47 +79,55 @@ export default function HealthProfessionalSignUpForm() {
     >
       <Form.Item
         className="mb-8"
-        name="full_name"
+        name="name"
         label={
           <span className="text-[18px] font-normal text-text-black2">
             Full Name
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="full_name"
+          name="name"
           className="border p-3 rounded-xl h-14"
           placeholder="Enter your full name"
         />
       </Form.Item>
       <Form.Item
         className="mb-8"
-        name="institution_type"
+        name="hospitalIds"
         label={
           <span className="text-[18px] font-normal text-text-black2">
             What institution are you representing ?
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
-        <Select
-          options={InstitutionType}
-          className="h-14"
-          placeholder="Enter your institution type"
-        />
+        {loading ? (
+          <BiLoaderAlt className="animate-spin text-2xl" />
+        ) : institutions ? (
+          <Select
+            options={InstitutionType}
+            className="h-14"
+            placeholder="Enter your institution type"
+          />
+        ) : error ? (
+          <p>Error fetching institutions...</p>
+        ) : (
+          "An error occured"
+        )}
       </Form.Item>
 
       <Form.Item
         className="mb-8"
-        name="full_name"
+        name="email"
         label={
           <span className="text-[18px] font-normal text-text-black2">
             What&apos;s your email?
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="email"
@@ -119,85 +136,51 @@ export default function HealthProfessionalSignUpForm() {
           placeholder="Enter your email address"
         />
       </Form.Item>
+
       <Form.Item
         className="mb-8"
-        name="specialty"
+        name="location"
         label={
           <span className="text-[18px] font-normal text-text-black2">
-            Specialty
+            Location
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="specialty"
+          name="location"
           className="border p-3 rounded-xl h-14"
-          placeholder="What’s your specialty?"
+          placeholder="Enter your Location"
         />
       </Form.Item>
 
       <Form.Item
         className="mb-8"
-        name="physical_address"
-        label={
-          <span className="text-[18px] font-normal text-text-black2">
-            Physical Address
-          </span>
-        }
-        // rules={[{ required: true }]}
-      >
-        <Input
-          type="text"
-          name="physical_address"
-          className="border p-3 rounded-xl h-14"
-          placeholder="Enter your physical address"
-        />
-      </Form.Item>
-
-      <Form.Item
-        className="mb-8"
-        name="phone_number"
+        name="phoneNumber"
         label={
           <span className="text-[18px] font-normal text-text-black2">
             Phone number
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="phone_number"
+          name="phoneNumber"
           className="border p-3 rounded-xl h-14"
           placeholder="Enter your phone number"
         />
       </Form.Item>
 
-      <Form.Item
-        className="mb-8"
-        name="wallet_address"
-        label={
-          <span className="text-[18px] font-normal text-text-black2">
-            Wallet Address
-          </span>
-        }
-        // rules={[{ required: true }]}
-      >
-        <Input
-          type="text"
-          name="institution_wallet_address"
-          className="border p-3 rounded-xl h-14"
-          placeholder="Provide your Wallet Address"
-        />
-      </Form.Item>
       <Form.Item>
         <Button
           variant="secondary"
           type="submit"
           className="w-full rounded-[40px] h-14 justify-center text-xl font-normal"
-          // disabled={!submittable}
+          disabled={!submittable}
         >
-          {isLoading ? "Loading..." : "Register"}
+          {isLoading ? "Loading..." : "Sign Up"}
         </Button>
       </Form.Item>
       <p className="text-center text-[15px] font-normal text-text-black3">

@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Button from "@/components/button/Button";
 import { useAccount } from "wagmi";
-import addPatient from "@/actions/contract/patient/patient.service.c";
 import { createPatient } from "@/lib/mutations/auth";
-import useAxios, { useAxiosInstance } from "@/lib/hooks/useAxios";
+import useAxios from "@/lib/hooks/useAxios";
 import type { CreatePatientValues } from "@/lib/types";
+import { addPatient } from "@/actions/contract/patient/patient.service.c";
 
 export interface ISignIn {
   email: string;
@@ -23,38 +23,32 @@ export default function PatientSignUpForm() {
   const [submittable, setSubmittable] = useState(false);
   const { address } = useAccount();
   const [patientId, setPatientId] = useState(0);
-  const { axiosInstance } = useAxiosInstance({});
+  const { axios } = useAxios({});
 
   const createPatientId = async () => {
     const result = await addPatient();
 
     //This returns an id which will be passed to the database when calling the function
     setPatientId(Number(result.patientId));
-    console.log(Number(result.patientId));
   };
 
-  const handleSignIn = async () => {
+  const handleSignUp = async () => {
     setIsLoading(true);
-
     await createPatientId();
+  };
 
-    if (patientId !== 0) {
-      const { data, error } = await createPatient({
+  useEffect(() => {
+    if (patientId > 0) {
+      createPatient({
         patientId,
         patientValues: values,
-        axios: axiosInstance,
+        axios,
+        router,
+        address,
       });
-
-      if (error) {
-        toast.error("Failed to create patient: " + error.message); // Show error message
-        setIsLoading(false);
-      } else if (data) {
-        toast.success("Patient created successfully!"); // Success message
-        router.push("/patients"); // Navigate to another page
-        setIsLoading(false);
-      }
     }
-  };
+    console.log(patientId);
+  }, [patientId]);
 
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
@@ -69,8 +63,6 @@ export default function PatientSignUpForm() {
 
   return (
     <Form
-      onFinish={handleSignIn}
-      initialValues={{ email: "" }}
       layout="vertical"
       form={form}
       autoComplete="on"
@@ -198,31 +190,13 @@ export default function PatientSignUpForm() {
         />
       </Form.Item>
 
-      <Form.Item
-        className="mb-8"
-        name="walletAddress"
-        label={
-          <span className="text-[18px] font-normal text-text-black2">
-            Wallet Address
-          </span>
-        }
-        rules={[{ required: true }]}
-        initialValue={address}
-      >
-        <Input
-          type="text"
-          name="walletAddress"
-          className="border p-3 rounded-xl h-14"
-          placeholder="Provide your Wallet Address"
-          defaultValue={address}
-        />
-      </Form.Item>
       <Form.Item>
         <Button
           variant="secondary"
           type="submit"
           className="w-full rounded-[40px] h-14 justify-center text-xl font-normal"
           disabled={!submittable}
+          onClick={() => handleSignUp()}
         >
           {isLoading ? "Loading..." : "Register"}
         </Button>

@@ -2,9 +2,12 @@
 import { Form, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { toast } from "sonner";
 import Button from "@/components/button/Button";
+import type { CreateSystemAdminValues } from "@/lib/types";
+import { useAccount } from "wagmi";
+import useAxios from "@/lib/hooks/useAxios";
+import { createSystemAdmin as addAdmin } from "@/actions/contract/admin/admin.service.c";
+import { createSystemAdmin } from "@/lib/mutations/auth";
 
 export interface ISignIn {
   email: string;
@@ -15,33 +18,38 @@ export default function SystemAdminSignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [form] = Form.useForm();
-  const values = Form.useWatch([], form);
+  const values = Form.useWatch<CreateSystemAdminValues>([], form);
   const [submittable, setSubmittable] = useState(false);
+  const { address } = useAccount();
+  const [systemAdminId, setSystemAdminId] = useState(0);
+  const { axios } = useAxios({});
 
-  const onFinish = (values: any) => {
-    handleSignIn(values);
+  console.log(values);
+
+  const createAdminId = async () => {
+    const result = await addAdmin(address!);
+
+    //This returns an id which will be passed to the database when calling the function
+    setSystemAdminId(Number(result.adminId));
   };
 
-  const handleSignIn = async (data: ISignIn) => {
-    const { email, password } = data;
+  const handleAdminSignUp = async () => {
     setIsLoading(true);
-    // router.prefetch("./app/user-management")
-    const res = await signIn("credentials", {
-      email,
-      password,
-      callbackUrl: "/app/user-management?usertype=verified_users",
-      redirect: false,
-      type: "admin",
-    });
-
-    if (res?.ok) {
-      router.push(res.url!);
-      setIsLoading(false);
-    } else {
-      toast.error(res?.error);
-      setIsLoading(false);
-    }
+    await createAdminId();
   };
+
+  useEffect(() => {
+    if (systemAdminId > 0) {
+      createSystemAdmin({
+        systemAdminId,
+        systemAdminValues: values,
+        axios,
+        router,
+        address,
+      });
+    }
+    console.log(systemAdminId);
+  }, [systemAdminId]);
 
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
@@ -54,15 +62,8 @@ export default function SystemAdminSignUpForm() {
     );
   }, [values]);
 
-  const InstitutionType = [
-    { value: "Public", label: "Public" },
-    { value: "Private", label: "Private" },
-  ];
-
   return (
     <Form
-      onFinish={onFinish}
-      initialValues={{ email: "" }}
       layout="vertical"
       form={form}
       autoComplete="on"
@@ -70,17 +71,17 @@ export default function SystemAdminSignUpForm() {
     >
       <Form.Item
         className="mb-8"
-        name="full_name"
+        name="name"
         label={
           <span className="text-[18px] font-normal text-text-black2">
             Full Name
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="full_name"
+          name="name"
           className="border p-3 rounded-xl h-14"
           placeholder="Enter your full name"
         />
@@ -94,7 +95,7 @@ export default function SystemAdminSignUpForm() {
             What&apos;s your email?
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="email"
@@ -108,9 +109,10 @@ export default function SystemAdminSignUpForm() {
           variant="secondary"
           type="submit"
           className="w-full rounded-[40px] h-14 justify-center text-xl font-normal"
-          // disabled={!submittable}
+          disabled={!submittable}
+          onClick={() => handleAdminSignUp()}
         >
-          {isLoading ? "Loading..." : "Register"}
+          {isLoading ? "Loading..." : "Sign Up"}
         </Button>
       </Form.Item>
       <p className="text-center text-[15px] font-normal text-text-black3">

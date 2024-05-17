@@ -3,36 +3,72 @@ import Button from "@/components/button/Button";
 import { Select } from "@/components/common";
 import { Field } from "@/components/common/forms/Field";
 import { Icon } from "@/components/icon/Icon";
+import {
+  useGetDoctorByAddress,
+  useGetPatientByAddress,
+  useGetPharmacistByAddress,
+} from "@/lib/queries/auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
+import { useAccount } from "wagmi";
+
+const options = [
+  { value: "Patient", label: "Patient" },
+  { value: "Doctor", label: "Doctor" },
+  { value: "Pharmacist", label: "Pharmacist" },
+];
 
 export default function UserSignIn() {
   const [selectedUserType, setSelectedUserType] = useState("");
   const router = useRouter();
-  console.log(selectedUserType);
+  const { address, isConnected } = useAccount();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const options = [
-    { value: "Patient", label: "Patient" },
-    { value: "Doctor", label: "Doctor" },
-    { value: "Pharmacist", label: "Pharmacist" },
-  ];
+  const { patientData } = useGetPatientByAddress({
+    connected: isConnected,
+    address: address ? address : "",
+  });
+
+  const { doctorData } = useGetDoctorByAddress({
+    connected: isConnected,
+    address: address ? address : "",
+  });
+
+  const { pharmacistData } = useGetPharmacistByAddress({
+    connected: isConnected,
+    address: address ? address : "",
+  });
+  console.log(patientData);
+  console.log(doctorData);
+  console.log(pharmacistData);
 
   const signIn = () => {
-    if (selectedUserType) {
-      switch (selectedUserType) {
-        case "Patient":
-          router.push("/dashboard/patient");
-          break;
-        case "Doctor":
-          router.push("/dashboard/doctor");
-          break;
-        case "Pharmacist":
-          router.push("/dashboard/pharmacist");
-          break;
-        default:
-          // Default route if needed
-          break;
+    console.log("Sign-up initiated"); // Check if this appears when button is clicked
+    setIsLoading(true);
+
+    if (selectedUserType === "Patient") {
+      if (patientData?.success === 404) {
+        console.log("Patient not found, routing to sign-up");
+        router.push("/sign-up/patient"); // Routing to patient sign-up
+      } else if (patientData?.success === 200 && "patient" in patientData) {
+        router.push("/dashboard/patient");
+      }
+    } else if (selectedUserType === "Doctor") {
+      if (doctorData?.success === 404) {
+        router.push("/sign-up/doctor");
+      } else if (doctorData?.success === 200 && "doctor" in doctorData) {
+        router.push("/dashboard/doctor");
+      }
+    } else if (selectedUserType === "Pharmacist") {
+      if (pharmacistData?.success === 404) {
+        router.push("/sign-up/pharmacist");
+      } else if (
+        pharmacistData?.success === 200 &&
+        "doctor" in pharmacistData
+      ) {
+        router.push("/dashboard/pharmacist");
       }
     }
   };
@@ -65,7 +101,7 @@ export default function UserSignIn() {
             onClick={() => signIn()}
             className="mt-5 w-max mx-auto px-10"
           >
-            Sign in
+            {isLoading ? "Loading..." : "Sign In"}
           </Button>
         </div>
       </section>

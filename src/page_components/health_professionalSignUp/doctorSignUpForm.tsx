@@ -3,51 +3,61 @@ import { Form, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/button/Button";
-import type { CreateInstitutionValues } from "@/lib/types";
+import type { CreateDoctorValues, Institution } from "@/lib/types";
 import { useAccount } from "wagmi";
 import useAxios from "@/lib/hooks/useAxios";
-import { createHospital } from "@/actions/contract/hospital/hospital.service.c";
-import { createInstitution } from "@/lib/mutations/auth";
+import { createDoctor } from "@/lib/mutations/auth";
+import { useGetInstitutions } from "@/lib/queries/institutions";
+import { addDoctor } from "@/actions/contract/doctor/doctor.service.c";
+import { BiLoaderAlt } from "react-icons/bi";
 
-export interface ISignIn {
-  email: string;
-  password: string;
-}
+type InstitutionType = {
+  value: number;
+  label: string;
+};
 
-export default function InstitutionSignUpForm() {
+export default function DoctorSignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [form] = Form.useForm();
-  const values = Form.useWatch<CreateInstitutionValues>([], form);
+  const values = Form.useWatch<CreateDoctorValues>([], form);
   const [submittable, setSubmittable] = useState(false);
   const { address } = useAccount();
-  const [institutionId, setInstitutionId] = useState(0);
+  const [doctorId, setDoctorId] = useState(0);
   const { axios } = useAxios({});
+  const { loading, institutions, error } = useGetInstitutions();
 
-  const createInstitutionId = async () => {
-    const result = await createHospital();
+  const InstitutionType: InstitutionType[] =
+    institutions?.hospitals.map((institution: Institution) => ({
+      value: institution.id,
+      label: institution.name,
+    })) ?? [];
+  console.log(values);
+
+  const createDoctorId = async () => {
+    const result = await addDoctor(Number(values.hospitalIds));
 
     //This returns an id which will be passed to the database when calling the function
-    setInstitutionId(Number(result.hospitalId));
+    setDoctorId(Number(result.doctorId));
   };
 
   const handleDoctorSignUp = async () => {
     setIsLoading(true);
-    await createInstitutionId();
+    await createDoctorId();
   };
 
   useEffect(() => {
-    if (institutionId > 0) {
-      createInstitution({
-        institutionId,
-        institutionValues: values,
+    if (doctorId > 0) {
+      createDoctor({
+        doctorId,
+        doctorValues: values,
         axios,
         router,
         address,
       });
     }
-    console.log(institutionId);
-  }, [institutionId]);
+    console.log(doctorId);
+  }, [doctorId]);
 
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
@@ -72,7 +82,7 @@ export default function InstitutionSignUpForm() {
         name="name"
         label={
           <span className="text-[18px] font-normal text-text-black2">
-            Institution name
+            Full Name
           </span>
         }
         rules={[{ required: true }]}
@@ -81,7 +91,66 @@ export default function InstitutionSignUpForm() {
           type="text"
           name="name"
           className="border p-3 rounded-xl h-14"
-          placeholder="Enter your the institution’s name"
+          placeholder="Enter your full name"
+        />
+      </Form.Item>
+      <Form.Item
+        className="mb-8"
+        name="hospitalIds"
+        label={
+          <span className="text-[18px] font-normal text-text-black2">
+            What institution are you representing ?
+          </span>
+        }
+        rules={[{ required: true }]}
+      >
+        {loading ? (
+          <BiLoaderAlt className="animate-spin text-2xl" />
+        ) : institutions ? (
+          <Select
+            options={InstitutionType}
+            className="h-14"
+            placeholder="Enter your institution type"
+          />
+        ) : error ? (
+          <p>Error fetching institutions...</p>
+        ) : (
+          "An error occured"
+        )}
+      </Form.Item>
+
+      <Form.Item
+        className="mb-8"
+        name="email"
+        label={
+          <span className="text-[18px] font-normal text-text-black2">
+            What&apos;s your email?
+          </span>
+        }
+        rules={[{ required: true }]}
+      >
+        <Input
+          type="email"
+          name="email"
+          className="border p-3 rounded-xl h-14"
+          placeholder="Enter your email address"
+        />
+      </Form.Item>
+      <Form.Item
+        className="mb-8"
+        name="specialty"
+        label={
+          <span className="text-[18px] font-normal text-text-black2">
+            Specialty
+          </span>
+        }
+        rules={[{ required: true }]}
+      >
+        <Input
+          type="text"
+          name="specialty"
+          className="border p-3 rounded-xl h-14"
+          placeholder="What’s your specialty?"
         />
       </Form.Item>
 
@@ -99,31 +168,13 @@ export default function InstitutionSignUpForm() {
           type="text"
           name="location"
           className="border p-3 rounded-xl h-14"
-          placeholder="Enter your location"
+          placeholder="Enter your Location"
         />
       </Form.Item>
 
       <Form.Item
         className="mb-8"
-        name="email"
-        label={
-          <span className="text-[18px] font-normal text-text-black2">
-            Email address
-          </span>
-        }
-        rules={[{ required: true }]}
-      >
-        <Input
-          type="email"
-          name="email"
-          className="border p-3 rounded-xl h-14"
-          placeholder="Enter your email address"
-        />
-      </Form.Item>
-
-      <Form.Item
-        className="mb-8"
-        name="phoneNo"
+        name="phoneNumber"
         label={
           <span className="text-[18px] font-normal text-text-black2">
             Phone number
@@ -133,45 +184,9 @@ export default function InstitutionSignUpForm() {
       >
         <Input
           type="text"
-          name="phoneNo"
+          name="phoneNumber"
           className="border p-3 rounded-xl h-14"
           placeholder="Enter your phone number"
-        />
-      </Form.Item>
-
-      <Form.Item
-        className="mb-8"
-        name="email"
-        label={
-          <span className="text-[18px] font-normal text-text-black2">
-            Email address
-          </span>
-        }
-        rules={[{ required: true }]}
-      >
-        <Input
-          type="email"
-          name="email"
-          className="border p-3 rounded-xl h-14"
-          placeholder="Enter your email address"
-        />
-      </Form.Item>
-
-      <Form.Item
-        className="mb-8"
-        name="description"
-        label={
-          <span className="text-[18px] font-normal text-text-black2">
-            Description
-          </span>
-        }
-        rules={[{ required: true }]}
-      >
-        <Input
-          type="text"
-          name="description"
-          className="border p-3 rounded-xl h-14"
-          placeholder="Enter your description"
         />
       </Form.Item>
 
@@ -181,6 +196,7 @@ export default function InstitutionSignUpForm() {
           type="submit"
           className="w-full rounded-[40px] h-14 justify-center text-xl font-normal"
           disabled={!submittable}
+          onClick={() => handleDoctorSignUp()}
         >
           {isLoading ? "Loading..." : "Sign Up"}
         </Button>
