@@ -10,18 +10,16 @@ import {
 import {
   ApproveDoctorType,
   ApprovePharmacistType,
+  ApprovePractitionerType,
 } from '@/actions/interfaces/Hospital/app.hospital.interface'
 
-/**
- * todo: implement high order function to determine role of wallet address and serve the correct function to approve practitioner
- */
-
-async function createHospital(
-  regNo: string,
-): Promise<{ success: number; hospitalId: number }> {
+async function createHospital(): Promise<{
+  success: number
+  hospitalId: number
+}> {
   try {
     const contract = await provideContract()
-    const transaction = await contract.createHospital(bytes32ToString(regNo))
+    const transaction = await contract.createHospital()
 
     const receipt = await transaction.wait()
 
@@ -43,13 +41,12 @@ async function createHospital(
 
 async function approveDoctor(args: ApproveDoctorType) {
   try {
-    const { doctorAddress, doctorId, hospitalId, regNo } = args
+    const { doctorAddress, doctorId, hospitalId } = args
     const contract = await provideContract()
     const transaction = await contract.approveDoctor(
       doctorAddress,
       hospitalId,
       doctorId,
-      bytes32ToString(regNo),
     )
 
     const receipt = await transaction.wait()
@@ -73,13 +70,12 @@ async function approveDoctor(args: ApproveDoctorType) {
 
 async function approvePharmacist(args: ApprovePharmacistType) {
   try {
-    const { pharmacistAddress, hospitalId, pharmacistId, regNo } = args
+    const { pharmacistAddress, hospitalId, pharmacistId } = args
     const contract = await provideContract()
     const transaction = await contract.approvePharmacist(
       pharmacistAddress,
       hospitalId,
       pharmacistId,
-      bytes32ToString(regNo),
     )
 
     const receipt = await transaction.wait()
@@ -101,6 +97,50 @@ async function approvePharmacist(args: ApprovePharmacistType) {
   }
 }
 
-async function approvePractitioner() {}
+async function determinePractitionerRole(practitionerId: number) {
+  try {
+    const contract = await provideContract()
+    const [isDoctor, isPharmacist] = await Promise.all([
+      contract.isDoctor(practitionerId),
+      contract.isPharmacist(practitionerId),
+    ])
 
-export { createHospital, approveDoctor, approvePharmacist }
+    if (isDoctor) {
+      return { isDoctor: true, isPharmacist: false }
+    } else if (isPharmacist) {
+      return { isDoctor: false, isPharmacist: true }
+    } else {
+      throw new Error('Address is not a practitioner')
+    }
+  } catch (error) {
+    console.error(error)
+    throw new Error('An error occurred while determining practitioner role')
+  }
+}
+
+async function approvePractitioner(args: ApprovePractitionerType) {
+  const { practitionerAddress, hospitalId, practitionerId } = args
+  try {
+    const { isDoctor, isPharmacist } = await determinePractitionerRole(
+      practitionerId,
+    )
+    if (isDoctor) {
+      return await approveDoctor({
+        doctorAddress: practitionerAddress,
+        doctorId: practitionerId,
+        hospitalId,
+      })
+    } else if (isPharmacist) {
+      return await approvePharmacist({
+        pharmacistAddress: practitionerAddress,
+        pharmacistId: practitionerId,
+        hospitalId,
+      })
+    }
+  } catch (error) {
+    console.error(error)
+    throw new HospitalError('An error occurred while approving practitioner')
+  }
+}
+
+export { createHospital, approvePractitioner }
