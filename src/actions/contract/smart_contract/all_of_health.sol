@@ -78,7 +78,6 @@ contract AllofHealthv2 {
         uint256 doctorsCount;
         uint256 pharmacistsCount;
         address admin;
-        bytes32 regNo;
         approvalType approvalStatus;
     }
 
@@ -86,7 +85,6 @@ contract AllofHealthv2 {
         uint256 doctorId;
         uint256 hospitalId;
         address doctor;
-        bytes32 regNo;
         approvalType approvalStatus;
     }
 
@@ -94,7 +92,6 @@ contract AllofHealthv2 {
         uint256 pharmacistId;
         uint256 hospitalId;
         address pharmacist;
-        bytes32 regNo;
         approvalType approvalStatus;
     }
 
@@ -159,17 +156,15 @@ contract AllofHealthv2 {
     mapping(uint256 => Patient) public patients;
     mapping(uint256 => Doctor) public doctors;
     mapping(uint256 => Pharmacist) public pharmacists;
-    mapping(bytes32 => bool) public hospitalExists;
-    mapping(bytes32 => bool) public doctorExists;
-    mapping(bytes32 => bool) public pharmacistExists;
+    mapping(uint256 => bool) public hospitalExists;
+    mapping(uint256 => bool) public doctorExists;
+    mapping(uint256 => bool) public pharmacistExists;
 
     mapping(uint256 => mapping(address => bool))
         public hospitalApprovedPractitioners;
-    mapping(uint256 => mapping(bytes32 => address)) public hospitalDoctorsRegNo;
+
     mapping(uint256 => mapping(uint256 => address)) public hospitalDoctors;
     mapping(uint256 => mapping(uint256 => address)) public hospitalPharmacists;
-    mapping(uint256 => mapping(bytes32 => address))
-        public hospitalPharmacistRegNo;
 
     mapping(uint256 => mapping(uint256 => MedicalRecord))
         public patientMedicalRecords;
@@ -418,25 +413,17 @@ contract AllofHealthv2 {
         emit SystemAdminRemoved(_admin, systemAdminCount + 1);
     }
 
-    function createHospital(bytes32 _regNo) external {
-        if (_regNo == bytes32(0)) {
-            revert InvalidRegNo();
-        }
-        if (hospitalExists[_regNo]) {
-            revert DuplicateHospitalRegNo();
-        }
-
+    function createHospital() external {
         hospitalCount++;
         Hospital memory hospital = Hospital({
             hospitalId: hospitalCount,
             doctorsCount: 0,
             pharmacistsCount: 0,
             admin: msg.sender,
-            regNo: _regNo,
             approvalStatus: approvalType.Pending
         });
         hospitals[hospitalCount] = hospital;
-        hospitalExists[_regNo] = true;
+        hospitalExists[hospitalCount] = true;
 
         emit HospitalCreated(msg.sender, hospitalCount);
     }
@@ -474,15 +461,10 @@ contract AllofHealthv2 {
 
     function createDoctor(
         uint256 _hospitalId,
-        address _doctorAddress,
-        bytes32 _regNo
+        address _doctorAddress
     ) external hospitalIdCompliance(_hospitalId) {
         if (_doctorAddress == address(0)) {
             revert InvalidAddress();
-        }
-
-        if (_regNo == bytes32(0)) {
-            revert InvalidRegNo();
         }
 
         if (hospitalApprovedPractitioners[_hospitalId][_doctorAddress]) {
@@ -495,11 +477,10 @@ contract AllofHealthv2 {
             doctorId: doctorCount,
             hospitalId: _hospitalId,
             doctor: _doctorAddress,
-            regNo: _regNo,
             approvalStatus: approvalType.Pending
         });
 
-        doctorExists[_regNo] = true;
+        doctorExists[doctorCount] = true;
         doctors[doctorCount] = doctor;
         isDoctor[_doctorAddress] = true;
         emit DoctorAdded(_doctorAddress, _hospitalId, doctorCount);
@@ -508,8 +489,7 @@ contract AllofHealthv2 {
     function approveDoctor(
         address _doctorAddress,
         uint256 _hospitalId,
-        uint256 _doctorId,
-        bytes32 _regNo
+        uint256 _doctorId
     )
         external
         hospitalIdCompliance(_hospitalId)
@@ -526,20 +506,12 @@ contract AllofHealthv2 {
             revert InvalidDoctorId();
         }
 
-        if (_regNo == bytes32(0)) {
-            revert InvalidRegNo();
-        }
-
-        if (!doctorExists[_regNo]) {
+        if (!doctorExists[_doctorId]) {
             revert DoctorNotFound();
         }
 
         if (hospitalApprovedPractitioners[_hospitalId][_doctorAddress]) {
             revert DuplicateDoctorAddress();
-        }
-
-        if (hospitalDoctorsRegNo[_hospitalId][_regNo] == _doctorAddress) {
-            revert DuplicateDoctorRegNo();
         }
 
         approvedDoctorCount++;
@@ -551,7 +523,6 @@ contract AllofHealthv2 {
         }
         hospitalApprovedPractitioners[_hospitalId][_doctorAddress] = true;
         hospitalDoctors[_hospitalId][doctorId] = _doctorAddress;
-        hospitalDoctorsRegNo[_hospitalId][_regNo] = _doctorAddress;
 
         doctors[_doctorId].approvalStatus = approvalType.Approved;
         emit DoctorApproved(_hospitalId, _doctorId, _doctorAddress);
@@ -563,8 +534,7 @@ contract AllofHealthv2 {
     function removeDoctorFromHospital(
         address _doctorAddress,
         uint256 _hospitalId,
-        uint256 _doctorHospitalId,
-        bytes32 _regNo
+        uint256 _doctorHospitalId
     )
         external
         hospitalIdCompliance(_hospitalId)
@@ -583,7 +553,6 @@ contract AllofHealthv2 {
         hospitalApprovedPractitioners[_hospitalId][_doctorAddress] = false;
 
         hospitalDoctors[_hospitalId][_doctorHospitalId] = address(0);
-        hospitalDoctorsRegNo[_hospitalId][_regNo] = address(0);
 
         emit HospitalRemovedDoctor(_doctorAddress, _hospitalId);
     }
@@ -611,15 +580,10 @@ contract AllofHealthv2 {
 
     function createPharmacist(
         uint256 _hospitalId,
-        address _pharmacistAddress,
-        bytes32 _regNo
+        address _pharmacistAddress
     ) external hospitalIdCompliance(_hospitalId) {
         if (_pharmacistAddress == address(0)) {
             revert InvalidAddress();
-        }
-
-        if (_regNo == bytes32(0)) {
-            revert InvalidRegNo();
         }
 
         if (hospitalApprovedPractitioners[_hospitalId][_pharmacistAddress]) {
@@ -632,11 +596,10 @@ contract AllofHealthv2 {
             pharmacistId: pharmacistCount,
             hospitalId: _hospitalId,
             pharmacist: _pharmacistAddress,
-            regNo: _regNo,
             approvalStatus: approvalType.Pending
         });
 
-        pharmacistExists[_regNo] = true;
+        pharmacistExists[pharmacistCount] = true;
         pharmacists[pharmacistCount] = pharmacist;
         isPharmacist[_pharmacistAddress] = true;
 
@@ -646,8 +609,7 @@ contract AllofHealthv2 {
     function approvePharmacist(
         address _pharmacistAddress,
         uint256 _hospitalId,
-        uint256 _pharmacistId,
-        bytes32 _regNo
+        uint256 _pharmacistId
     )
         external
         hospitalIdCompliance(_hospitalId)
@@ -665,21 +627,11 @@ contract AllofHealthv2 {
             revert InvalidPharmacistId();
         }
 
-        if (_regNo == bytes32(0)) {
-            revert InvalidRegNo();
-        }
-
-        if (!pharmacistExists[_regNo]) {
+        if (!pharmacistExists[_pharmacistId]) {
             revert PharmacistNotFound();
         }
 
         if (hospitalApprovedPractitioners[_hospitalId][_pharmacistAddress]) {
-            revert DuplicatePharmacistAddress();
-        }
-
-        if (
-            hospitalPharmacistRegNo[_hospitalId][_regNo] == _pharmacistAddress
-        ) {
             revert DuplicatePharmacistAddress();
         }
 
@@ -693,7 +645,6 @@ contract AllofHealthv2 {
 
         hospitalApprovedPractitioners[_hospitalId][_pharmacistAddress] = true;
         hospitalPharmacists[_hospitalId][pharmacistId] = _pharmacistAddress;
-        hospitalPharmacistRegNo[_hospitalId][_regNo] = _pharmacistAddress;
 
         pharmacists[_pharmacistId].approvalStatus = approvalType.Approved;
         emit PharmacistApproved(_hospitalId, _pharmacistId, _pharmacistAddress);
@@ -705,8 +656,7 @@ contract AllofHealthv2 {
     function removePharmacistFromHospital(
         address _pharmacistAddress,
         uint256 _hospitalId,
-        uint256 _pharmacistHospitalId,
-        bytes32 _regNo
+        uint256 _pharmacistHospitalId
     )
         external
         hospitalIdCompliance(_hospitalId)
@@ -732,7 +682,6 @@ contract AllofHealthv2 {
         hospitalApprovedPractitioners[_hospitalId][_pharmacistAddress] = false;
 
         hospitalPharmacists[_hospitalId][_pharmacistHospitalId] = address(0);
-        hospitalPharmacistRegNo[_hospitalId][_regNo] = address(0);
 
         emit HospitalRemovedPharmacist(_pharmacistAddress, _hospitalId);
     }
