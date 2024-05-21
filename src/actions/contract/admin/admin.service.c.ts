@@ -31,6 +31,38 @@ async function createSystemAdmin(
   }
 }
 
+async function removeAdmin(address: string) {
+  try {
+    const contract = await provideContract()
+    const isSystemAdmin = await contract.systemAdmins(address)
+    if (!isSystemAdmin) {
+      return {
+        success: ErrorCodes.NotFound,
+        message: 'Admin not found',
+      }
+    }
+
+    const transaction = await contract.removeSystemAdmin(address)
+    const receipt = await transaction.wait()
+    const eventResult = await processEvent(
+      receipt,
+      EventNames.SystemAdminRemoved,
+      ContractEvents.SystemAdminRemoved,
+    )
+
+    const addressRemoved = String(eventResult.admin)
+
+    return {
+      success: ErrorCodes.Success,
+      adminId: Number(eventResult.adminId),
+      removedAddress: addressRemoved,
+    }
+  } catch (error) {
+    console.error(error)
+    throw new AdminError('Error removing admin from contract')
+  }
+}
+
 async function approveHospital(hospitalId: number) {
   try {
     const contract = await provideContract()
@@ -55,4 +87,4 @@ async function approveHospital(hospitalId: number) {
   }
 }
 
-export { createSystemAdmin, approveHospital }
+export { createSystemAdmin, approveHospital, removeAdmin }
