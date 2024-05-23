@@ -50,7 +50,7 @@ export enum ErrorCodes {
 export enum ContractEvents {
   PatientAdded = 'event PatientAdded(address indexed patient, uint256 indexed patientId)',
   DoctorAdded = 'event DoctorAdded(address indexed doctor, uint256 indexed hospitalId, uint256 indexed doctorId)',
-  PharmacistAdded = 'event PharmacistAdded(address indexed pharmacist, uint256 indexed hospitalId, uint256 indexed pharmacistId',
+  PharmacistAdded = 'event PharmacistAdded(address indexed pharmacist, uint256 indexed hospitalId, uint256 indexed pharmacistId)',
   HospitalCreated = ' event HospitalCreated(address indexed admin, uint256 indexed hospitalId)',
   SystemAdminAdded = 'event SystemAdminAdded(address indexed admin, uint256 indexed adminId)',
   HospitalApproved = 'event HospitalApproved(uint256 indexed hospitalId)',
