@@ -34,16 +34,16 @@ export default function PharmacistSignUpForm() {
     })) ?? [];
   console.log(values);
 
-  const createDoctorId = async () => {
-    const result = await addPharmacist(Number(values.hospitalIds));
+  const createPharmacistId = async () => {
+    const result = await addPharmacist(values.hospitalIds);
 
     //This returns an id which will be passed to the database when calling the function
     setPharmacistId(Number(result.pharmacistId));
   };
 
-  const handleDoctorSignUp = async () => {
+  const handlePharmacistSignUp = async () => {
     setIsLoading(true);
-    await createDoctorId();
+    await createPharmacistId();
   };
 
   useEffect(() => {
@@ -179,6 +179,7 @@ export default function PharmacistSignUpForm() {
           type="submit"
           className="w-full rounded-[40px] h-14 justify-center text-xl font-normal"
           disabled={!submittable}
+          onClick={() => handlePharmacistSignUp()}
         >
           {isLoading ? "Loading..." : "Sign Up"}
         </Button>

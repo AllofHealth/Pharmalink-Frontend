@@ -1,5 +1,7 @@
 import useAxios from "@/lib/hooks/useAxios";
 import type {
+  Admin,
+  GetAdminNotExistMessage,
   GetDoctorMessage,
   GetDoctorNotExistMessage,
   GetPatientMessage,
@@ -163,6 +165,59 @@ export const useGetPharmacistByAddress = ({
 
   return {
     pharmacistData,
+    loading,
+    error,
+  };
+};
+
+export const useGetAdminByAddress = ({
+  connected,
+  address,
+}: {
+  connected: boolean;
+  address: string;
+}) => {
+  const [adminData, setAdminData] = useState<
+    Admin | GetAdminNotExistMessage | null
+  >(null);
+  const [loading, setLoading] = useState(true);
+  const { axios } = useAxios({
+    baseURL: process.env.NEXT_PUBLIC_URL_BACKEND,
+  });
+  const [error, setError] = useState(null);
+
+  const fetchAdminData = async () => {
+    if (!connected) {
+      return;
+    }
+
+    try {
+      const adminDataResponse = await axios.get(
+        `/api/admin/getAdminByAddress?walletAddress=${address}`
+      );
+      setAdminData(adminDataResponse.data);
+    } catch (error: any) {
+      console.error("Error getting admin by address:", error);
+      setError(error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    void fetchAdminData();
+  }, [connected, address]);
+
+  if (!connected) {
+    return {
+      adminData: null,
+      loading: false,
+      error: null,
+    };
+  }
+
+  return {
+    adminData,
     loading,
     error,
   };

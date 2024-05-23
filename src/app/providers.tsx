@@ -22,6 +22,7 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type React from "react";
 import type { ReactNode } from "react";
+import { Toaster } from "sonner";
 
 const { wallets } = getDefaultWallets();
 
@@ -47,6 +48,7 @@ const queryClient = new QueryClient();
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <WagmiProvider config={config}>
+      <Toaster richColors position="top-right" closeButton />
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>{children}</RainbowKitProvider>
       </QueryClientProvider>

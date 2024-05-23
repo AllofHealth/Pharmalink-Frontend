@@ -28,16 +28,16 @@ export const createPatient = async ({
       name: patientValues.name,
       age: Number(patientValues.age),
       email: patientValues.email,
-      address,
+      address: patientValues.address,
       city: patientValues.city,
-      walletAddress: patientValues.walletAddress,
+      walletAddress: address,
       bloodGroup: patientValues.bloodGroup,
       genotype: patientValues.genotype,
     });
 
     if (response.data) {
       toast.success("Patient created successfully!. Please sign in.");
-      router.push("/sign-in/user");
+      router.push("/dashboard/patient");
       console.log(response);
     }
   } catch (err: any) {
@@ -78,7 +78,7 @@ export const createDoctor = async ({
 
     if (response.data) {
       toast.success("Doctor created successfully!. Please sign in.");
-      router.push("/sign-in/user");
+      router.push("/dashboard/doctor");
       console.log(response);
     }
   } catch (err: any) {
@@ -118,7 +118,7 @@ export const createPharmacist = async ({
 
     if (response.data) {
       toast.success("Pharmacist created successfully!. Please sign in.");
-      router.push("/sign-in/user");
+      router.push("/dashboard/pharmacist");
       console.log(response);
     }
   } catch (err: any) {
@@ -155,7 +155,7 @@ export const createSystemAdmin = async ({
 
     if (response.data) {
       toast.success("System Admin created successfully!. Please sign in.");
-      router.push("/sign-in/user");
+      router.push("/dashboard/system-admin");
       console.log(response);
     }
   } catch (err: any) {
@@ -195,7 +195,7 @@ export const createInstitution = async ({
 
     if (response.data) {
       toast.success("Institution created successfully!. Please sign in.");
-      router.push("/sign-in/user");
+      router.push("/dashboard/institution");
       console.log(response);
     }
   } catch (err: any) {

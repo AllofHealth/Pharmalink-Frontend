@@ -35,7 +35,7 @@ export default function DoctorSignUpForm() {
   console.log(values);
 
   const createDoctorId = async () => {
-    const result = await addDoctor(Number(values.hospitalIds));
+    const result = await addDoctor(values.hospitalIds);
 
     //This returns an id which will be passed to the database when calling the function
     setDoctorId(Number(result.doctorId));

@@ -31,7 +31,7 @@ export default function InstitutionSignUpForm() {
     setInstitutionId(Number(result.hospitalId));
   };
 
-  const handleDoctorSignUp = async () => {
+  const handleInstitutionSignUp = async () => {
     setIsLoading(true);
     await createInstitutionId();
   };
@@ -141,24 +141,6 @@ export default function InstitutionSignUpForm() {
 
       <Form.Item
         className="mb-8"
-        name="email"
-        label={
-          <span className="text-[18px] font-normal text-text-black2">
-            Email address
-          </span>
-        }
-        rules={[{ required: true }]}
-      >
-        <Input
-          type="email"
-          name="email"
-          className="border p-3 rounded-xl h-14"
-          placeholder="Enter your email address"
-        />
-      </Form.Item>
-
-      <Form.Item
-        className="mb-8"
         name="description"
         label={
           <span className="text-[18px] font-normal text-text-black2">
@@ -181,6 +163,7 @@ export default function InstitutionSignUpForm() {
           type="submit"
           className="w-full rounded-[40px] h-14 justify-center text-xl font-normal"
           disabled={!submittable}
+          onClick={() => handleInstitutionSignUp()}
         >
           {isLoading ? "Loading..." : "Sign Up"}
         </Button>

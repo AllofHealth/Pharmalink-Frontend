@@ -110,6 +110,22 @@ export interface GetPharmacistSuccessResponse {
   error: any;
 }
 
+export interface Admin {
+  _id: string;
+  id: number;
+  name: string;
+  profilePicture: string;
+  email: string;
+  walletAddress: string;
+  category: string;
+  __v: number;
+}
+
+export interface GetAdminNotExistMessage {
+  success: number;
+  message: string;
+}
+
 export interface CreatePatientValues {
   name: string;
   age: number;

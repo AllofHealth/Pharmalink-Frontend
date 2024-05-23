@@ -8,18 +8,20 @@ import Button from "@/components/button/Button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  useGetAdminByAddress,
   useGetDoctorByAddress,
   useGetPatientByAddress,
   useGetPharmacistByAddress,
 } from "@/lib/queries/auth";
-import { useDebounce } from "use-debounce";
 import { toast } from "sonner";
-import useAxios from "@/lib/hooks/useAxios";
+import type { Admin, GetAdminNotExistMessage } from "@/lib/types";
 
 const options = [
   { value: "Patient", label: "Patient" },
   { value: "Doctor", label: "Doctor" },
   { value: "Pharmacist", label: "Pharmacist" },
+  { value: "Institution", label: "Institution" },
+  { value: "Admin", label: "System Admin" },
 ];
 
 export default function UserSignUp() {
@@ -42,9 +44,16 @@ export default function UserSignUp() {
     connected: isConnected,
     address: address ? address : "",
   });
+
+  const { adminData } = useGetAdminByAddress({
+    connected: isConnected,
+    address: address ? address : "",
+  });
+
   console.log(patientData);
   console.log(doctorData);
   console.log(pharmacistData);
+  console.log(adminData);
 
   const signUp = () => {
     console.log("Sign-up initiated"); // Check if this appears when button is clicked
@@ -74,6 +83,15 @@ export default function UserSignUp() {
       ) {
         toast.success("Pharmacist exists");
         router.push("/dashboard/pharmacist");
+      }
+    } else if (selectedUserType === "Institution") {
+      router.push("/sign-up/institution");
+    } else if (selectedUserType === "Admin") {
+      if ((adminData as GetAdminNotExistMessage)?.success === 404) {
+        router.push("/sign-up/system_admin");
+      } else if ((adminData as Admin)?.id) {
+        toast.success("System Admin exists");
+        router.push("/dashboard/system_admin");
       }
     }
   };

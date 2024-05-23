@@ -7,15 +7,23 @@ import {
   toggleApproveInstitutionModal,
   toggleSuccessfullyAddedModal,
 } from "@/lib/redux/slices/modals/modalSlice";
+import type { Institution } from "@/lib/types";
+import { useAccount } from "wagmi";
+import { approveInstitution } from "@/lib/mutations/system-admin";
+import useAxios from "@/lib/hooks/useAxios";
 
 const ApproveInstitutionModal = ({
   container,
   title,
+  institution,
 }: {
   container: HTMLElement;
   title: string;
+  institution: Institution;
 }) => {
   const dispatch = useDispatch();
+  const { address } = useAccount();
+  const { axios } = useAxios({});
 
   const isApproveInstitutionModalOpen = useSelector(
     (state: RootState) => state.modal.isApproveInstitutionModalOpen
@@ -27,10 +35,6 @@ const ApproveInstitutionModal = ({
 
   const handleAccessDenied = () => {
     dispatch(toggleAccessDeniedModal());
-  };
-
-  const handleToggleSuccessfullyAdded = () => {
-    dispatch(toggleSuccessfullyAddedModal());
   };
 
   return (
@@ -51,7 +55,7 @@ const ApproveInstitutionModal = ({
                 {title}
               </Modal.Title>
               <p className="lg:my-2 text-[10px] lg:text-base">
-                Approve Hadas health centre into AllOf health?
+                Approve {institution?.name} into AllOf health?
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -63,7 +67,14 @@ const ApproveInstitutionModal = ({
               </Modal.Close>
               <Modal.Close
                 className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
-                onClick={() => handleToggleSuccessfullyAdded()}
+                onClick={() =>
+                  approveInstitution({
+                    institutionId: institution.id,
+                    axios,
+                    address,
+                    dispatch,
+                  })
+                }
               >
                 Approve
               </Modal.Close>

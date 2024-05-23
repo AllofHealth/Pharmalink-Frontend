@@ -116,7 +116,7 @@ const DesignateRoles = () => {
       </h1>
       <AllOfHealthTable
         labels={[
-          "Practitioner's Name Name",
+          "Practitioner's Name",
           "City",
           "Wallet Address",
           "Phone Number",

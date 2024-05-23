@@ -16,13 +16,6 @@ export default function SignIn() {
     }
   };
 
-  // useEffect(() => {
-  //   if (isConnected) {
-  //     // Redirect to a different page if a wallet is connected
-  //     router.push("/sign-in/user");
-  //   }
-  // }, [isConnected, router]);
-
   return (
     <div className="flex">
       <Image
