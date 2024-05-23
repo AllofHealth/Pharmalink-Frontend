@@ -13,7 +13,8 @@ async function addPharmacist(
 ): Promise<{ success: number; pharmacistId: number; address: string }> {
   try {
     const contract = await provideContract()
-    const address = await getSigner().then((signer) => signer.getAddress())
+    const signer = await getSigner()
+    const address = await signer.getAddress()
 
     const transaction = await contract.createPharmacist(hospitalIds, address)
 
