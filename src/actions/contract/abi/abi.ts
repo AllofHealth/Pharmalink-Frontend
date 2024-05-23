@@ -1,3 +1,7 @@
+/**
+ * @file: abi.ts
+ * @dev update abi
+ */
 export const abi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
   { type: 'receive', stateMutability: 'payable' },
