@@ -4,7 +4,7 @@ import { Icon } from "@/components/icon/Icon";
 import { RootState } from "@/lib/redux/rootReducer";
 import { toggleSystemAdminSidebar } from "@/lib/redux/slices/modals/modalSlice";
 import { setSystemAdminCurrentTab } from "@/lib/redux/slices/systemAdmin/systemAdminSlice";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { setInstitutionCurrentTab } from "@/lib/redux/slices/institution/institutionSlice";
 import { setDoctorCurrentTab } from "@/lib/redux/slices/doctor/doctorSlice";
 import { setPatientCurrentTab } from "@/lib/redux/slices/patient/patientSlice";
@@ -13,6 +13,7 @@ import { setPharmacistCurrentTab } from "@/lib/redux/slices/pharmacist/pharmacis
 const Sidebar = ({ container }: { container: HTMLElement }) => {
   const dispatch = useDispatch();
   const pathname = usePathname();
+  const router = useRouter();
 
   const isSidebarOpen = useSelector(
     (state: RootState) => state.modal.isSidebarOpen
@@ -247,7 +248,10 @@ const Sidebar = ({ container }: { container: HTMLElement }) => {
                   Privacy and Security
                 </span>
               ) : null}
-              <span className="flex items-center gap-4 mt-40">
+              <span
+                className="flex items-center gap-4 mt-40"
+                onClick={() => router.push("/sign-in")}
+              >
                 <Icon name="LogOut" />
                 Log Out
               </span>

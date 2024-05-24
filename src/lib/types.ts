@@ -189,3 +189,25 @@ export type InstitutionApiResponse = {
   success: number;
   hospitals: Institution[];
 };
+
+export interface Practitioner {
+  _id: string;
+  id: number;
+  hospitalIds: number[];
+  numberOfApprovals: number;
+  name: string;
+  email: string;
+  profilePicture: string;
+  location: string;
+  phoneNumber: string;
+  walletAddress: string;
+  status: string;
+  category: string;
+  approvalList: any[];
+  __v: number;
+}
+
+export interface PractitionersApiResponse {
+  success: number;
+  allPractitioners: Practitioner[];
+}

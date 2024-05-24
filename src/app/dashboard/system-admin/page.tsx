@@ -9,9 +9,12 @@ import LogOut from "../../../../public/assets/svgs/log-out";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/rootReducer";
 import { setSystemAdminCurrentTab } from "@/lib/redux/slices/systemAdmin/systemAdminSlice";
+import { useRouter } from "next/navigation";
 
 export default function SystemAdmin() {
   const dispatch = useDispatch();
+  const router = useRouter();
+
   const systemAdminCurrentTab = useSelector(
     (state: RootState) => state.systemAdmin.systemAdminCurrentTab
   );
@@ -44,7 +47,10 @@ export default function SystemAdmin() {
             Designate Roles
           </Tabs.Trigger>
 
-          <span className="flex items-center gap-4 mt-60">
+          <span
+            className="flex items-center gap-4 mt-60"
+            onClick={() => router.push("/sign-in")}
+          >
             <LogOut />
             Log Out
           </span>

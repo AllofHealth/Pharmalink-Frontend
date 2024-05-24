@@ -3,19 +3,24 @@ import { Icon } from "@/components/icon/Icon";
 import { useDispatch, useSelector } from "react-redux";
 import { type RootState } from "@/lib/redux/rootReducer";
 import {
-  toggleAcceptAdminModal,
   toggleActionNeededRoleModal,
   toggleDeniedAdminModal,
 } from "@/lib/redux/slices/modals/modalSlice";
+import type { Practitioner } from "@/lib/types";
+import { designateRoles } from "@/lib/mutations/system-admin";
+import useAxios from "@/lib/hooks/useAxios";
 
 const ActionNeededRoleModal = ({
   container,
   title,
+  practitioner,
 }: {
   container: HTMLElement;
   title: string;
+  practitioner: Practitioner;
 }) => {
   const dispatch = useDispatch();
+  const { axios } = useAxios({});
 
   const isActionNeededRoleModalOpen = useSelector(
     (state: RootState) => state.modal.isActionNeededRoleModalOpen
@@ -23,10 +28,6 @@ const ActionNeededRoleModal = ({
 
   const handleToggleModal = () => {
     dispatch(toggleActionNeededRoleModal());
-  };
-
-  const handleToggleAcceptAdmin = () => {
-    dispatch(toggleAcceptAdminModal());
   };
 
   const handleAccessDenied = () => {
@@ -48,7 +49,7 @@ const ActionNeededRoleModal = ({
                 {title}
               </Modal.Title>
               <p className="lg:my-2 text-[10px] lg:text-base">
-                Make Nicci Troiani a system admin
+                Make {practitioner?.name} a system admin
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -60,7 +61,16 @@ const ActionNeededRoleModal = ({
               </Modal.Close>
               <Modal.Close
                 className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
-                onClick={() => handleToggleAcceptAdmin()}
+                onClick={() =>
+                  designateRoles({
+                    practitionerId: practitioner.id,
+                    axios,
+                    address: practitioner.walletAddress,
+                    name: practitioner.name,
+                    email: practitioner.email,
+                    dispatch,
+                  })
+                }
               >
                 Approve
               </Modal.Close>
