@@ -57,6 +57,7 @@ export enum ContractEvents {
   DoctorApproved = 'event DoctorApproved(uint256 indexed hospitalId, uint256 indexed doctorId, address indexed doctor)',
   PharmacistApproved = 'event PharmacistApproved(uint256 indexed hospitalId, uint256 indexed pharmacistId, address indexed pharmacist)',
   SystemAdminRemoved = 'event SystemAdminRemoved(address indexed admin, uint256 indexed adminId)',
+  PatientFamilyMemberAdded = 'event PatientFamilyMemberAdded(uint256 indexed principalPatientId, uint256 indexed patientId)',
 }
 
 export enum EventNames {
@@ -69,6 +70,7 @@ export enum EventNames {
   DoctorApproved = 'DoctorApproved',
   PharmacistApproved = 'PharmacistApproved',
   SystemAdminRemoved = 'SystemAdminRemoved',
+  PatientFamilyMemberAdded = 'PatientFamilyMemberAdded',
 }
 
 export type ProfileType = {
