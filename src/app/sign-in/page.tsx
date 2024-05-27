@@ -1,22 +1,20 @@
 "use client";
-// import Button from "@/components/button/Button";
 import { Icon } from "@/components/icon/Icon";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Button from "@/components/button/Button";
 
 export default function SignIn() {
   const router = useRouter();
   const { isConnected } = useAccount();
 
-  useEffect(() => {
+  const signIn = () => {
     if (isConnected) {
-      // Redirect to a different page if a wallet is connected
-      router.push("/sign-in/user");
+      router.push("/sign-up/user");
     }
-  }, [isConnected, router]);
+  };
 
   return (
     <div className="flex">
@@ -39,6 +37,13 @@ export default function SignIn() {
               Sign in with NEAR Blockchain
             </Button> */}
             <ConnectButton />
+            <Button
+              variant="primary"
+              className="rounded-xl text-center justify-self-center w-max mx-auto"
+              onClick={() => signIn()}
+            >
+              Sign Up
+            </Button>
           </div>
         </div>
       </section>

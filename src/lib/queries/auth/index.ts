@@ -1,5 +1,7 @@
 import useAxios from "@/lib/hooks/useAxios";
 import type {
+  Admin,
+  GetAdminNotExistMessage,
   GetDoctorMessage,
   GetDoctorNotExistMessage,
   GetPatientMessage,
@@ -7,6 +9,7 @@ import type {
   GetPharmacistMessage,
   GetPharmacistNotExistMessage,
 } from "@/lib/types";
+import { useEffect, useState } from "react";
 
 export const useGetPatientByAddress = ({
   connected,
@@ -15,22 +18,47 @@ export const useGetPatientByAddress = ({
   connected: boolean;
   address: string;
 }) => {
-  const { data, loading, error } = useAxios<
-    GetPatientMessage | GetPatientNotExistMessage
-  >({
-    endpoint: `api/patient/getPatientByAddress?walletAddress=${address}`,
+  const [patientData, setPatientData] = useState<
+    GetPatientMessage | GetPatientNotExistMessage | null
+  >(null);
+  const [loading, setLoading] = useState(true);
+  const { axios } = useAxios({
+    baseURL: process.env.NEXT_PUBLIC_URL_BACKEND,
   });
+  const [error, setError] = useState(null);
+
+  const fetchPatientData = async () => {
+    if (!connected) {
+      return;
+    }
+
+    try {
+      const patientDataResponse = await axios.get(
+        `/api/patient/getPatientByAddress?walletAddress=${address}`
+      );
+      setPatientData(patientDataResponse.data);
+    } catch (error: any) {
+      console.error("Error getting patient by address:", error);
+      setError(error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    void fetchPatientData();
+  }, [connected, address]);
 
   if (!connected) {
     return {
-      data: null,
+      patientData: null,
       loading: false,
       error: null,
     };
   }
 
   return {
-    data,
+    patientData,
     loading,
     error,
   };
@@ -43,22 +71,47 @@ export const useGetDoctorByAddress = ({
   connected: boolean;
   address: string;
 }) => {
-  const { data, loading, error } = useAxios<
-    GetDoctorMessage | GetDoctorNotExistMessage
-  >({
-    endpoint: `api/doctor/doctorByAddress??walletAddress=${address}`,
+  const [doctorData, setDoctorData] = useState<
+    GetDoctorMessage | GetDoctorNotExistMessage | null
+  >(null);
+  const [loading, setLoading] = useState(true);
+  const { axios } = useAxios({
+    baseURL: process.env.NEXT_PUBLIC_URL_BACKEND,
   });
+  const [error, setError] = useState(null);
+
+  const fetchDoctorData = async () => {
+    if (!connected) {
+      return;
+    }
+
+    try {
+      const doctorDataResponse = await axios.get(
+        `/api/doctor/doctorByAddress?walletAddress=${address}`
+      );
+      setDoctorData(doctorDataResponse.data);
+    } catch (error: any) {
+      console.error("Error getting doctor by address:", error);
+      setError(error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    void fetchDoctorData();
+  }, [connected, address]);
 
   if (!connected) {
     return {
-      data: null,
+      doctorData: null,
       loading: false,
       error: null,
     };
   }
 
   return {
-    data,
+    doctorData,
     loading,
     error,
   };
@@ -71,22 +124,100 @@ export const useGetPharmacistByAddress = ({
   connected: boolean;
   address: string;
 }) => {
-  const { data, loading, error } = useAxios<
-    GetPharmacistMessage | GetPharmacistNotExistMessage
-  >({
-    endpoint: `api/pharmacist/getPharmacist?walletAddress=${address}`,
+  const [pharmacistData, setPharmacistData] = useState<
+    GetPharmacistMessage | GetPharmacistNotExistMessage | null
+  >(null);
+  const [loading, setLoading] = useState(true);
+  const { axios } = useAxios({
+    baseURL: process.env.NEXT_PUBLIC_URL_BACKEND,
   });
+  const [error, setError] = useState(null);
+
+  const fetchPharmacistData = async () => {
+    if (!connected) {
+      return;
+    }
+
+    try {
+      const pharmacistDataResponse = await axios.get(
+        `/api/pharmacist/getPharmacist?walletAddress=${address}`
+      );
+      setPharmacistData(pharmacistDataResponse.data);
+    } catch (error: any) {
+      console.error("Error getting pharmacist by address:", error);
+      setError(error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    void fetchPharmacistData();
+  }, [connected, address]);
 
   if (!connected) {
     return {
-      data: null,
+      pharmacistData: null,
       loading: false,
       error: null,
     };
   }
 
   return {
-    data,
+    pharmacistData,
+    loading,
+    error,
+  };
+};
+
+export const useGetAdminByAddress = ({
+  connected,
+  address,
+}: {
+  connected: boolean;
+  address: string;
+}) => {
+  const [adminData, setAdminData] = useState<
+    Admin | GetAdminNotExistMessage | null
+  >(null);
+  const [loading, setLoading] = useState(true);
+  const { axios } = useAxios({
+    baseURL: process.env.NEXT_PUBLIC_URL_BACKEND,
+  });
+  const [error, setError] = useState(null);
+
+  const fetchAdminData = async () => {
+    if (!connected) {
+      return;
+    }
+
+    try {
+      const adminDataResponse = await axios.get(
+        `/api/admin/getAdminByAddress?walletAddress=${address}`
+      );
+      setAdminData(adminDataResponse.data);
+    } catch (error: any) {
+      console.error("Error getting admin by address:", error);
+      setError(error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    void fetchAdminData();
+  }, [connected, address]);
+
+  if (!connected) {
+    return {
+      adminData: null,
+      loading: false,
+      error: null,
+    };
+  }
+
+  return {
+    adminData,
     loading,
     error,
   };

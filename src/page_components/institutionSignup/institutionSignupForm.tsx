@@ -2,9 +2,12 @@
 import { Form, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { toast } from "sonner";
 import Button from "@/components/button/Button";
+import type { CreateInstitutionValues } from "@/lib/types";
+import { useAccount } from "wagmi";
+import useAxios from "@/lib/hooks/useAxios";
+import { createHospital } from "@/actions/contract/hospital/hospital.service.c";
+import { createInstitution } from "@/lib/mutations/auth";
 
 export interface ISignIn {
   email: string;
@@ -15,33 +18,36 @@ export default function InstitutionSignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [form] = Form.useForm();
-  const values = Form.useWatch([], form);
+  const values = Form.useWatch<CreateInstitutionValues>([], form);
   const [submittable, setSubmittable] = useState(false);
+  const { address } = useAccount();
+  const [institutionId, setInstitutionId] = useState(0);
+  const { axios } = useAxios({});
 
-  const onFinish = (values: any) => {
-    handleSignIn(values);
+  const createInstitutionId = async () => {
+    const result = await createHospital();
+
+    //This returns an id which will be passed to the database when calling the function
+    setInstitutionId(Number(result.hospitalId));
   };
 
-  const handleSignIn = async (data: ISignIn) => {
-    const { email, password } = data;
+  const handleInstitutionSignUp = async () => {
     setIsLoading(true);
-    // router.prefetch("./app/user-management")
-    const res = await signIn("credentials", {
-      email,
-      password,
-      callbackUrl: "/app/user-management?usertype=verified_users",
-      redirect: false,
-      type: "admin",
-    });
-
-    if (res?.ok) {
-      router.push(res.url!);
-      setIsLoading(false);
-    } else {
-      toast.error(res?.error);
-      setIsLoading(false);
-    }
+    await createInstitutionId();
   };
+
+  useEffect(() => {
+    if (institutionId > 0) {
+      createInstitution({
+        institutionId,
+        institutionValues: values,
+        axios,
+        router,
+        address,
+      });
+    }
+    console.log(institutionId);
+  }, [institutionId]);
 
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
@@ -54,15 +60,8 @@ export default function InstitutionSignUpForm() {
     );
   }, [values]);
 
-  const InstitutionType = [
-    { value: "Public", label: "Public" },
-    { value: "Private", label: "Private" },
-  ];
-
   return (
     <Form
-      onFinish={onFinish}
-      initialValues={{ email: "" }}
       layout="vertical"
       form={form}
       autoComplete="on"
@@ -70,65 +69,49 @@ export default function InstitutionSignUpForm() {
     >
       <Form.Item
         className="mb-8"
-        name="institution_name"
+        name="name"
         label={
           <span className="text-[18px] font-normal text-text-black2">
             Institution name
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="institution_name"
+          name="name"
           className="border p-3 rounded-xl h-14"
           placeholder="Enter your the institution’s name"
         />
       </Form.Item>
-      <Form.Item
-        className="mb-8"
-        name="institution_type"
-        label={
-          <span className="text-[18px] font-normal text-text-black2">
-            Institution type
-          </span>
-        }
-        // rules={[{ required: true }]}
-      >
-        <Select
-          options={InstitutionType}
-          className="h-14"
-          placeholder="Enter your institution type"
-        />
-      </Form.Item>
 
       <Form.Item
         className="mb-8"
-        name="physical_address"
+        name="location"
         label={
           <span className="text-[18px] font-normal text-text-black2">
-            Physical Address
+            Location
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="physical_address"
+          name="location"
           className="border p-3 rounded-xl h-14"
-          placeholder="Enter your physical address"
+          placeholder="Enter your location"
         />
       </Form.Item>
 
       <Form.Item
         className="mb-8"
-        name="institution_name"
+        name="email"
         label={
           <span className="text-[18px] font-normal text-text-black2">
             Email address
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="email"
@@ -140,17 +123,17 @@ export default function InstitutionSignUpForm() {
 
       <Form.Item
         className="mb-8"
-        name="phone_number"
+        name="phoneNo"
         label={
           <span className="text-[18px] font-normal text-text-black2">
             Phone number
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="phone_number"
+          name="phoneNo"
           className="border p-3 rounded-xl h-14"
           placeholder="Enter your phone number"
         />
@@ -158,30 +141,31 @@ export default function InstitutionSignUpForm() {
 
       <Form.Item
         className="mb-8"
-        name="institution_reg_number"
+        name="description"
         label={
           <span className="text-[18px] font-normal text-text-black2">
-            Institution Registration Number
+            Description
           </span>
         }
-        // rules={[{ required: true }]}
+        rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="institution_reg_number"
+          name="description"
           className="border p-3 rounded-xl h-14"
-          placeholder="Enter the institution’s registration number provided 
-          by the government"
+          placeholder="Enter your description"
         />
       </Form.Item>
+
       <Form.Item>
         <Button
           variant="secondary"
           type="submit"
           className="w-full rounded-[40px] h-14 justify-center text-xl font-normal"
-          // disabled={!submittable}
+          disabled={!submittable}
+          onClick={() => handleInstitutionSignUp()}
         >
-          {isLoading ? "Loading..." : "Register"}
+          {isLoading ? "Loading..." : "Sign Up"}
         </Button>
       </Form.Item>
       <p className="text-center text-[15px] font-normal text-text-black3">

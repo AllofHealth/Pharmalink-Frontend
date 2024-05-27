@@ -7,8 +7,8 @@ const FooterLinkedIn = () => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_2131_119)">
-        <g clip-path="url(#clip1_2131_119)">
+      <g clipPath="url(#clip0_2131_119)">
+        <g clipPath="url(#clip1_2131_119)">
           <path
             d="M18.375 1H5.625C2.5184 1 0 3.41347 0 6.39062V18.6094C0 21.5865 2.5184 24 5.625 24H18.375C21.4816 24 24 21.5865 24 18.6094V6.39062C24 3.41347 21.4816 1 18.375 1Z"
             fill="white"

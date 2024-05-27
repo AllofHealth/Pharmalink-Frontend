@@ -1,6 +1,3 @@
-"use client";
-
-import addPatient from "@/actions/contract/patient/patient.service.c";
 import { Icon } from "@/components/icon/Icon";
 import PatientSignUpForm from "@/page_components/patientSignUp/patientSignUpForm";
 import Image from "next/image";
@@ -22,8 +19,7 @@ export default function HealthProfessionalSignUp() {
             Create an account
           </h2>
           <p className="text-base font-normal text-center max-w-[460px] mb-8">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
-            lobortis maximus
+            We are ready ready to empower your health Journey
           </p>
           <PatientSignUpForm />
         </div>

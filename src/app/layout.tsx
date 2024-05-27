@@ -7,8 +7,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import rootReducer from "@/lib/redux/rootReducer";
 import "@rainbow-me/rainbowkit/styles.css";
 import { Providers } from "./providers";
+import { Toaster } from "sonner";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 const store = configureStore({
   reducer: rootReducer,

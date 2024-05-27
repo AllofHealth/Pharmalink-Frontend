@@ -8,77 +8,92 @@ import Button from "@/components/button/Button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  useGetAdminByAddress,
   useGetDoctorByAddress,
   useGetPatientByAddress,
   useGetPharmacistByAddress,
 } from "@/lib/queries/auth";
-import { useDebounce } from "use-debounce";
 import { toast } from "sonner";
+import type { Admin, GetAdminNotExistMessage } from "@/lib/types";
 
 const options = [
   { value: "Patient", label: "Patient" },
   { value: "Doctor", label: "Doctor" },
   { value: "Pharmacist", label: "Pharmacist" },
+  { value: "Institution", label: "Institution" },
+  { value: "Admin", label: "System Admin" },
 ];
 
 export default function UserSignUp() {
   const [selectedUserType, setSelectedUserType] = useState("");
   const router = useRouter();
   const { address, isConnected } = useAccount();
-  const [debouncedAddress] = useDebounce(address, 1000); // Debounce address changes by 500ms
   const [isLoading, setIsLoading] = useState(false);
 
-  const { data: patientData } = useGetPatientByAddress({
+  const { patientData } = useGetPatientByAddress({
     connected: isConnected,
-    address: debouncedAddress ? debouncedAddress : "",
+    address: address ? address : "",
   });
 
-  const { data: doctorData } = useGetDoctorByAddress({
+  const { doctorData } = useGetDoctorByAddress({
     connected: isConnected,
-    address: debouncedAddress ? debouncedAddress : "",
+    address: address ? address : "",
   });
 
-  const { data: pharmacistData } = useGetPharmacistByAddress({
+  const { pharmacistData } = useGetPharmacistByAddress({
     connected: isConnected,
-    address: debouncedAddress ? debouncedAddress : "",
+    address: address ? address : "",
   });
+
+  const { adminData } = useGetAdminByAddress({
+    connected: isConnected,
+    address: address ? address : "",
+  });
+
+  console.log(patientData);
+  console.log(doctorData);
+  console.log(pharmacistData);
+  console.log(adminData);
 
   const signUp = () => {
     console.log("Sign-up initiated"); // Check if this appears when button is clicked
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
 
-    setTimeout(() => {
-      // Added timeout to simulate async operation
-      if (selectedUserType === "Patient") {
-        if (patientData?.success === 404) {
-          console.log("Patient not found, routing to sign-up");
-          router.push("/sign-up/patient"); // Routing to patient sign-up
-        } else if (patientData?.success === 200 && "patient" in patientData) {
-          console.log("Patient found, routing to sign-in");
-          router.push("/sign-in/user");
-          toast.success("User exists, sign in please.");
-        }
-      } else if (selectedUserType === "Doctor") {
-        if (doctorData?.success === 404) {
-          router.push("/sign-up/health_professional");
-        } else if (doctorData?.success === 200 && "doctor" in doctorData) {
-          router.push("/sign-in/user");
-          toast.success("Doctor exists, sign in please.");
-        }
-      } else if (selectedUserType === "Pharmacist") {
-        if (pharmacistData?.success === 404) {
-          router.push("/sign-up/health_professional");
-        } else if (
-          pharmacistData?.success === 200 &&
-          "doctor" in pharmacistData
-        ) {
-          router.push("/sign-in/user");
-          toast.success("Pharmacist exists, sign in please.");
-        }
+    if (selectedUserType === "Patient") {
+      if (patientData?.success === 404) {
+        console.log("Patient not found, routing to sign-up");
+        router.push("/sign-up/patient"); // Routing to patient sign-up
+      } else if (patientData?.success === 200 && "patient" in patientData) {
+        toast.success("User exists");
+        router.push("/dashboard/patient");
       }
-
-      setIsLoading(false); // Reset loading state after logic completes
-    }, 500); // Timeout to allow async operations and ensure loading state has time to be updated
+    } else if (selectedUserType === "Doctor") {
+      if (doctorData?.success === 404) {
+        router.push("/sign-up/doctor");
+      } else if (doctorData?.success === 200 && "doctor" in doctorData) {
+        toast.success("Doctor exists");
+        router.push("/dashboard/doctor");
+      }
+    } else if (selectedUserType === "Pharmacist") {
+      if (pharmacistData?.success === 404) {
+        router.push("/sign-up/pharmacist");
+      } else if (
+        pharmacistData?.success === 200 &&
+        "doctor" in pharmacistData
+      ) {
+        toast.success("Pharmacist exists");
+        router.push("/dashboard/pharmacist");
+      }
+    } else if (selectedUserType === "Institution") {
+      router.push("/sign-up/institution");
+    } else if (selectedUserType === "Admin") {
+      if ((adminData as GetAdminNotExistMessage)?.success === 404) {
+        router.push("/sign-up/system_admin");
+      } else if ((adminData as Admin)?.id) {
+        toast.success("System Admin exists");
+        router.push("/dashboard/system_admin");
+      }
+    }
   };
 
   return (

@@ -2,68 +2,18 @@ import { AllOfHealthTable } from "@/components/allOfHealthTable/allOfHealth";
 import AccessDeniedModal from "@/components/modal/SystemAdmin/AccessDeniedModal";
 import ApproveInstitutionModal from "@/components/modal/SystemAdmin/ApproveInstitutionModal";
 import SuccessfullyAddedModal from "@/components/modal/SystemAdmin/SuccessfullyAddedModal";
+import { useGetInstitutions } from "@/lib/queries/institutions";
 import { RootState } from "@/lib/redux/rootReducer";
 import { toggleApproveInstitutionModal } from "@/lib/redux/slices/modals/modalSlice";
+import type { Institution } from "@/lib/types";
 import { useEffect, useRef, useState } from "react";
+import { BiLoaderAlt } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 
 const ApproveInstitution = () => {
-  const institutions = [
-    {
-      name: "Hadas Health Centre",
-      registrationNo: "74837383",
-      walletAddress: "x647837",
-      phoneNumber: "+2348109273871",
-    },
-    {
-      name: "Hadas Health Centre",
-      registrationNo: "74837383",
-      walletAddress: "x647837",
-      phoneNumber: "+2348109273871",
-    },
-    {
-      name: "Hadas Health Centre",
-      registrationNo: "74837383",
-      walletAddress: "x647837",
-      phoneNumber: "+2348109273871",
-    },
-    {
-      name: "Hadas Health Centre",
-      registrationNo: "74837383",
-      walletAddress: "x647837",
-      phoneNumber: "+2348109273871",
-    },
-    {
-      name: "Hadas Health Centre",
-      registrationNo: "74837383",
-      walletAddress: "x647837",
-      phoneNumber: "+2348109273871",
-    },
-    {
-      name: "Hadas Health Centre",
-      registrationNo: "74837383",
-      walletAddress: "x647837",
-      phoneNumber: "+2348109273871",
-    },
-    {
-      name: "Hadas Health Centre",
-      registrationNo: "74837383",
-      walletAddress: "x647837",
-      phoneNumber: "+2348109273871",
-    },
-    {
-      name: "Hadas Health Centre",
-      registrationNo: "74837383",
-      walletAddress: "x647837",
-      phoneNumber: "+2348109273871",
-    },
-    {
-      name: "Hadas Health Centre",
-      registrationNo: "74837383",
-      walletAddress: "x647837",
-      phoneNumber: "+2348109273871",
-    },
-  ];
+  const { institutions, loading, error } = useGetInstitutions();
+  const [currentInstitution, setCurrentInstitution] =
+    useState<Institution | null>(null);
 
   const approveInstitutionRef = useRef<HTMLDivElement | null>(null);
   const [approveInstitutionContainer, setApproveInstitutionContainer] =
@@ -87,8 +37,9 @@ const ApproveInstitution = () => {
     (state: RootState) => state.modal.isAccessDeniedModalOpen
   );
 
-  const handleToggleActionNeeded = () => {
+  const handleToggleActionNeeded = (institution: Institution) => {
     dispatch(toggleApproveInstitutionModal());
+    setCurrentInstitution(institution);
   };
 
   useEffect(() => {
@@ -107,14 +58,15 @@ const ApproveInstitution = () => {
     isAccessDeniedModalOpen,
   ]);
 
+  const trimText = (text: string, maxLength: number = 10): string => {
+    return text?.toString().length > maxLength
+      ? `${text.slice(0, maxLength)}...`
+      : text;
+  };
+
   return (
     <div className="">
-      <h1
-        className="font-bold lg:text-3xl mb-6"
-        onClick={() => handleToggleActionNeeded()}
-      >
-        Approve Institution
-      </h1>
+      <h1 className="font-bold lg:text-3xl mb-6">Approve Institution</h1>
       <AllOfHealthTable
         labels={[
           "Institution Name",
@@ -125,25 +77,38 @@ const ApproveInstitution = () => {
         caption="Approve Institution Table"
         headClassName="bg-gray-5 rounded-t-md"
       >
-        {institutions.map((institution, index) => (
-          <tr className="h-16 text-blue4 font-medium" key={index}>
-            <td className="pl-2 lg:pl-7 text-xs lg:text-base">
-              {institution.name}
-            </td>
-            <td className=" text-xs lg:text-base">
-              {institution.registrationNo}
-            </td>
-            <td className=" text-xs lg:text-base">
-              {institution.walletAddress}
-            </td>
-            <td className=" text-xs lg:text-base">{institution.phoneNumber}</td>
-          </tr>
-        ))}
+        {loading ? (
+          <BiLoaderAlt className="text-xl text-center animate-spin h-20" />
+        ) : institutions ? (
+          <>
+            {institutions?.hospitals.map((institution, index) => (
+              <tr
+                className="h-16 text-blue4 font-medium"
+                key={institution.id}
+                onClick={() => handleToggleActionNeeded(institution)}
+              >
+                <td className="pl-2 lg:pl-7 text-xs lg:text-base">
+                  {institution.name}
+                </td>
+                <td className=" text-xs lg:text-base">
+                  {trimText(institution.regNo)}
+                </td>
+                <td className=" text-xs lg:text-base">
+                  {trimText(institution.admin)}
+                </td>
+                <td className=" text-xs lg:text-base">{institution.phoneNo}</td>
+              </tr>
+            ))}
+          </>
+        ) : (
+          <p>Error fetching data....</p>
+        )}
       </AllOfHealthTable>
       <div ref={approveInstitutionRef}>
         <ApproveInstitutionModal
           container={approveInstitutionContainer!}
           title="Action Needed"
+          institution={currentInstitution!}
         />
       </div>
       <div ref={successfullyAddedModalRef}>

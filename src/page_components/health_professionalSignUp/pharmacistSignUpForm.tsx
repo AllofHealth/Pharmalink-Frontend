@@ -2,53 +2,62 @@
 import { Form, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import Button from "@/components/button/Button";
+import type { CreatePharmacistValues, Institution } from "@/lib/types";
 import { useAccount } from "wagmi";
-import { createPatient } from "@/lib/mutations/auth";
 import useAxios from "@/lib/hooks/useAxios";
-import type { CreatePatientValues } from "@/lib/types";
-import { addPatient } from "@/actions/contract/patient/patient.service.c";
+import { useGetInstitutions } from "@/lib/queries/institutions";
+import { BiLoaderAlt } from "react-icons/bi";
+import { addPharmacist } from "@/actions/contract/pharmacist/pharmacist.service.c";
+import { createPharmacist } from "@/lib/mutations/auth";
 
-export interface ISignIn {
-  email: string;
-  password: string;
-}
+type InstitutionType = {
+  value: number;
+  label: string;
+};
 
-export default function PatientSignUpForm() {
+export default function PharmacistSignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [form] = Form.useForm();
-  const values = Form.useWatch<CreatePatientValues>([], form);
+  const values = Form.useWatch<CreatePharmacistValues>([], form);
   const [submittable, setSubmittable] = useState(false);
   const { address } = useAccount();
-  const [patientId, setPatientId] = useState(0);
+  const [pharmacistId, setPharmacistId] = useState(0);
   const { axios } = useAxios({});
+  const { loading, institutions, error } = useGetInstitutions();
 
-  const createPatientId = async () => {
-    const result = await addPatient();
+  const InstitutionType: InstitutionType[] =
+    institutions?.hospitals.map((institution: Institution) => ({
+      value: institution.id,
+      label: institution.name,
+    })) ?? [];
+  console.log(values);
+
+  const createPharmacistId = async () => {
+    const result = await addPharmacist(values.hospitalIds);
 
     //This returns an id which will be passed to the database when calling the function
-    setPatientId(Number(result.patientId));
+    setPharmacistId(Number(result.pharmacistId));
   };
 
-  const handleSignUp = async () => {
+  const handlePharmacistSignUp = async () => {
     setIsLoading(true);
-    await createPatientId();
+    await createPharmacistId();
   };
 
   useEffect(() => {
-    if (patientId > 0) {
-      createPatient({
-        patientId,
-        patientValues: values,
+    if (pharmacistId > 0) {
+      createPharmacist({
+        pharmacistId,
+        pharmacistValues: values,
         axios,
         router,
         address,
       });
     }
-    console.log(patientId);
-  }, [patientId]);
+    console.log(pharmacistId);
+  }, [pharmacistId]);
 
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
@@ -85,21 +94,29 @@ export default function PatientSignUpForm() {
           placeholder="Enter your full name"
         />
       </Form.Item>
-
       <Form.Item
         className="mb-8"
-        name="age"
+        name="hospitalIds"
         label={
-          <span className="text-[18px] font-normal text-text-black2">Age</span>
+          <span className="text-[18px] font-normal text-text-black2">
+            What institution are you representing ?
+          </span>
         }
         rules={[{ required: true }]}
       >
-        <Input
-          type="number"
-          name="age"
-          className="border p-3 rounded-xl h-14"
-          placeholder="Enter your Age"
-        />
+        {loading ? (
+          <BiLoaderAlt className="animate-spin text-2xl" />
+        ) : institutions ? (
+          <Select
+            options={InstitutionType}
+            className="h-14"
+            placeholder="Enter your institution type"
+          />
+        ) : error ? (
+          <p>Error fetching institutions...</p>
+        ) : (
+          "An error occured"
+        )}
       </Form.Item>
 
       <Form.Item
@@ -122,71 +139,37 @@ export default function PatientSignUpForm() {
 
       <Form.Item
         className="mb-8"
-        name="address"
+        name="location"
         label={
           <span className="text-[18px] font-normal text-text-black2">
-            Physical Address
+            Location
           </span>
         }
         rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="address"
+          name="location"
           className="border p-3 rounded-xl h-14"
-          placeholder="Enter your physical address"
+          placeholder="Enter your Location"
         />
       </Form.Item>
 
       <Form.Item
         className="mb-8"
-        name="city"
-        label={
-          <span className="text-[18px] font-normal text-text-black2">City</span>
-        }
-        rules={[{ required: true }]}
-      >
-        <Input
-          type="text"
-          name="city"
-          className="border p-3 rounded-xl h-14"
-          placeholder="Enter your city"
-        />
-      </Form.Item>
-
-      <Form.Item
-        className="mb-8"
-        name="bloodGroup"
+        name="phoneNumber"
         label={
           <span className="text-[18px] font-normal text-text-black2">
-            Blood Group
+            Phone number
           </span>
         }
         rules={[{ required: true }]}
       >
         <Input
           type="text"
-          name="bloodGroup"
+          name="phoneNumber"
           className="border p-3 rounded-xl h-14"
-          placeholder="Provide your Blood Group"
-        />
-      </Form.Item>
-
-      <Form.Item
-        className="mb-8"
-        name="genotype"
-        label={
-          <span className="text-[18px] font-normal text-text-black2">
-            Genotype
-          </span>
-        }
-        rules={[{ required: true }]}
-      >
-        <Input
-          type="text"
-          name="genotype"
-          className="border p-3 rounded-xl h-14"
-          placeholder="Provide your Genotype"
+          placeholder="Enter your phone number"
         />
       </Form.Item>
 
@@ -196,9 +179,9 @@ export default function PatientSignUpForm() {
           type="submit"
           className="w-full rounded-[40px] h-14 justify-center text-xl font-normal"
           disabled={!submittable}
-          onClick={() => handleSignUp()}
+          onClick={() => handlePharmacistSignUp()}
         >
-          {isLoading ? "Loading..." : "Register"}
+          {isLoading ? "Loading..." : "Sign Up"}
         </Button>
       </Form.Item>
       <p className="text-center text-[15px] font-normal text-text-black3">
