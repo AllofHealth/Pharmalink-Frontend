@@ -211,3 +211,26 @@ export interface PractitionersApiResponse {
   success: number;
   allPractitioners: Practitioner[];
 }
+
+export type AllDoctor = {
+  _id: string;
+  id: number;
+  hospitalIds: number[];
+  name: string;
+  email: string;
+  profilePicture: string;
+  specialty: string;
+  location: string;
+  phoneNumber: string;
+  walletAddress: string;
+  numberOfApprovals: number;
+  status: string;
+  category: string;
+  activeApprovals: any[];
+  __v: number;
+};
+
+export type AllDoctorApiResponse = {
+  success: number;
+  allDoctors: AllDoctor[];
+};
