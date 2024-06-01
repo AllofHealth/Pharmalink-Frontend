@@ -49,4 +49,26 @@ async function fetchPatientId(address: string) {
   }
 }
 
-export { addPatient, fetchPatientId }
+async function addPatientFamilyMember(patientId: number) {
+  try {
+    const contract = await provideContract()
+    const transaction = await contract.addPatientFamilyMember(patientId)
+    const receipt = await transaction.wait()
+
+    const eventResult = await processEvent(
+      receipt,
+      EventNames.PatientFamilyMemberAdded,
+      ContractEvents.PatientFamilyMemberAdded,
+    )
+
+    return {
+      principalPatientId: Number(eventResult.principalPatientId),
+      familyMemberId: Number(eventResult.patientId),
+    }
+  } catch (error) {
+    console.error(error)
+    throw new PatientError('Error adding patient family member to contract')
+  }
+}
+
+export { addPatient, fetchPatientId, addPatientFamilyMember }
