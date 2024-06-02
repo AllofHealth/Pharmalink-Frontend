@@ -10,11 +10,6 @@ import useAxios from "@/lib/hooks/useAxios";
 import type { CreatePatientValues } from "@/lib/types";
 import { addPatient } from "@/actions/contract/patient/patient.service.c";
 
-export interface ISignIn {
-  email: string;
-  password: string;
-}
-
 export default function PatientSignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();

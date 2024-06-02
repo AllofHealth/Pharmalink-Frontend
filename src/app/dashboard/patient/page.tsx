@@ -75,14 +75,6 @@ export default function PAtient() {
             Family Registration
           </Tabs.Trigger>
           <Tabs.Trigger
-            value="Emergency"
-            className="flex items-center gap-4"
-            onClick={() => dispatch(setPatientCurrentTab("Emergency"))}
-          >
-            <Icon name="Emergency" />
-            Emergency
-          </Tabs.Trigger>
-          <Tabs.Trigger
             value="Privacy"
             className="flex items-center gap-4"
             onClick={() => dispatch(setPatientCurrentTab("Privacy"))}
@@ -125,9 +117,6 @@ export default function PAtient() {
         </Tabs.Content>
         <Tabs.Content value="Family Registration Form" className="flex-1">
           <FamilyRegistrationForm />
-        </Tabs.Content>
-        <Tabs.Content value="Emergency" className="flex-1">
-          Emergency
         </Tabs.Content>
         <Tabs.Content value="Privacy" className="flex-1">
           <PatientPrivacyAndSecurity />

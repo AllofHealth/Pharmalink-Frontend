@@ -14,6 +14,7 @@ interface Patient {
   appointmentCount: number;
   name: string;
   age: number;
+  email: string;
   profilePicture: string;
   address: string;
   city: string;
@@ -234,3 +235,96 @@ export type AllDoctorApiResponse = {
   success: number;
   allDoctors: AllDoctor[];
 };
+
+export type FamilyMember = {
+  id: number;
+  principalPatient: string;
+  name: string;
+  relationship: string;
+  email: string;
+  address: string;
+  age: number;
+  dob: string;
+  bloodGroup: string;
+  genotype: string;
+  medicalRecord: any[];
+  _id: string;
+  __v: number;
+};
+
+export type FamilyMemberApiResponse = {
+  success: number;
+  members: FamilyMember[];
+  message: string;
+};
+
+export type CreateFamilyMemberValues = {
+  id: number;
+  name: string;
+  relationship: string;
+  email: string;
+  address: string;
+  age: number;
+  dob: string;
+  bloodGroup: string;
+  genotype: string;
+};
+
+export type UpdatePatientValues = {
+  name: string;
+};
+
+export interface Prescription {
+  doctorName: string;
+  recordId: number;
+  patientAddress: string;
+  doctorAddress: string;
+  medicineName: string;
+  medicineId: string;
+  medicineGroup: string;
+  description: string;
+  sideEffects: string;
+  date: string;
+  _id: string;
+  __v: number;
+}
+
+export interface PatientPrescriptionsApiResponse {
+  success: number;
+  prescriptions: Prescription[];
+}
+
+export interface SharedPrescription {
+  doctorName: string;
+  recordId: number;
+  patientAddress: string;
+  doctorAddress: string;
+  medicineName: string;
+  medicineId: string;
+  medicineGroup: string;
+  description: string;
+  sideEffects: string;
+  date: string;
+  _id: string;
+  __v: number;
+}
+
+export interface AllPharmacist {
+  _id: string;
+  id: number;
+  hospitalIds: number[];
+  numberOfApprovals: number;
+  name: string;
+  email: string;
+  profilePicture: string;
+  location: string;
+  phoneNumber: string;
+  walletAddress: string;
+  status: string;
+  category: string;
+  approvalList: any[];
+  sharedPrescriptions: SharedPrescription[];
+  __v: number;
+}
+
+export type AllPharmacistAPIResponse = AllPharmacist[];
