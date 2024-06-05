@@ -6,7 +6,11 @@ import {
   EventNames,
   PatientError,
 } from '@/actions/shared/global'
-import { ApproveMedicalRecordAccessType } from '@/actions/interfaces/Patient/app.patient.interface'
+import {
+  ApproveMedicalRecordAccessType,
+  RevokeMedicalRecordAccessType,
+  ViewMedicalRecordType,
+} from '@/actions/interfaces/Patient/app.patient.interface'
 
 async function addPatient(): Promise<{
   success: number
@@ -176,6 +180,65 @@ async function approveMedicalRecordAccess(
   }
 }
 
+async function revokeMedicalRecordAccess(args: RevokeMedicalRecordAccessType) {
+  const { patientId, recordId, doctorAddress } = args
+  try {
+    const contract = await provideContract()
+    const transaction = await contract.revokeMedicalRecordAccess(
+      patientId,
+      recordId,
+      doctorAddress,
+    )
+
+    const receipt = await transaction.wait()
+    const eventResult = await processEvent(
+      receipt,
+      EventNames.RecordAccessRevoked,
+      ContractEvents.RecordAccessRevoked,
+    )
+
+    return {
+      success: ErrorCodes.Success,
+      revokedDoctor: eventResult.approvedDoctor,
+      recordId: eventResult.medicalRecordId,
+      patientAddress: eventResult.patient,
+    }
+  } catch (error) {
+    console.error(error)
+    throw new PatientError(
+      'An error occurred while revoking medical record access',
+    )
+  }
+}
+
+async function viewMedicalRecord(args: ViewMedicalRecordType) {
+  const { recordId, patientId, viewerAddress } = args
+  try {
+    const contract = await provideContract()
+    const transaction = await contract.viewMedicalRecord(
+      recordId,
+      patientId,
+      viewerAddress,
+    )
+
+    const receipt = await transaction.wait()
+    const eventResult = await processEvent(
+      receipt,
+      EventNames.MedicalRecordAccessed,
+      ContractEvents.MedicalRecordAccessed,
+    )
+
+    return {
+      diagnosis: eventResult.diagnosis,
+      recordDetailsUri: eventResult.recordDetailsUri,
+      recordImageUri: eventResult.recordImageUri,
+    }
+  } catch (error) {
+    console.error(error)
+    throw new PatientError('An error occurred while accessing medical record')
+  }
+}
+
 async function addPatientFamilyMember(patientId: number) {
   try {
     const contract = await provideContract()
@@ -203,4 +266,6 @@ export {
   fetchPatientId,
   addPatientFamilyMember,
   approveMedicalRecordAccess,
+  revokeMedicalRecordAccess,
+  viewMedicalRecord,
 }
