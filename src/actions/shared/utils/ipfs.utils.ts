@@ -1,22 +1,17 @@
 import { IPFS_API_KEY, IPFS_API_SECRET } from '../constants/constant'
+import { create } from 'kubo-rpc-client'
 
-class ProcessAuth {
-  private apiKey: string
-  private secret: string
+const auth =
+  'Basic ' +
+  Buffer.from(`${IPFS_API_KEY}:${IPFS_API_SECRET}`).toString('base64')
 
-  constructor(apiKey: string, secret: string) {
-    this.apiKey = apiKey
-    this.secret = secret
-  }
-
-  async generateAuthHeader() {
-    const auth =
-      'Basic ' + Buffer.from(`${this.apiKey}:${this.secret}`).toString('base64')
-    return auth
-  }
+export const initializeIPFS = () => {
+  return create({
+    host: 'ipfs.infura.io',
+    port: 5001,
+    protocol: 'https',
+    headers: {
+      authorization: auth,
+    },
+  })
 }
-
-export const processAuthInstance = new ProcessAuth(
-  IPFS_API_KEY,
-  IPFS_API_SECRET,
-)
