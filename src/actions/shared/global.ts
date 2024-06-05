@@ -58,7 +58,10 @@ export enum ContractEvents {
   PharmacistApproved = 'event PharmacistApproved(uint256 indexed hospitalId, uint256 indexed pharmacistId, address indexed pharmacist)',
   SystemAdminRemoved = 'event SystemAdminRemoved(address indexed admin, uint256 indexed adminId)',
   PatientFamilyMemberAdded = 'event PatientFamilyMemberAdded(uint256 indexed principalPatientId, uint256 indexed patientId)',
-  WriteAccessGranted = 'event WriteAccessGranted(address indexed doctor, uint256 indexed patientId)'
+  WriteAccessGranted = 'event WriteAccessGranted(address indexed doctor, uint256 indexed patientId)',
+  RecordAccessRevoked = 'event RecordAccessRevoked(address indexed patient, address indexed approvedDoctor, uint256 indexed medicalRecordId)',
+  MedicalRecordAdded = 'event MedicalRecordAdded(address indexed doctor, address indexed patient, uint256 indexed medicalRecordId)',
+  MedicalRecordAccessed = ' event MedicalRecordAccessed(bytes32 indexed diagnosis, bytes32 indexed recordDetailsUri, bytes32 indexed recordImageUri)',
 }
 
 export enum EventNames {
@@ -73,6 +76,9 @@ export enum EventNames {
   SystemAdminRemoved = 'SystemAdminRemoved',
   PatientFamilyMemberAdded = 'PatientFamilyMemberAdded',
   WriteAccessGranted = 'WriteAccessGranted',
+  RecordAccessRevoked = 'RecordAccessRevoked',
+  MedicalRecordAdded = 'MedicalRecordAdded',
+  MedicalRecordAccessed = 'MedicalRecordAccessed',
 }
 
 export type ProfileType = {
