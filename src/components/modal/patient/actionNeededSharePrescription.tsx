@@ -6,15 +6,26 @@ import {
   toggleAccessGrantedSharePrescriptionModal,
   toggleActionNeededSharePrescription,
 } from "@/lib/redux/slices/modals/modalSlice";
+import type { AllPharmacist } from "@/lib/types";
+import useAxios from "@/lib/hooks/useAxios";
+import { sharePrescription } from "@/lib/mutations/patient";
+import { useAccount } from "wagmi";
 
 const ActionNeededSharePrescription = ({
   container,
   title,
+  pharmacist,
 }: {
   container: HTMLElement;
   title: string;
+  pharmacist: AllPharmacist | null;
 }) => {
   const dispatch = useDispatch();
+  const { axios } = useAxios({});
+  const { address } = useAccount();
+  const prescription = useSelector(
+    (state: RootState) => state.patient.currentPrescription
+  );
 
   const isActionNeededSharePrescriptionModalOpen = useSelector(
     (state: RootState) => state.modal.isActionNeededSharePrescriptionModalOpen
@@ -22,10 +33,6 @@ const ActionNeededSharePrescription = ({
 
   const handleToggleModal = () => {
     dispatch(toggleActionNeededSharePrescription());
-  };
-
-  const handleAccessGrantedModal = () => {
-    dispatch(toggleAccessGrantedSharePrescriptionModal());
   };
 
   return (
@@ -46,13 +53,21 @@ const ActionNeededSharePrescription = ({
                 {title}
               </Modal.Title>
               <p className="lg:my-2 text-[10px] lg:text-base">
-                Share the prescription to Pharmacist Nicci Troianii
+                Share the prescription to Pharmacist {pharmacist?.name}
               </p>
             </div>
             <div className="flex items-center justify-center gap-2">
               <Modal.Close
                 className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
-                onClick={() => handleAccessGrantedModal()}
+                onClick={() =>
+                  sharePrescription({
+                    axios,
+                    patientAddress: address,
+                    pharmacistAddress: pharmacist?.walletAddress,
+                    prescriptionId: prescription?._id ?? "",
+                    dispatch,
+                  })
+                }
               >
                 Share
               </Modal.Close>
