@@ -254,9 +254,9 @@ contract AllofHealthv2 {
     );
 
     event MedicalRecordAccessed(
-        address indexed viewer,
-        uint256 indexed medicalRecordId,
-        uint256 indexed patientId
+        bytes32 indexed diagnosis,
+        bytes32 indexed recordDetailsUri,
+        bytes32 indexed recordImageUri
     );
 
     event PatientAdded(address indexed patient, uint256 indexed patientId);
@@ -1017,10 +1017,9 @@ contract AllofHealthv2 {
         uint256 _patientId,
         address _viewer
     )
-        external
+        public
         patientIdCompliance(_patientId)
         recordIdCompliance(_recordId, _patientId)
-        returns (bytes32, bytes32, bytes32)
     {
         if (_viewer == address(0)) {
             revert InvalidAddress();
@@ -1034,22 +1033,16 @@ contract AllofHealthv2 {
             _recordId
         ];
 
-        if (_viewer == record.patient) {
-            return (
+        if (
+            _viewer == record.patient ||
+            viewerHasAccessToMedicalRecord(_viewer, _patientId, _recordId)
+        ) {
+            emit MedicalRecordAccessed(
                 record.diagnosis,
                 record.recordDetailsUri,
                 record.recordImageUri
             );
         }
-        if (!viewerHasAccessToMedicalRecord(_viewer, _patientId, _recordId)) {
-            revert AccessToRecordNotGranted();
-        }
-        emit MedicalRecordAccessed(_viewer, _recordId, _patientId);
-        return (
-            record.diagnosis,
-            record.recordDetailsUri,
-            record.recordImageUri
-        );
     }
 
     function viewFamilyMemberMedicalRecord(
@@ -1057,11 +1050,7 @@ contract AllofHealthv2 {
         uint256 _principalPatientId,
         uint256 _familyMemberId,
         address _viewer
-    )
-        external
-        patientIdCompliance(_principalPatientId)
-        returns (bytes32, bytes32, bytes32)
-    {
+    ) external patientIdCompliance(_principalPatientId) {
         if (_viewer == address(0)) {
             revert InvalidAddress();
         }
@@ -1082,31 +1071,21 @@ contract AllofHealthv2 {
             _principalPatientId
         ][_familyMemberId][_recordId];
 
-        if (_viewer == patients[_principalPatientId].walletAddress) {
-            return (
-                record.diagnosis,
-                record.recordDetailsUri,
-                record.recordImageUri
-            );
-        }
-
         if (
-            !viewerHasAccessToPatientFamilyMemberMedicalRecord(
+            _viewer == patients[_principalPatientId].walletAddress ||
+            viewerHasAccessToPatientFamilyMemberMedicalRecord(
                 _viewer,
                 _principalPatientId,
                 _familyMemberId,
                 _recordId
             )
         ) {
-            revert AccessToRecordNotGranted();
+            emit MedicalRecordAccessed(
+                record.diagnosis,
+                record.recordDetailsUri,
+                record.recordImageUri
+            );
         }
-
-        emit MedicalRecordAccessed(_viewer, _recordId, _familyMemberId);
-        return (
-            record.diagnosis,
-            record.recordDetailsUri,
-            record.recordImageUri
-        );
     }
 
     function addMedicalRecord(
