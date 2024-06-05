@@ -7,3 +7,11 @@ export interface RegisterDoctor {
   phoneNumber: string
   regNo: string
 }
+
+export interface AddMedicalRecordType {
+  patientAddress: string
+  patientId: number
+  diagnosis: string
+  ipfsHash: string
+  recordImageHash?: string
+}
