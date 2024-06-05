@@ -13,3 +13,15 @@ export interface ApproveMedicalRecordAccessType {
   recordId?: number
   durationInSeconds?: number
 }
+
+export interface RevokeMedicalRecordAccessType {
+  patientId: number
+  recordId: number
+  doctorAddress: string
+}
+
+export interface ViewMedicalRecordType {
+  recordId: number
+  patientId: number
+  viewerAddress: string
+}
