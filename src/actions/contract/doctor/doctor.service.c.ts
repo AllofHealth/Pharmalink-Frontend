@@ -6,6 +6,11 @@ import {
   ErrorCodes,
   EventNames,
 } from '@/actions/shared/global'
+import { AddMedicalRecordType } from '@/actions/interfaces/Doctor/app.doctor.interface'
+import {
+  getEmptyBytes32,
+  string2Bytes32,
+} from '@/actions/shared/utils/bytes.utils'
 
 async function addDoctor(
   hospitalIds: number,
@@ -44,4 +49,55 @@ async function fetchDoctorId(address: string) {
   }
 }
 
-export { addDoctor, fetchDoctorId }
+async function addMedicalRecord(args: AddMedicalRecordType) {
+  const {
+    patientAddress,
+    patientId,
+    diagnosis,
+    ipfsHash,
+    recordImageHash,
+  } = args
+  try {
+    const doctorAddress = await getSigner().then((signer) =>
+      signer.getAddress(),
+    )
+    const encodedDiagnosis = string2Bytes32(diagnosis)
+    const encodedIpfsHash = string2Bytes32(ipfsHash)
+    let encodedRecordImageHash
+
+    if (recordImageHash) {
+      encodedRecordImageHash = string2Bytes32(recordImageHash)
+    } else {
+      encodedRecordImageHash = getEmptyBytes32()
+    }
+
+    const contract = await provideContract()
+    const transaction = await contract.addMedicalRecord(
+      doctorAddress,
+      patientAddress,
+      patientId,
+      encodedDiagnosis,
+      encodedIpfsHash,
+      recordImageHash,
+    )
+
+    const receipt = await transaction.wait()
+    const eventResult = await processEvent(
+      receipt,
+      EventNames.MedicalRecordAdded,
+      ContractEvents.MedicalRecordAdded,
+    )
+
+    return {
+      success: ErrorCodes.Success,
+      medicalRecordId: eventResult.medicalRecordId,
+      patientAddress: eventResult.patient,
+      doctorAddress: eventResult.doctor,
+    }
+  } catch (error) {
+    console.error(error)
+    throw new DoctorError('Error adding medical record to contract')
+  }
+}
+
+export { addDoctor, fetchDoctorId, addMedicalRecord }
