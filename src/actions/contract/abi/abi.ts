@@ -814,11 +814,7 @@ export const abi = [
       },
       { name: '_viewer', type: 'address', internalType: 'address' },
     ],
-    outputs: [
-      { name: '', type: 'bytes32', internalType: 'bytes32' },
-      { name: '', type: 'bytes32', internalType: 'bytes32' },
-      { name: '', type: 'bytes32', internalType: 'bytes32' },
-    ],
+    outputs: [],
     stateMutability: 'nonpayable',
   },
   {
@@ -829,11 +825,7 @@ export const abi = [
       { name: '_patientId', type: 'uint256', internalType: 'uint256' },
       { name: '_viewer', type: 'address', internalType: 'address' },
     ],
-    outputs: [
-      { name: '', type: 'bytes32', internalType: 'bytes32' },
-      { name: '', type: 'bytes32', internalType: 'bytes32' },
-      { name: '', type: 'bytes32', internalType: 'bytes32' },
-    ],
+    outputs: [],
     stateMutability: 'nonpayable',
   },
   {
@@ -1075,22 +1067,22 @@ export const abi = [
     name: 'MedicalRecordAccessed',
     inputs: [
       {
-        name: 'viewer',
-        type: 'address',
+        name: 'diagnosis',
+        type: 'bytes32',
         indexed: true,
-        internalType: 'address',
+        internalType: 'bytes32',
       },
       {
-        name: 'medicalRecordId',
-        type: 'uint256',
+        name: 'recordDetailsUri',
+        type: 'bytes32',
         indexed: true,
-        internalType: 'uint256',
+        internalType: 'bytes32',
       },
       {
-        name: 'patientId',
-        type: 'uint256',
+        name: 'recordImageUri',
+        type: 'bytes32',
         indexed: true,
-        internalType: 'uint256',
+        internalType: 'bytes32',
       },
     ],
     anonymous: false,
