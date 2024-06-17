@@ -15,3 +15,13 @@ export interface AddMedicalRecordType {
   ipfsHash: string
   recordImageHash?: string
 }
+
+export interface RecordApprovalType {
+  patientId: number
+  recordId: number
+}
+
+export interface RecordAccessPermissionType {
+  patientId: number
+  recordId?: number
+}
