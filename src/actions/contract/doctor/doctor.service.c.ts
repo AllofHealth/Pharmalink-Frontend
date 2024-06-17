@@ -6,7 +6,11 @@ import {
   ErrorCodes,
   EventNames,
 } from '@/actions/shared/global'
-import { AddMedicalRecordType } from '@/actions/interfaces/Doctor/app.doctor.interface'
+import {
+  AddMedicalRecordType,
+  RecordAccessPermissionType,
+  RecordApprovalType,
+} from '@/actions/interfaces/Doctor/app.doctor.interface'
 import {
   getEmptyBytes32,
   string2Bytes32,
@@ -46,6 +50,62 @@ async function fetchDoctorId(address: string) {
   } catch (error) {
     console.error(error)
     throw new DoctorError('Error fetching doctor id from contract')
+  }
+}
+
+async function isApprovedToAddNewRecord(patientId: number) {
+  try {
+    const contract = await provideContract()
+    const signer = await getSigner()
+    const address = await signer.getAddress()
+
+    const isApproved = await contract.isApprovedByPatientToAddNewRecord(
+      patientId,
+      address,
+    )
+    return isApproved
+  } catch (error) {
+    console.error(error)
+    throw new DoctorError(
+      'Error checking if doctor is approved to add new record',
+    )
+  }
+}
+
+async function isApprovedToAddRecord(args: RecordApprovalType) {
+  const { patientId, recordId } = args
+  try {
+    const contract = await provideContract()
+    const signer = await getSigner()
+    const address = await signer.getAddress()
+
+    const isApproved = await contract.isPatientApprovedDoctors(
+      patientId,
+      recordId,
+      address,
+    )
+    return isApproved
+  } catch (error) {
+    console.error(error)
+    throw new DoctorError(
+      'Error checking if doctor is approved to update existing record',
+    )
+  }
+}
+
+async function validateRecordAccessPermission(
+  args: RecordAccessPermissionType,
+) {
+  const { patientId, recordId } = args
+  try {
+    const isApproved: boolean = recordId
+      ? await isApprovedToAddRecord({ patientId, recordId })
+      : await isApprovedToAddNewRecord(patientId)
+
+    return isApproved
+  } catch (error) {
+    console.error(error)
+    throw new DoctorError('Error validating record access permission')
   }
 }
 
@@ -100,4 +160,11 @@ async function addMedicalRecord(args: AddMedicalRecordType) {
   }
 }
 
-export { addDoctor, fetchDoctorId, addMedicalRecord }
+export {
+  addDoctor,
+  fetchDoctorId,
+  addMedicalRecord,
+  isApprovedToAddNewRecord,
+  isApprovedToAddRecord,
+  validateRecordAccessPermission,
+}
