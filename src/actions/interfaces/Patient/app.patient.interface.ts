@@ -14,6 +14,17 @@ export interface ApproveMedicalRecordAccessType {
   durationInSeconds?: number
 }
 
+export interface ApproveNewRecordAccessForFamilyMemberType {
+  doctorAddress: string
+  familyMemberId: number
+  principalPatientId: number
+}
+
+export interface ApproveExistingRecordAccessForFamilyMemberType
+  extends ApproveMedicalRecordAccessType {
+  familyMemberId: number
+}
+
 export interface RevokeMedicalRecordAccessType {
   patientId: number
   recordId: number
