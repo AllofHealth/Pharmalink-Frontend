@@ -138,7 +138,7 @@ async function addMedicalRecord(args: AddMedicalRecordType) {
       patientId,
       encodedDiagnosis,
       encodedIpfsHash,
-      recordImageHash,
+      encodedRecordImageHash,
     )
 
     const receipt = await transaction.wait()
