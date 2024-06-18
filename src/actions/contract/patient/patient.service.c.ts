@@ -7,7 +7,9 @@ import {
   PatientError,
 } from '@/actions/shared/global'
 import {
+  ApproveExistingRecordAccessForFamilyMemberType,
   ApproveMedicalRecordAccessType,
+  ApproveNewRecordAccessForFamilyMemberType,
   RevokeMedicalRecordAccessType,
   ViewMedicalRecordType,
 } from '@/actions/interfaces/Patient/app.patient.interface'
@@ -118,15 +120,16 @@ async function approveAccessToExistingRecord(
 
     const eventResult = await processEvent(
       receipt,
-      EventNames.WriteAccessGranted,
-      ContractEvents.WriteAccessGranted,
+      EventNames.ReadAccessGranted,
+      ContractEvents.ReadAccessGranted,
     )
 
     return {
       success: ErrorCodes.Success,
-      doctorAddress: practitionerAddress,
-      patientId: Number(eventResult.patientId),
-      message: 'Write Access Granted',
+      doctorAddress: eventResult.approvedDoctor,
+      patientAddress: eventResult.patient,
+      medicalRecordId: eventResult.medicalRecordId,
+      message: 'Read Access Granted',
     }
   } catch (error) {
     console.error(error)
@@ -173,7 +176,8 @@ async function approveMedicalRecordAccess(
     return {
       success: result.success,
       doctorAddress: result.doctorAddress,
-      patientId: result.patientId,
+      patientAddress: result.patientAddress,
+      medicalRecordId: result.medicalRecordId,
       message: result.message,
     }
   } catch (error) {
@@ -259,6 +263,82 @@ async function addPatientFamilyMember(patientId: number) {
   } catch (error) {
     console.error(error)
     throw new PatientError('Error adding patient family member to contract')
+  }
+}
+
+async function approveAccessToAddNewMedicalRecordForFamilyMember(
+  args: ApproveNewRecordAccessForFamilyMemberType,
+) {
+  const { doctorAddress, familyMemberId, principalPatientId } = args
+  try {
+    const contract = await provideContract()
+    const transaction = await contract.approveAccessToAddNewRecordForFamilyMember(
+      doctorAddress,
+      familyMemberId,
+      principalPatientId,
+    )
+    const receipt = await transaction.wait()
+
+    const eventResult = await processEvent(
+      receipt,
+      EventNames.WriteAccessGranted,
+      ContractEvents.WriteAccessGranted,
+    )
+
+    return {
+      success: ErrorCodes.Success,
+      familyMemberId: Number(eventResult.patientId),
+      doctorAddress,
+      message: 'Write Access Granted',
+    }
+  } catch (error) {
+    console.error(error)
+    throw new PatientError(
+      'An error occurred while approving new medical record access for family member',
+    )
+  }
+}
+
+async function approveAccessToExistingFamilyMemberMedicalRecord(
+  args: ApproveExistingRecordAccessForFamilyMemberType,
+) {
+  const {
+    practitionerAddress,
+    familyMemberId,
+    patientId,
+    recordId,
+    durationInSeconds,
+  } = args
+  try {
+    const contract = await provideContract()
+    const transaction = await contract.approveFamilyMemberMedicalRecordAccess(
+      practitionerAddress,
+      patientId,
+      familyMemberId,
+      recordId,
+      durationInSeconds,
+    )
+
+    const receipt = await transaction.wait()
+
+    const eventResult = await processEvent(
+      receipt,
+      EventNames.ReadAccessGranted,
+      ContractEvents.ReadAccessGranted,
+    )
+
+    return {
+      success: ErrorCodes.Success,
+      doctorAddress: eventResult.approvedDoctor,
+      patientAddress: eventResult.patient,
+      medicalRecordId: eventResult.medicalRecordId,
+      message: 'Read Access Granted',
+    }
+  } catch (error) {
+    console.error(error)
+    throw new PatientError(
+      'An error occurred while approving existing medical record access for family member',
+    )
   }
 }
 
