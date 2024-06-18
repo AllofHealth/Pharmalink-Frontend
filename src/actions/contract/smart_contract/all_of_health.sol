@@ -1,24 +1,3 @@
-//? Layout of Contract:
-// version
-// imports
-// errors
-// interfaces, libraries, contracts
-// Type declarations
-// State variables
-// Events
-// Modifiers
-// Functions
-
-// Layout of Functions:
-// constructor
-// receive function (if exists)
-// fallback function (if exists)
-// external
-// public
-// internal
-// private
-// view & pure functions
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
@@ -173,6 +152,9 @@ contract AllofHealthv2 {
         public isPatientApprovedDoctors;
     mapping(uint256 => mapping(address => bool))
         public isApprovedByPatientToAddNewRecord;
+
+    mapping(uint256 => mapping(uint256 => mapping(uint256 => mapping(address => bool))))
+        public isPatientApprovedDoctorForFamilyMember;
     mapping(uint256 => mapping(uint256 => mapping(address => bool)))
         public isApprovedByPatientToAddNewRecordForFamilyMember;
     mapping(uint256 => mapping(uint256 => bool)) public isPatientFamilyMember;
@@ -835,17 +817,24 @@ contract AllofHealthv2 {
             revert InvalidMedicalRecordId();
         }
 
+        bool isDoctorApproved = isPatientApprovedDoctorForFamilyMember[
+            _principalPatientId
+        ][_familyMemberId][_recordId][_doctorAddress];
         PatientFamilyMedicalRecord storage record = patientFamilyMedicalRecord[
             _principalPatientId
         ][_familyMemberId][_recordId];
 
         if (
+            isDoctorApproved &&
             record.approvedDoctor == _doctorAddress &&
             block.timestamp < record.expiration
         ) {
             revert AccessToRecordAlreadyGranted();
         }
 
+        isPatientApprovedDoctorForFamilyMember[_principalPatientId][
+            _familyMemberId
+        ][_recordId][_doctorAddress] = true;
         patientFamilyMembers[_principalPatientId][_familyMemberId]
             .approvalCount++;
         record.approvedDoctor = _doctorAddress;
@@ -1002,7 +991,9 @@ contract AllofHealthv2 {
         ) {
             revert InvalidMedicalRecordId();
         }
-
+        isPatientApprovedDoctorForFamilyMember[_principalPatientId][
+            _familyMemberId
+        ][_recordId][_doctorAddress] = false;
         patientFamilyMedicalRecord[_principalPatientId][_familyMemberId][
             _recordId
         ].approvedDoctor = address(0);
@@ -1181,6 +1172,7 @@ contract AllofHealthv2 {
         isApprovedByPatientToAddNewRecordForFamilyMember[_principalPatientId][
             _familyMemberId
         ][_doctorAddress] = false;
+
         emit FamilyMemberMedicalRecordAdded(
             _doctorAddress,
             patients[_principalPatientId].walletAddress,
@@ -1242,8 +1234,9 @@ contract AllofHealthv2 {
         bool accessValid = false;
 
         if (
-            record.approvedDoctor == _viewer &&
-            block.timestamp < record.expiration
+            isPatientApprovedDoctorForFamilyMember[_principalPatientId][
+                _familyMemberId
+            ][_recordId][_viewer] && block.timestamp < record.expiration
         ) {
             accessValid = true;
         }
