@@ -1,3 +1,4 @@
+export type RecordApprovalType = 'read' | 'write' | 'full'
 export interface RegisterPatient {
   name: string
   age: number
