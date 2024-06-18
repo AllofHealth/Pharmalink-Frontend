@@ -10,6 +10,7 @@ import {
   ApproveExistingRecordAccessForFamilyMemberType,
   ApproveMedicalRecordAccessType,
   ApproveNewRecordAccessForFamilyMemberType,
+  RecordApprovalType,
   RevokeMedicalRecordAccessType,
   ViewMedicalRecordType,
 } from '@/actions/interfaces/Patient/app.patient.interface'
@@ -342,6 +343,84 @@ async function approveAccessToExistingFamilyMemberMedicalRecord(
   }
 }
 
+async function approveFamilyMemberMedicalRecordAccess(
+  approvalType: RecordApprovalType,
+  args: ApproveExistingRecordAccessForFamilyMemberType,
+) {
+  const { practitionerAddress, familyMemberId, patientId, recordId } = args
+  try {
+    switch (approvalType) {
+      case 'read':
+        const readResult = await approveAccessToExistingFamilyMemberMedicalRecord(
+          args,
+        )
+
+        return {
+          ...readResult,
+        }
+      case 'write':
+        const writeResult = await approveAccessToAddNewMedicalRecordForFamilyMember(
+          {
+            doctorAddress: practitionerAddress,
+            familyMemberId,
+            principalPatientId: patientId,
+          },
+        )
+
+        return {
+          ...writeResult,
+        }
+      case 'full':
+        if (recordId) {
+          try {
+            const fullReadResult = await approveAccessToExistingFamilyMemberMedicalRecord(
+              args,
+            )
+
+            const fullWriteResult = await approveAccessToAddNewMedicalRecordForFamilyMember(
+              {
+                doctorAddress: practitionerAddress,
+                familyMemberId,
+                principalPatientId: patientId,
+              },
+            )
+
+            return {
+              viewAccessGranted: {
+                ...fullReadResult,
+              },
+              writeAccessGranted: {
+                ...fullWriteResult,
+              },
+            }
+          } catch (error) {
+            console.error(error)
+            throw new PatientError(
+              'An error occurred while approving medical record access',
+            )
+          }
+        } else {
+          const fullWriteResult = await approveAccessToAddNewMedicalRecordForFamilyMember(
+            {
+              doctorAddress: practitionerAddress,
+              familyMemberId,
+              principalPatientId: patientId,
+            },
+          )
+
+          return {
+            writeAccessGranted: {
+              ...fullWriteResult,
+            },
+          }
+        }
+    }
+  } catch (error) {
+    console.error(error)
+    throw new Error('An error occurred while approving medical record access')
+  }
+}
+
 export {
   addPatient,
   fetchPatientId,
@@ -349,4 +428,5 @@ export {
   approveMedicalRecordAccess,
   revokeMedicalRecordAccess,
   viewMedicalRecord,
+  approveFamilyMemberMedicalRecordAccess,
 }
