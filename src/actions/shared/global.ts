@@ -62,6 +62,7 @@ export enum ContractEvents {
   RecordAccessRevoked = 'event RecordAccessRevoked(address indexed patient, address indexed approvedDoctor, uint256 indexed medicalRecordId)',
   MedicalRecordAdded = 'event MedicalRecordAdded(address indexed doctor, address indexed patient, uint256 indexed medicalRecordId)',
   MedicalRecordAccessed = ' event MedicalRecordAccessed(bytes32 indexed diagnosis, bytes32 indexed recordDetailsUri, bytes32 indexed recordImageUri)',
+  ReadAccessGranted = 'event MedicalRecordAccessApproved(address indexed patient, address indexed approvedDoctor, uint256 indexed medicalRecordId)',
 }
 
 export enum EventNames {
@@ -79,6 +80,7 @@ export enum EventNames {
   RecordAccessRevoked = 'RecordAccessRevoked',
   MedicalRecordAdded = 'MedicalRecordAdded',
   MedicalRecordAccessed = 'MedicalRecordAccessed',
+  ReadAccessGranted = 'ReadAccessGranted',
 }
 
 export type ProfileType = {

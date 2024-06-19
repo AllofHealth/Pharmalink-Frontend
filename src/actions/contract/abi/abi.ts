@@ -417,6 +417,18 @@ export const abi = [
   },
   {
     type: 'function',
+    name: 'isPatientApprovedDoctorForFamilyMember',
+    inputs: [
+      { name: '', type: 'uint256', internalType: 'uint256' },
+      { name: '', type: 'uint256', internalType: 'uint256' },
+      { name: '', type: 'uint256', internalType: 'uint256' },
+      { name: '', type: 'address', internalType: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool', internalType: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     name: 'isPatientApprovedDoctors',
     inputs: [
       { name: '', type: 'uint256', internalType: 'uint256' },

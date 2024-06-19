@@ -1,3 +1,4 @@
+export type RecordApprovalType = 'view' | 'modify' | 'view & modify'
 export interface RegisterPatient {
   name: string
   age: number
@@ -12,6 +13,17 @@ export interface ApproveMedicalRecordAccessType {
   patientId: number
   recordId?: number
   durationInSeconds?: number
+}
+
+export interface ApproveNewRecordAccessForFamilyMemberType {
+  doctorAddress: string
+  familyMemberId: number
+  principalPatientId: number
+}
+
+export interface ApproveExistingRecordAccessForFamilyMemberType
+  extends ApproveMedicalRecordAccessType {
+  familyMemberId: number
 }
 
 export interface RevokeMedicalRecordAccessType {

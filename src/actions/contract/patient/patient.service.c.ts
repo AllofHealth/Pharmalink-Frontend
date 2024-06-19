@@ -7,11 +7,15 @@ import {
   PatientError,
 } from '@/actions/shared/global'
 import {
+  ApproveExistingRecordAccessForFamilyMemberType,
   ApproveMedicalRecordAccessType,
+  ApproveNewRecordAccessForFamilyMemberType,
+  RecordApprovalType,
   RevokeMedicalRecordAccessType,
   ViewMedicalRecordType,
 } from '@/actions/interfaces/Patient/app.patient.interface'
 import { bytes32ToString } from '@/actions/shared/utils/bytes.utils'
+import { message } from 'antd'
 
 async function addPatient(): Promise<{
   success: number
@@ -118,15 +122,16 @@ async function approveAccessToExistingRecord(
 
     const eventResult = await processEvent(
       receipt,
-      EventNames.WriteAccessGranted,
-      ContractEvents.WriteAccessGranted,
+      EventNames.ReadAccessGranted,
+      ContractEvents.ReadAccessGranted,
     )
 
     return {
       success: ErrorCodes.Success,
-      doctorAddress: practitionerAddress,
-      patientId: Number(eventResult.patientId),
-      message: 'Write Access Granted',
+      doctorAddress: eventResult.approvedDoctor,
+      patientAddress: eventResult.patient,
+      medicalRecordId: eventResult.medicalRecordId,
+      message: 'Read Access Granted',
     }
   } catch (error) {
     console.error(error)
@@ -135,6 +140,7 @@ async function approveAccessToExistingRecord(
 }
 
 async function approveMedicalRecordAccess(
+  approvalType: RecordApprovalType,
   args: ApproveMedicalRecordAccessType,
 ) {
   const { practitionerAddress, patientId, recordId, durationInSeconds } = args
@@ -150,31 +156,55 @@ async function approveMedicalRecordAccess(
         message: 'Doctor is not approved',
       }
     }
-    if (!recordId) {
-      const result = await approveAccessToAddNewMedicalRecord(
-        practitionerAddress,
-        patientId,
-      )
-      return {
-        success: result.success,
-        doctorAddress: result.doctorAddress,
-        patientId: result.patientId,
-        message: result.message,
-      }
-    }
 
-    const result = await approveAccessToExistingRecord({
-      practitionerAddress,
-      patientId,
-      recordId,
-      durationInSeconds,
-    })
+    switch (approvalType) {
+      case 'view':
+        const readResult = await approveAccessToExistingRecord(args)
+        return {
+          ...readResult,
+        }
 
-    return {
-      success: result.success,
-      doctorAddress: result.doctorAddress,
-      patientId: result.patientId,
-      message: result.message,
+      case 'modify':
+        const writeResult = await approveAccessToAddNewMedicalRecord(
+          practitionerAddress,
+          patientId,
+        )
+        return {
+          ...writeResult,
+        }
+
+      case 'view & modify':
+        if (recordId) {
+          const [readResult, writeResult] = await Promise.allSettled([
+            approveAccessToExistingRecord(args),
+            approveAccessToAddNewMedicalRecord(practitionerAddress, patientId),
+          ])
+
+          return {
+            viewAccessGranted:
+              readResult.status === 'fulfilled'
+                ? readResult.value
+                : {
+                    success: ErrorCodes.Error,
+                    message: 'Error granting read access',
+                  },
+            writeAccessGranted:
+              writeResult.status === 'fulfilled'
+                ? writeResult.value
+                : {
+                    success: ErrorCodes.Error,
+                    message: 'Error granting write access',
+                  },
+          }
+        } else {
+          const writeResult = await approveAccessToAddNewMedicalRecord(
+            practitionerAddress,
+            patientId,
+          )
+          return {
+            writeAccessGranted: writeResult,
+          }
+        }
     }
   } catch (error) {
     console.error('Error approving medical record access')
@@ -262,6 +292,167 @@ async function addPatientFamilyMember(patientId: number) {
   }
 }
 
+async function approveAccessToAddNewMedicalRecordForFamilyMember(
+  args: ApproveNewRecordAccessForFamilyMemberType,
+) {
+  const { doctorAddress, familyMemberId, principalPatientId } = args
+  try {
+    const contract = await provideContract()
+    const transaction = await contract.approveAccessToAddNewRecordForFamilyMember(
+      doctorAddress,
+      familyMemberId,
+      principalPatientId,
+    )
+    const receipt = await transaction.wait()
+
+    const eventResult = await processEvent(
+      receipt,
+      EventNames.WriteAccessGranted,
+      ContractEvents.WriteAccessGranted,
+    )
+
+    return {
+      success: ErrorCodes.Success,
+      familyMemberId: Number(eventResult.patientId),
+      doctorAddress,
+      message: 'Write Access Granted',
+    }
+  } catch (error) {
+    console.error(error)
+    throw new PatientError(
+      'An error occurred while approving new medical record access for family member',
+    )
+  }
+}
+
+async function approveAccessToExistingFamilyMemberMedicalRecord(
+  args: ApproveExistingRecordAccessForFamilyMemberType,
+) {
+  const {
+    practitionerAddress,
+    familyMemberId,
+    patientId,
+    recordId,
+    durationInSeconds,
+  } = args
+  try {
+    const contract = await provideContract()
+    const transaction = await contract.approveFamilyMemberMedicalRecordAccess(
+      practitionerAddress,
+      patientId,
+      familyMemberId,
+      recordId,
+      durationInSeconds,
+    )
+
+    const receipt = await transaction.wait()
+
+    const eventResult = await processEvent(
+      receipt,
+      EventNames.ReadAccessGranted,
+      ContractEvents.ReadAccessGranted,
+    )
+
+    return {
+      success: ErrorCodes.Success,
+      doctorAddress: eventResult.approvedDoctor,
+      patientAddress: eventResult.patient,
+      medicalRecordId: Number(eventResult.medicalRecordId),
+      message: 'Read Access Granted',
+    }
+  } catch (error) {
+    console.error(error)
+    throw new PatientError(
+      'An error occurred while approving existing medical record access for family member',
+    )
+  }
+}
+
+async function approveFamilyMemberMedicalRecordAccess(
+  approvalType: RecordApprovalType,
+  args: ApproveExistingRecordAccessForFamilyMemberType,
+) {
+  const { practitionerAddress, familyMemberId, patientId, recordId } = args
+  try {
+    const contract = await provideContract()
+    const isDoctorApproved: boolean = await contract.approvedDoctors(
+      practitionerAddress,
+    )
+
+    if (!isDoctorApproved) {
+      return {
+        success: ErrorCodes.Error,
+        message: 'Doctor is not approved',
+      }
+    }
+    switch (approvalType) {
+      case 'view':
+        const readResult = await approveAccessToExistingFamilyMemberMedicalRecord(
+          args,
+        )
+
+        return {
+          ...readResult,
+        }
+      case 'modify':
+        const writeResult = await approveAccessToAddNewMedicalRecordForFamilyMember(
+          {
+            doctorAddress: practitionerAddress,
+            familyMemberId,
+            principalPatientId: patientId,
+          },
+        )
+
+        return {
+          ...writeResult,
+        }
+      case 'view & modify':
+        if (recordId) {
+          const [fullReadResult, fullWriteResult] = await Promise.allSettled([
+            approveAccessToExistingFamilyMemberMedicalRecord(args),
+            approveAccessToAddNewMedicalRecordForFamilyMember({
+              doctorAddress: practitionerAddress,
+              familyMemberId,
+              principalPatientId: patientId,
+            }),
+          ])
+
+          return {
+            viewAccessGranted:
+              fullReadResult.status === 'fulfilled'
+                ? fullReadResult.value
+                : {
+                    success: ErrorCodes.Error,
+                    message: 'Read Access Not Granted',
+                  },
+            writeAccessGranted:
+              fullWriteResult.status === 'fulfilled'
+                ? fullWriteResult.value
+                : {
+                    success: ErrorCodes.Error,
+                    message: 'Write Access Not Granted',
+                  },
+          }
+        } else {
+          const fullWriteResult = await approveAccessToAddNewMedicalRecordForFamilyMember(
+            {
+              doctorAddress: practitionerAddress,
+              familyMemberId,
+              principalPatientId: patientId,
+            },
+          )
+
+          return {
+            writeAccessGranted: fullWriteResult,
+          }
+        }
+    }
+  } catch (error) {
+    console.error(error)
+    throw new Error('An error occurred while approving medical record access')
+  }
+}
+
 export {
   addPatient,
   fetchPatientId,
@@ -269,4 +460,6 @@ export {
   approveMedicalRecordAccess,
   revokeMedicalRecordAccess,
   viewMedicalRecord,
+  approveFamilyMemberMedicalRecordAccess,
+  getPatientRecordCount,
 }
