@@ -4,6 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { type RootState } from "@/lib/redux/rootReducer";
 import { toggleGrantAccessToRecord } from "@/lib/redux/slices/modals/modalSlice";
 import { setPatientCurrentTab } from "@/lib/redux/slices/patient/patientSlice";
+import { useGetAllPatientFamilyMembers } from "@/lib/queries/patient";
+import { useAccount } from "wagmi";
+import { BiLoaderAlt } from "react-icons/bi";
+import { viewMedicalRecord } from "@/actions/contract/patient/patient.service.c";
 
 const GrantAccessToRecord = ({
   container,
@@ -13,6 +17,7 @@ const GrantAccessToRecord = ({
   title: string;
 }) => {
   const dispatch = useDispatch();
+  const { address } = useAccount();
 
   const isGrantAccessToRecordModalOpen = useSelector(
     (state: RootState) => state.modal.isAcessGrantedToRecordModalOpen
@@ -20,6 +25,14 @@ const GrantAccessToRecord = ({
 
   const handleToggleModal = () => {
     dispatch(toggleGrantAccessToRecord());
+  };
+
+  const { familyMembers, loading, error } = useGetAllPatientFamilyMembers({
+    walletAddress: address ? address : "",
+  });
+
+  const handleViewPatientMedicalRecord = () => {
+    dispatch(setPatientCurrentTab("ShareRecordToDoctor"));
   };
 
   return (
@@ -46,18 +59,29 @@ const GrantAccessToRecord = ({
             <div className="flex flex-col items-center justify-center gap-2">
               <Modal.Close
                 className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
-                onClick={() =>
-                  dispatch(setPatientCurrentTab("ShareRecordToDoctor"))
-                }
+                onClick={() => handleViewPatientMedicalRecord()}
               >
                 Yours
               </Modal.Close>
-              <Modal.Close className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]">
-                Your Spouse (Willford Becky)
-              </Modal.Close>
-              <Modal.Close className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]">
-                Your Child (Willford Samson)
-              </Modal.Close>
+              {loading ? (
+                <BiLoaderAlt className="text-2xl text center animate-spin" />
+              ) : familyMembers ? (
+                <>
+                  {familyMembers?.members?.map((familyMember) => {
+                    return (
+                      <Modal.Close
+                        key={familyMember._id}
+                        className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
+                        onClick={() => handleViewPatientMedicalRecord()}
+                      >
+                        Your {familyMember.relationship} ({familyMember.name})
+                      </Modal.Close>
+                    );
+                  })}
+                </>
+              ) : error ? (
+                <p>Error fetching family members....</p>
+              ) : null}
             </div>
           </div>
         </Modal.Content>

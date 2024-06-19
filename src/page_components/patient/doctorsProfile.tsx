@@ -8,6 +8,9 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const DoctorProfile = () => {
+  const doctorProfile = useSelector(
+    (state: RootState) => state.doctor.currentDoctor
+  );
   const grantAccessToRecordRef = useRef<HTMLDivElement | null>(null);
   const [grantAccessToRecordContainer, setGrantAccessToRecordContainer] =
     useState<HTMLElement | null>(null);
@@ -39,9 +42,9 @@ const DoctorProfile = () => {
           height={94}
           className="rounded-[50%] w-[94px] h-[94px] object-center object-cover mb-2"
         />
-        <h2 className="font-bold lg:text-3xl mb-2">Dr Adewale Daniel</h2>
+        <h2 className="font-bold lg:text-3xl mb-2">{doctorProfile?.name}</h2>
         <p className="text-xs lg:text-base text-gray-7">
-          Cardiology Specialist
+          {doctorProfile?.specialty}
         </p>
         <div className="flex gap-4 items-center my-2">
           <Icon name="StarBlue" />
@@ -54,19 +57,7 @@ const DoctorProfile = () => {
           <h2 className="px-6 text-base font-semibold border-b pb-2">
             About Specialist
           </h2>
-          <p className="py-4 px-6">
-            Dr. Daniel is a highly skilled and compassionate cardiologist
-            dedicated to providing exceptional cardiovascular care. With
-            extensive expertise in diagnosing and treating a wide range of heart
-            conditions, Dr. Daniel is committed to promoting heart health and
-            improving the well-being of his patients. His patient-centric
-            approach involves thorough assessments, personalized treatment
-            plans, and clear communication to ensure that individuals receive
-            the best possible care. Dr. Daniel&apos;s passion for cardiology,
-            coupled with his commitment to staying abreast of the latest medical
-            advancements, makes him a trusted and respected healthcare
-            professional in the field.
-          </p>
+          <p className="py-4 px-6">Doctor description....</p>
         </article>
         <Button
           variant="secondary"

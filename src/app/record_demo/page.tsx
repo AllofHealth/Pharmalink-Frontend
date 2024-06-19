@@ -1,13 +1,13 @@
-'use client';
+"use client";
 import {
   uploadRecordImageToIpfs,
   uploadRecordToIpfs,
-} from '@/actions/shared/utils/upload.to.ipfs';
+} from "@/actions/shared/utils/upload.to.ipfs";
 import {
   addMedicalRecord,
   validateRecordAccessPermission,
-} from '@/actions/contract/doctor/doctor.service.c';
-import { RecordInterface } from '@/actions/interfaces/Record/app.record.interface';
+} from "@/actions/contract/doctor/doctor.service.c";
+import { RecordInterface } from "@/actions/interfaces/Record/app.record.interface";
 
 const Page = () => {
   /**
@@ -26,10 +26,10 @@ const Page = () => {
     image?: File
   ) => {
     const recordInput: RecordInterface = {
-      diagnosis: 'Cholera',
-      doctorsName: 'Dr Sweet',
-      hospitalName: 'Hospital 1',
-      content: 'Patient has bloody stool, type a definition of cholera',
+      diagnosis: "Cholera",
+      doctorsName: "Dr Sweet",
+      hospitalName: "Hospital 1",
+      content: "Patient has bloody stool, type a definition of cholera",
       date: new Date(),
     };
 
@@ -41,7 +41,7 @@ const Page = () => {
 
     if (!isApproved) {
       return {
-        message: 'doctor not approved to access or add record',
+        message: "doctor not approved to access or add record",
       };
     }
 
@@ -49,7 +49,7 @@ const Page = () => {
     const ipfsHash = await uploadRecordToIpfs(recordInput);
     if (!ipfsHash) {
       return {
-        message: 'Error uploading record',
+        message: "Error uploading record",
       };
     }
 
@@ -77,7 +77,7 @@ const Page = () => {
     <section className="flex flex-col gap-7">
       <div className="flex flex-col gap-7">
         <h2 className=" text-4xl">Simple Record Demo</h2>
-        <button onClick={() => handleAddMedicalRecord(1, '0x1234')}>
+        <button onClick={() => handleAddMedicalRecord(1, "0x1234")}>
           <p>Upload record</p>
         </button>
       </div>
