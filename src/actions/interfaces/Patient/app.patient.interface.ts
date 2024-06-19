@@ -1,4 +1,4 @@
-export type RecordApprovalType = 'read' | 'write' | 'full'
+export type RecordApprovalType = 'view' | 'modify' | 'view & modify'
 export interface RegisterPatient {
   name: string
   age: number
