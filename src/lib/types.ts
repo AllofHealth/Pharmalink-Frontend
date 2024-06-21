@@ -328,3 +328,20 @@ export interface AllPharmacist {
 }
 
 export type AllPharmacistAPIResponse = AllPharmacist[];
+
+export interface MedicalRecord {
+  id: number;
+  principalPatient: string;
+  doctorAddress: string;
+  diagnosis: string;
+  doctorsName: string;
+  hospitalName: string;
+  date: string;
+  _id: string;
+  __v: number;
+}
+
+export interface MedicalRecordsResponse {
+  success: number;
+  medicalRecords: MedicalRecord[];
+}

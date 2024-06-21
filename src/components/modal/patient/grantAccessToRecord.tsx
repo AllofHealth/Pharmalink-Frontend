@@ -7,7 +7,6 @@ import { setPatientCurrentTab } from "@/lib/redux/slices/patient/patientSlice";
 import { useGetAllPatientFamilyMembers } from "@/lib/queries/patient";
 import { useAccount } from "wagmi";
 import { BiLoaderAlt } from "react-icons/bi";
-import { viewMedicalRecord } from "@/actions/contract/patient/patient.service.c";
 
 const GrantAccessToRecord = ({
   container,

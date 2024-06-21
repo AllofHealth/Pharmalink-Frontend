@@ -1,4 +1,7 @@
-import { toggleAccessGrantedSharePrescriptionModal } from "@/lib/redux/slices/modals/modalSlice";
+import {
+  toggleAccessGrantedSharePrescriptionModal,
+  toggleSuccessfullyGrantedAccessToSpecificRecordsModal,
+} from "@/lib/redux/slices/modals/modalSlice";
 import type {
   CreateFamilyMemberValues,
   UpdatePatientValues,
@@ -114,6 +117,51 @@ export const sharePrescription = async ({
     } else {
       console.error("An unknown error occurred:", err);
       toast.error("Failed to share prescription: " + err.message);
+    }
+  }
+};
+
+export const requestMedicalRecordApproval = async ({
+  axios,
+  patientAddress,
+  doctorAddress,
+  approvalType,
+  records,
+  dispatch,
+}: {
+  records: number[];
+  axios: AxiosInstance;
+  patientAddress: string | undefined;
+  doctorAddress: string;
+  approvalType: string;
+  dispatch: Dispatch<UnknownAction>;
+}) => {
+  try {
+    const response = await axios.post(
+      `/api/patient/approveMedicalRecordAccess?doctorAddress=${doctorAddress}`,
+      {
+        recordId: records,
+        patientAddress,
+        approvalType,
+        approvalDurationInSec: 36000,
+      }
+    );
+
+    if (response.data) {
+      toast.success("Patient requested medical record approval successfully!.");
+      dispatch(toggleSuccessfullyGrantedAccessToSpecificRecordsModal());
+    }
+  } catch (err: any) {
+    if (err) {
+      toast.error(
+        "Failed to send approve request for medical record: " + err.message
+      );
+      console.error(err);
+    } else {
+      console.error("An unknown error occurred:", err);
+      toast.error(
+        "Failed to send approve request for medical record: " + err.message
+      );
     }
   }
 };

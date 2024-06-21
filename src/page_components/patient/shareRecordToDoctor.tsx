@@ -3,60 +3,33 @@ import Button from "@/components/button/Button";
 import { CheckBox } from "@/components/common/forms/checkbox";
 import GrantAccessToSpecificRecordsModal from "@/components/modal/patient/grantAccessToSpecificRecordsModal";
 import SuccessfullyGrantedAccessToSpecificRecordsModal from "@/components/modal/patient/successfulyGrantedAccessToSpecificRecords";
+import { useGetAllPatientMedicalRecords } from "@/lib/queries/patient";
 import { RootState } from "@/lib/redux/rootReducer";
 import { toggleGrantAccessToSpecificRecordsModal } from "@/lib/redux/slices/modals/modalSlice";
-import { setPatientCurrentTab } from "@/lib/redux/slices/patient/patientSlice";
+import { formatDateToSlashDate } from "@/utils/formatDateToSlashDate";
 import { useEffect, useRef, useState } from "react";
+import { BiLoaderAlt } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
+import { useAccount } from "wagmi";
 
 const ShareRecordToDoctor = () => {
-  const recordLists = [
-    {
-      date: "02/29/2009",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-  ];
+  const { address } = useAccount();
+
+  const { loading, medicalRecords, error } = useGetAllPatientMedicalRecords({
+    walletAddress: address ? address : "",
+  });
+
+  const doctor = useSelector((state: RootState) => state.doctor.currentDoctor);
+
+  const [selectedRecords, setSelectedRecords] = useState<number[]>([]);
+
+  const handleCheckboxChange = (id: number, checked: boolean) => {
+    setSelectedRecords((prevSelectedRecords) =>
+      checked
+        ? [...prevSelectedRecords, id]
+        : prevSelectedRecords.filter((recordId) => recordId !== id)
+    );
+  };
 
   const grantAccessToSpecificRecordsRef = useRef<HTMLDivElement | null>(null);
   const [
@@ -105,33 +78,42 @@ const ShareRecordToDoctor = () => {
       <p className="text-xs lg:text-xl text-gray-7 mb-2">
         Kindly pick which diagnosis you wish to give Dr Deeman access to.
       </p>
-      <AllOfHealthTable
-        labels={["Pick", "Date", "Diagnosis", "Institution"]}
-        caption="Approve Institution Table"
-        headClassName="bg-gray-5 rounded-t-md"
-      >
-        {recordLists.map((prescription, index) => (
-          <tr
-            className="h-16 text-blue4 font-medium"
-            key={index}
-            onClick={() => handleToggleActionNeeded()}
-          >
-            <td>
-              <CheckBox id="" label="" checkboxClassName="ml-3 lg:ml-10" />
-            </td>
-            <td className="pl-2 lg:pl-7 text-xs lg:text-base">
-              {prescription.date}
-            </td>
-            <td className=" text-xs lg:text-base">{prescription.doctor}</td>
-            <td className=" text-xs lg:text-base">
-              {prescription.institution}
-            </td>
-          </tr>
-        ))}
-      </AllOfHealthTable>
+      {loading ? (
+        <BiLoaderAlt className="text-2xl text center animate-spin" />
+      ) : medicalRecords ? (
+        <AllOfHealthTable
+          labels={["Pick", "Date", "Diagnosis", "Institution"]}
+          caption="Approve Institution Table"
+          headClassName="bg-gray-5 rounded-t-md"
+        >
+          {medicalRecords.medicalRecords.map((record, index) => (
+            <tr className="h-16 text-blue4 font-medium" key={index}>
+              <td>
+                <input
+                  type="checkbox"
+                  className="ml-3 lg:ml-10"
+                  checked={selectedRecords.includes(record.id)}
+                  onChange={(e) =>
+                    handleCheckboxChange(record.id, e.target.checked)
+                  }
+                />
+              </td>
+              <td className="pl-2 lg:pl-7 text-xs lg:text-base">
+                {formatDateToSlashDate(record.date)}
+              </td>
+              <td className=" text-xs lg:text-base">{record.diagnosis}</td>
+              <td className=" text-xs lg:text-base">{record.hospitalName}</td>
+            </tr>
+          ))}
+        </AllOfHealthTable>
+      ) : error ? (
+        <p>Error fetching medical records...</p>
+      ) : null}
+
       <Button
         variant="secondary"
         className="mx-auto flex justify-center w-[155px] mt-4"
+        onClick={() => handleToggleActionNeeded()}
       >
         Confirm
       </Button>
@@ -139,6 +121,8 @@ const ShareRecordToDoctor = () => {
         <GrantAccessToSpecificRecordsModal
           title="Action Needed"
           container={grantAccessToSpecificRecordsContainer!}
+          medicalRecords={selectedRecords}
+          doctor={doctor}
         />
       </div>
       <div ref={successfullyGrantAccessToSpecificRecordsRef}>

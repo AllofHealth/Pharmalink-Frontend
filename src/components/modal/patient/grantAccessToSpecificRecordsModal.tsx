@@ -2,21 +2,28 @@ import Modal from "../modal";
 import { Icon } from "@/components/icon/Icon";
 import { useDispatch, useSelector } from "react-redux";
 import { type RootState } from "@/lib/redux/rootReducer";
-import {
-  toggleAccessGrantedSharePrescriptionModal,
-  toggleActionNeededSharePrescription,
-  toggleGrantAccessToSpecificRecordsModal,
-  toggleSuccessfullyGrantedAccessToSpecificRecordsModal,
-} from "@/lib/redux/slices/modals/modalSlice";
+import { toggleGrantAccessToSpecificRecordsModal } from "@/lib/redux/slices/modals/modalSlice";
+import type { AllDoctor } from "@/lib/types";
+import { approveFamilyMemberMedicalRecordAccess } from "@/actions/contract/patient/patient.service.c";
+import useAxios from "@/lib/hooks/useAxios";
+import { requestMedicalRecordApproval } from "@/lib/mutations/patient";
+import { useAccount } from "wagmi";
+import { setApprovalType } from "@/lib/redux/slices/patient/patientSlice";
 
 const GrantAccessToSpecificRecordsModal = ({
   container,
   title,
+  medicalRecords,
+  doctor,
 }: {
   container: HTMLElement;
   title: string;
+  medicalRecords: number[];
+  doctor: AllDoctor | null;
 }) => {
   const dispatch = useDispatch();
+  const { axios } = useAxios({});
+  const { address } = useAccount();
 
   const isGrantAccessToSpecificRecordsModalOpen = useSelector(
     (state: RootState) => state.modal.isGrantAccessToSpecificRecordsModalOpen
@@ -26,8 +33,26 @@ const GrantAccessToSpecificRecordsModal = ({
     dispatch(toggleGrantAccessToSpecificRecordsModal());
   };
 
-  const handleSuccessModal = () => {
-    dispatch(toggleSuccessfullyGrantedAccessToSpecificRecordsModal());
+  const handleRequestApprovalForMedicalRecord = async (
+    approvalType: string
+  ) => {
+    if (!address || !doctor?.walletAddress) {
+      console.error("Address or doctor wallet address is undefined");
+      return;
+    }
+    try {
+      await requestMedicalRecordApproval({
+        axios,
+        dispatch,
+        records: medicalRecords,
+        patientAddress: address,
+        doctorAddress: doctor.walletAddress,
+        approvalType,
+      });
+      dispatch(setApprovalType(approvalType));
+    } catch (error) {
+      console.error("Error requesting medical record approval", error);
+    }
   };
 
   return (
@@ -48,18 +73,22 @@ const GrantAccessToSpecificRecordsModal = ({
                 {title}
               </Modal.Title>
               <p className="lg:my-2 text-[10px] lg:text-base">
-                Give Dr. Nicci Troiani access to 2 of your medical records:
+                Give {doctor?.name} access to {medicalRecords?.length} of your
+                medical records:
               </p>
             </div>
 
             <div className="flex items-center justify-between gap-2">
               <Modal.Close
                 className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-white px-4 lg:py-3 lg:text-sm font-semibold text-black hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px] border border-black"
-                onClick={() => handleSuccessModal()}
+                onClick={() => handleRequestApprovalForMedicalRecord("FULL")}
               >
                 View and Modify
               </Modal.Close>
-              <Modal.Close className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]">
+              <Modal.Close
+                className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
+                onClick={() => handleRequestApprovalForMedicalRecord("READ")}
+              >
                 View Only
               </Modal.Close>
             </div>

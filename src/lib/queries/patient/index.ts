@@ -1,6 +1,7 @@
 import useAxios from "@/lib/hooks/useAxios";
 import type {
   FamilyMemberApiResponse,
+  MedicalRecordsResponse,
   PatientPrescriptionsApiResponse,
 } from "@/lib/types";
 import { useEffect, useState } from "react";
@@ -76,6 +77,44 @@ export const useGetAllPatientPresciptions = ({
 
   return {
     patientPrescriptions,
+    loading,
+    error,
+  };
+};
+
+export const useGetAllPatientMedicalRecords = ({
+  walletAddress,
+}: {
+  walletAddress: string;
+}) => {
+  const [medicalRecords, setMedicalRecords] =
+    useState<MedicalRecordsResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { axios } = useAxios({
+    baseURL: process.env.NEXT_PUBLIC_URL_BACKEND,
+  });
+  const [error, setError] = useState(null);
+
+  const fetchMedicalRecords = async () => {
+    try {
+      const medicalRecords = await axios.get(
+        `/api/patient/allMedicalRecords?walletAddress=${walletAddress}`
+      );
+      setMedicalRecords(medicalRecords.data);
+    } catch (error: any) {
+      console.error("Error getting Patient medical records:", error);
+      setError(error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    void fetchMedicalRecords();
+  }, []);
+
+  return {
+    medicalRecords,
     loading,
     error,
   };

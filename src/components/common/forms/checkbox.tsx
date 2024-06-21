@@ -14,6 +14,7 @@ const CheckBox = ({
   labelClassName,
   indicatorClassName,
   checkboxContainerClassName,
+  disabled,
 }: {
   id: string;
   label: string;
@@ -26,6 +27,7 @@ const CheckBox = ({
   labelClassName?: string;
   indicatorClassName?: string;
   checkboxContainerClassName?: string;
+  disabled?: boolean;
 }) => {
   return (
     <div
@@ -33,20 +35,21 @@ const CheckBox = ({
     >
       <Checkbox.Root
         className={twMerge(
-          "flex appearance-none items-center justify-center rounded border bg-white outline-none focus:shadow-bca-shadow-green",
+          "flex appearance-none items-center justify-center rounded border border-bca-grey-4 bg-white outline-none focus:shadow-bca-shadow-green",
           `h-${height ?? 4} w-${width ?? 4}`,
           checkboxClassName
         )}
         defaultChecked={false}
         id={id}
-        checked={ischecked}
+        checked={true}
         onClick={onClick}
         onCheckedChange={onCheckedChange}
+        disabled={disabled}
       >
         <Checkbox.Indicator
           className={twMerge(
-            `h-4 w-4
-          rounded bg-bca-green-1 text-white`,
+            `h-full w-full
+           bg-bca-green-1 text-white`,
             indicatorClassName
           )}
         >

@@ -4,15 +4,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { type RootState } from "@/lib/redux/rootReducer";
 import { toggleSuccessfullyGrantedAccessToSpecificRecordsModal } from "@/lib/redux/slices/modals/modalSlice";
 import Image from "next/image";
+import type { AllDoctor } from "@/lib/types";
 
 const SuccessfullyGrantedAccessToSpecificRecordsModal = ({
   container,
   title,
+  doctor,
 }: {
   container: HTMLElement;
   title: string;
+  doctor: AllDoctor;
 }) => {
   const dispatch = useDispatch();
+  const accessType = useSelector(
+    (state: RootState) => state.patient.approvalType
+  );
 
   const isSuccessfullyGrantedAccessToSpecificRecordsModalOpen = useSelector(
     (state: RootState) =>
@@ -48,8 +54,9 @@ const SuccessfullyGrantedAccessToSpecificRecordsModal = ({
                 {title}
               </Modal.Title>
               <p className="lg:my-2 text-[10px] lg:text-base">
-                You have successfully given Dr. Nicci Troiani access to VIEW AND
-                MODIFY your medical records
+                You have successfully given {doctor?.name} access to{" "}
+                {accessType === "FULL" ? "VIEW AND MODIFY" : "VIEW"} your
+                medical records
               </p>
             </div>
             <div className="flex items-center justify-center gap-2">
