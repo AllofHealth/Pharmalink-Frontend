@@ -13,7 +13,7 @@ const SuccessfullyGrantedAccessToSpecificRecordsModal = ({
 }: {
   container: HTMLElement;
   title: string;
-  doctor: AllDoctor;
+  doctor: AllDoctor | null;
 }) => {
   const dispatch = useDispatch();
   const accessType = useSelector(

@@ -129,6 +129,7 @@ const ShareRecordToDoctor = () => {
         <SuccessfullyGrantedAccessToSpecificRecordsModal
           title="Successful!"
           container={successfullyGrantAccessToSpecificRecordsContainer!}
+          doctor={doctor}
         />
       </div>
     </div>
