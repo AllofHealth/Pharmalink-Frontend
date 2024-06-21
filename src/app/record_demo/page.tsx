@@ -85,3 +85,9 @@
 //   );
 // };
 // export default Page;
+
+const Page = () => {
+  return <>Hello REcord demo</>;
+};
+
+export default Page;
