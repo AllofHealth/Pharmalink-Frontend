@@ -56,14 +56,14 @@ export default function PAtient() {
             <Icon name="FindDoctor" />
             Find Doctor
           </Tabs.Trigger>
-          <Tabs.Trigger
+          {/* <Tabs.Trigger
             value="Wallet"
             className="flex items-center gap-4"
             onClick={() => dispatch(setPatientCurrentTab("Wallet"))}
           >
             <Icon name="Wallet" />
             Wallet
-          </Tabs.Trigger>
+          </Tabs.Trigger> */}
           <Tabs.Trigger
             value="Family Registration"
             className="flex items-center gap-4"
@@ -109,9 +109,9 @@ export default function PAtient() {
         <Tabs.Content value="ShareRecordToDoctor" className="flex-1">
           <ShareRecordToDoctor />
         </Tabs.Content>
-        <Tabs.Content value="Wallet" className="flex-1">
+        {/* <Tabs.Content value="Wallet" className="flex-1">
           <PatientWallet />
-        </Tabs.Content>
+        </Tabs.Content> */}
         <Tabs.Content value="Family Registration" className="flex-1">
           <FamilyRegistration />
         </Tabs.Content>
