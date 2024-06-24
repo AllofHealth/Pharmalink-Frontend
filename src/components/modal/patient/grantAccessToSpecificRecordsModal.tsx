@@ -6,7 +6,10 @@ import { toggleGrantAccessToSpecificRecordsModal } from "@/lib/redux/slices/moda
 import type { AllDoctor } from "@/lib/types";
 import { approveFamilyMemberMedicalRecordAccess } from "@/actions/contract/patient/patient.service.c";
 import useAxios from "@/lib/hooks/useAxios";
-import { requestMedicalRecordApproval } from "@/lib/mutations/patient";
+import {
+  requestFamilyMemberMedicalRecordApproval,
+  requestMedicalRecordApproval,
+} from "@/lib/mutations/patient";
 import { useAccount } from "wagmi";
 import { setApprovalType } from "@/lib/redux/slices/patient/patientSlice";
 
@@ -28,6 +31,9 @@ const GrantAccessToSpecificRecordsModal = ({
   const isGrantAccessToSpecificRecordsModalOpen = useSelector(
     (state: RootState) => state.modal.isGrantAccessToSpecificRecordsModalOpen
   );
+  const familyMemberId = useSelector(
+    (state: RootState) => state.patient.approveRequestFamilyMemberMedicalRecord
+  );
 
   const handleToggleModal = () => {
     dispatch(toggleGrantAccessToSpecificRecordsModal());
@@ -40,18 +46,36 @@ const GrantAccessToSpecificRecordsModal = ({
       console.error("Address or doctor wallet address is undefined");
       return;
     }
-    try {
-      await requestMedicalRecordApproval({
-        axios,
-        dispatch,
-        records: medicalRecords,
-        patientAddress: address,
-        doctorAddress: doctor.walletAddress,
-        approvalType,
-      });
-      dispatch(setApprovalType(approvalType));
-    } catch (error) {
-      console.error("Error requesting medical record approval", error);
+
+    if (familyMemberId === 0) {
+      try {
+        await requestMedicalRecordApproval({
+          axios,
+          dispatch,
+          records: medicalRecords,
+          patientAddress: address,
+          doctorAddress: doctor.walletAddress,
+          approvalType,
+        });
+        dispatch(setApprovalType(approvalType));
+      } catch (error) {
+        console.error("Error requesting medical record approval", error);
+      }
+    } else {
+      try {
+        await requestFamilyMemberMedicalRecordApproval({
+          axios,
+          dispatch,
+          familyMemberId,
+          records: medicalRecords,
+          patientAddress: address,
+          doctorAddress: doctor.walletAddress,
+          approvalType,
+        });
+        dispatch(setApprovalType(approvalType));
+      } catch (error) {
+        console.error("Error requesting medical record approval", error);
+      }
     }
   };
 

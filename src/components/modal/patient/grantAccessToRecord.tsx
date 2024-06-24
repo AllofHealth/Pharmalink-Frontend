@@ -3,7 +3,10 @@ import { Icon } from "@/components/icon/Icon";
 import { useDispatch, useSelector } from "react-redux";
 import { type RootState } from "@/lib/redux/rootReducer";
 import { toggleGrantAccessToRecord } from "@/lib/redux/slices/modals/modalSlice";
-import { setPatientCurrentTab } from "@/lib/redux/slices/patient/patientSlice";
+import {
+  setApproveRequestFamilyMemberMedicalRecord,
+  setPatientCurrentTab,
+} from "@/lib/redux/slices/patient/patientSlice";
 import { useGetAllPatientFamilyMembers } from "@/lib/queries/patient";
 import { useAccount } from "wagmi";
 import { BiLoaderAlt } from "react-icons/bi";
@@ -30,8 +33,13 @@ const GrantAccessToRecord = ({
     walletAddress: address ? address : "",
   });
 
-  const handleViewPatientMedicalRecord = () => {
+  const handleViewPatientMedicalRecord = (familyMemberId?: number) => {
     dispatch(setPatientCurrentTab("ShareRecordToDoctor"));
+    if (familyMemberId) {
+      dispatch(setApproveRequestFamilyMemberMedicalRecord(familyMemberId));
+    } else {
+      dispatch(setApproveRequestFamilyMemberMedicalRecord(0));
+    }
   };
 
   return (
@@ -71,7 +79,9 @@ const GrantAccessToRecord = ({
                       <Modal.Close
                         key={familyMember._id}
                         className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
-                        onClick={() => handleViewPatientMedicalRecord()}
+                        onClick={() =>
+                          handleViewPatientMedicalRecord(familyMember.id)
+                        }
                       >
                         Your {familyMember.relationship} ({familyMember.name})
                       </Modal.Close>

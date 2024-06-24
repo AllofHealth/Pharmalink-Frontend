@@ -1,12 +1,18 @@
 import { AllOfHealthTable } from "@/components/allOfHealthTable/allOfHealth";
 import Button from "@/components/button/Button";
-import { CheckBox } from "@/components/common/forms/checkbox";
 import GrantAccessToSpecificRecordsModal from "@/components/modal/patient/grantAccessToSpecificRecordsModal";
 import SuccessfullyGrantedAccessToSpecificRecordsModal from "@/components/modal/patient/successfulyGrantedAccessToSpecificRecords";
+import useAxios from "@/lib/hooks/useAxios";
+import {
+  requestFamilyMemberMedicalRecordApproval,
+  requestMedicalRecordApproval,
+} from "@/lib/mutations/patient";
 import { useGetAllPatientMedicalRecords } from "@/lib/queries/patient";
 import { RootState } from "@/lib/redux/rootReducer";
 import { toggleGrantAccessToSpecificRecordsModal } from "@/lib/redux/slices/modals/modalSlice";
+import { setApprovalType } from "@/lib/redux/slices/patient/patientSlice";
 import { formatDateToSlashDate } from "@/utils/formatDateToSlashDate";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,12 +20,18 @@ import { useAccount } from "wagmi";
 
 const ShareRecordToDoctor = () => {
   const { address } = useAccount();
-
-  const { loading, medicalRecords, error } = useGetAllPatientMedicalRecords({
-    walletAddress: address ? address : "",
-  });
+  const { axios } = useAxios({});
 
   const doctor = useSelector((state: RootState) => state.doctor.currentDoctor);
+  const familyMemberId = useSelector(
+    (state: RootState) => state.patient.approveRequestFamilyMemberMedicalRecord
+  );
+
+  const { loading, medicalRecords, familyMemberMedicalRecords, error } =
+    useGetAllPatientMedicalRecords({
+      walletAddress: address ? address : "",
+      familyMemberId: familyMemberId,
+    });
 
   const [selectedRecords, setSelectedRecords] = useState<number[]>([]);
 
@@ -72,6 +84,43 @@ const ShareRecordToDoctor = () => {
     isGrantAccessToSpecificRecordsModalOpen,
     isSuccessfullyGrantAccessToSpecificRecordsModalOpen,
   ]);
+
+  const records =
+    familyMemberId !== 0
+      ? familyMemberMedicalRecords?.records
+      : medicalRecords?.medicalRecords;
+
+  const handleRequestEmptyRecord = async () => {
+    if (familyMemberId === 0) {
+      try {
+        await requestMedicalRecordApproval({
+          axios,
+          dispatch,
+          records: [],
+          patientAddress: address,
+          doctorAddress: doctor ? doctor.walletAddress : "",
+          approvalType: "FULL",
+        });
+      } catch (error) {
+        console.error("Error requesting medical record approval", error);
+      }
+    } else {
+      try {
+        await requestFamilyMemberMedicalRecordApproval({
+          axios,
+          dispatch,
+          familyMemberId,
+          records: [],
+          patientAddress: address,
+          doctorAddress: doctor ? doctor.walletAddress : "",
+          approvalType: "FULL",
+        });
+      } catch (error) {
+        console.error("Error requesting medical record approval", error);
+      }
+    }
+  };
+
   return (
     <div className="">
       <h1 className="font-bold lg:text-3xl mb-2">FIND DOCTOR - YOUR RECORD</h1>
@@ -80,43 +129,77 @@ const ShareRecordToDoctor = () => {
       </p>
       {loading ? (
         <BiLoaderAlt className="text-2xl text center animate-spin" />
-      ) : medicalRecords ? (
-        <AllOfHealthTable
-          labels={["Pick", "Date", "Diagnosis", "Institution"]}
-          caption="Approve Institution Table"
-          headClassName="bg-gray-5 rounded-t-md"
-        >
-          {medicalRecords.medicalRecords.map((record, index) => (
-            <tr className="h-16 text-blue4 font-medium" key={index}>
-              <td>
-                <input
-                  type="checkbox"
-                  className="ml-3 lg:ml-10"
-                  checked={selectedRecords.includes(record.id)}
-                  onChange={(e) =>
-                    handleCheckboxChange(record.id, e.target.checked)
-                  }
-                />
-              </td>
-              <td className="pl-2 lg:pl-7 text-xs lg:text-base">
-                {formatDateToSlashDate(record.date)}
-              </td>
-              <td className=" text-xs lg:text-base">{record.diagnosis}</td>
-              <td className=" text-xs lg:text-base">{record.hospitalName}</td>
-            </tr>
-          ))}
-        </AllOfHealthTable>
+      ) : records && records.length > 0 ? (
+        <>
+          <AllOfHealthTable
+            labels={["Pick", "Date", "Diagnosis", "Institution"]}
+            caption="Approve Institution Table"
+            headClassName="bg-gray-5 rounded-t-md"
+          >
+            {records.map((record, index) => (
+              <tr className="h-16 text-blue4 font-medium" key={index}>
+                <td>
+                  <input
+                    type="checkbox"
+                    className="ml-3 lg:ml-10"
+                    checked={selectedRecords.includes(record.id)}
+                    onChange={(e) =>
+                      handleCheckboxChange(record.id, e.target.checked)
+                    }
+                  />
+                </td>
+                <td className="pl-2 lg:pl-7 text-xs lg:text-base">
+                  {formatDateToSlashDate(record.date)}
+                </td>
+                <td className=" text-xs lg:text-base">{record.diagnosis}</td>
+                <td className=" text-xs lg:text-base">{record.hospitalName}</td>
+              </tr>
+            ))}
+          </AllOfHealthTable>
+          <Button
+            variant="secondary"
+            className="mx-auto flex justify-center w-[155px] mt-4"
+            onClick={() => handleToggleActionNeeded()}
+          >
+            Confirm
+          </Button>
+        </>
+      ) : records && records.length === 0 ? (
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-12">
+          <div className="grid gap-2">
+            <p className="font-semibold text-base text-blue2">ERROR!</p>
+            <Image
+              src={"/assets/images/no-records.png"}
+              alt=""
+              width={410}
+              height={369}
+              className="sm:hidden"
+            />
+            <p className="text-2xl lg:text-5xl">No Records Found!</p>
+            <p className="text-6B6B6B sm:text-2xl">
+              There are currently no diagnoses to select. Please continue with
+              your consultation or contact our support team for further
+              assistance.
+            </p>
+            <Button
+              variant="secondary"
+              className="mx-auto flex justify-center w-[155px] mt-4"
+              onClick={() => handleRequestEmptyRecord()}
+            >
+              Create a record request
+            </Button>
+          </div>
+          <Image
+            src={"/assets/images/no-records.png"}
+            alt=""
+            width={410}
+            height={369}
+            className="hidden sm:block"
+          />
+        </div>
       ) : error ? (
         <p>Error fetching medical records...</p>
       ) : null}
-
-      <Button
-        variant="secondary"
-        className="mx-auto flex justify-center w-[155px] mt-4"
-        onClick={() => handleToggleActionNeeded()}
-      >
-        Confirm
-      </Button>
       <div ref={grantAccessToSpecificRecordsRef}>
         <GrantAccessToSpecificRecordsModal
           title="Action Needed"

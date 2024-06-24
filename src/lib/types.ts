@@ -345,3 +345,8 @@ export interface MedicalRecordsResponse {
   success: number;
   medicalRecords: MedicalRecord[];
 }
+
+export interface FamilyMemberMedicalRecordsResponse {
+  success: number;
+  records: MedicalRecord[];
+}

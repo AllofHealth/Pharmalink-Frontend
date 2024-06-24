@@ -87,7 +87,7 @@
 // export default Page;
 
 const Page = () => {
-  return <>Hello REcord demo</>;
+  return <>Hello Record demo</>;
 };
 
 export default Page;

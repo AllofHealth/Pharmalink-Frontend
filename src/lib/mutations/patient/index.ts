@@ -165,3 +165,51 @@ export const requestMedicalRecordApproval = async ({
     }
   }
 };
+
+export const requestFamilyMemberMedicalRecordApproval = async ({
+  axios,
+  patientAddress,
+  doctorAddress,
+  approvalType,
+  records,
+  familyMemberId,
+  dispatch,
+}: {
+  records: number[];
+  axios: AxiosInstance;
+  patientAddress: string | undefined;
+  doctorAddress: string;
+  approvalType: string;
+  familyMemberId: number;
+  dispatch: Dispatch<UnknownAction>;
+}) => {
+  try {
+    const response = await axios.post(
+      `/api/patient/approveFamilyMemberRecordAccess?doctorAddress=${doctorAddress}`,
+      {
+        recordId: records,
+        familyMemberId,
+        principalPatientAddress: patientAddress,
+        approvalType,
+        approvalDurationInSec: 36000,
+      }
+    );
+
+    if (response.data) {
+      toast.success("Patient requested medical record approval successfully!.");
+      dispatch(toggleSuccessfullyGrantedAccessToSpecificRecordsModal());
+    }
+  } catch (err: any) {
+    if (err) {
+      toast.error(
+        "Failed to send approve request for medical record: " + err.message
+      );
+      console.error(err);
+    } else {
+      console.error("An unknown error occurred:", err);
+      toast.error(
+        "Failed to send approve request for medical record: " + err.message
+      );
+    }
+  }
+};

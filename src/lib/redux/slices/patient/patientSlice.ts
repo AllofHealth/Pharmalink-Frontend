@@ -5,12 +5,14 @@ interface PatientState {
   patientCurrentTab: string;
   currentPrescription: Prescription | null;
   approvalType: string;
+  approveRequestFamilyMemberMedicalRecord: number;
 }
 
 const initialState: PatientState = {
   patientCurrentTab: "Overview",
   currentPrescription: null,
   approvalType: "",
+  approveRequestFamilyMemberMedicalRecord: 0,
 };
 
 const Patient = createSlice({
@@ -26,9 +28,20 @@ const Patient = createSlice({
     setApprovalType(state, action: PayloadAction<string>) {
       state.approvalType = action.payload;
     },
+    setApproveRequestFamilyMemberMedicalRecord(
+      state,
+      action: PayloadAction<number>
+    ) {
+      state.approveRequestFamilyMemberMedicalRecord = action.payload;
+      console.log(action.payload);
+    },
   },
 });
 
-export const { setPatientCurrentTab, setCurrentPrescription, setApprovalType } =
-  Patient.actions;
+export const {
+  setPatientCurrentTab,
+  setCurrentPrescription,
+  setApprovalType,
+  setApproveRequestFamilyMemberMedicalRecord,
+} = Patient.actions;
 export default Patient.reducer;
