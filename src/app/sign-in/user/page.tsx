@@ -4,10 +4,13 @@ import { Select } from "@/components/common";
 import { Field } from "@/components/common/forms/Field";
 import { Icon } from "@/components/icon/Icon";
 import {
+  useGetAdminByAddress,
   useGetDoctorByAddress,
   useGetPatientByAddress,
   useGetPharmacistByAddress,
 } from "@/lib/queries/auth";
+import { useGetPractitionerInstitutions } from "@/lib/queries/institutions";
+import type { Admin, GetAdminNotExistMessage } from "@/lib/types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -18,6 +21,8 @@ const options = [
   { value: "Patient", label: "Patient" },
   { value: "Doctor", label: "Doctor" },
   { value: "Pharmacist", label: "Pharmacist" },
+  { value: "Institution", label: "Institution" },
+  { value: "Admin", label: "Admin" },
 ];
 
 export default function UserSignIn() {
@@ -40,6 +45,17 @@ export default function UserSignIn() {
     connected: isConnected,
     address: address ? address : "",
   });
+
+  const { practitionerInstitutions } = useGetPractitionerInstitutions({
+    walletAddress: address ? address : "",
+    isConnected,
+  });
+
+  const { adminData } = useGetAdminByAddress({
+    connected: isConnected,
+    address: address ? address : "",
+  });
+
   console.log(patientData);
   console.log(doctorData);
   console.log(pharmacistData);
@@ -69,6 +85,22 @@ export default function UserSignIn() {
         "doctor" in pharmacistData
       ) {
         router.push("/dashboard/pharmacist");
+      }
+    } else if (selectedUserType === "Institution") {
+      if (practitionerInstitutions?.success === 404 || 400) {
+        toast.error("User is not a practitioner in the system");
+      } else if (
+        practitionerInstitutions?.success === 200 &&
+        "hospital" in practitionerInstitutions
+      ) {
+        router.push("/sign-in/institution");
+      }
+    } else if (selectedUserType === "Admin") {
+      if ((adminData as GetAdminNotExistMessage)?.success === 404) {
+        router.push("/sign-up/system_admin");
+      } else if ((adminData as Admin)?.id) {
+        toast.success("System Admin exists");
+        router.push("/dashboard/system_admin");
       }
     }
   };

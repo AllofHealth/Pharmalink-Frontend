@@ -15,6 +15,7 @@ import {
 } from "@/lib/queries/auth";
 import { toast } from "sonner";
 import type { Admin, GetAdminNotExistMessage } from "@/lib/types";
+import { useGetPractitionerInstitutions } from "@/lib/queries/institutions";
 
 const options = [
   { value: "Patient", label: "Patient" },
@@ -49,6 +50,12 @@ export default function UserSignUp() {
     connected: isConnected,
     address: address ? address : "",
   });
+
+  const { practitionerInstitutions, loading, error } =
+    useGetPractitionerInstitutions({
+      walletAddress: address ? address : "",
+      isConnected,
+    });
 
   console.log(patientData);
   console.log(doctorData);
@@ -85,7 +92,14 @@ export default function UserSignUp() {
         router.push("/dashboard/pharmacist");
       }
     } else if (selectedUserType === "Institution") {
-      router.push("/sign-up/institution");
+      if (practitionerInstitutions?.success === 404 || 400) {
+        toast.error("User is not a practitioner in the system");
+      } else if (
+        practitionerInstitutions?.success === 200 &&
+        "hospital" in practitionerInstitutions
+      ) {
+        router.push("/sign-in/institution");
+      }
     } else if (selectedUserType === "Admin") {
       if ((adminData as GetAdminNotExistMessage)?.success === 404) {
         router.push("/sign-up/system_admin");
