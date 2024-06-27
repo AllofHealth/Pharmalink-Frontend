@@ -87,11 +87,11 @@ export default function UserSignIn() {
         router.push("/dashboard/pharmacist");
       }
     } else if (selectedUserType === "Institution") {
-      if (practitionerInstitutions?.success === 404 || 400) {
+      if (practitionerInstitutions?.success === 400) {
         toast.error("User is not a practitioner in the system");
       } else if (
         practitionerInstitutions?.success === 200 &&
-        "hospital" in practitionerInstitutions
+        "hospitals" in practitionerInstitutions
       ) {
         router.push("/sign-in/institution");
       }

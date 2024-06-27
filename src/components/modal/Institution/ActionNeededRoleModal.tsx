@@ -7,15 +7,27 @@ import {
   toggleInstitutionActionNeededModal,
   toggleInstitutionSuccessfullyAddedModal,
 } from "@/lib/redux/slices/modals/modalSlice";
+import type { InstitutionPractitioner } from "@/lib/types";
+import { approvePractitionerToInstitution } from "@/lib/mutations/institution";
+import useAxios from "@/lib/hooks/useAxios";
+import { useAccount } from "wagmi";
 
 const InstitutionActionNeededRoleModal = ({
   container,
   title,
+  currentPractitioner,
 }: {
   container: HTMLElement;
   title: string;
+  currentPractitioner: InstitutionPractitioner;
 }) => {
   const dispatch = useDispatch();
+  const { axios } = useAxios({});
+  const { address } = useAccount();
+
+  const currentInstitution = useSelector(
+    (state: RootState) => state.institution.currentInstitution
+  );
 
   const isActionNeededRoleModalOpen = useSelector(
     (state: RootState) => state.modal.isInstitutionActionNeededModalOpen
@@ -23,10 +35,6 @@ const InstitutionActionNeededRoleModal = ({
 
   const handleToggleModal = () => {
     dispatch(toggleInstitutionActionNeededModal());
-  };
-
-  const handleSuccessfullyAdded = () => {
-    dispatch(toggleInstitutionSuccessfullyAddedModal());
   };
 
   const handleAccessDenied = () => {
@@ -48,8 +56,8 @@ const InstitutionActionNeededRoleModal = ({
                 {title}
               </Modal.Title>
               <p className="lg:my-2 text-[10px] lg:text-base">
-                Pharm Nicci Tolani requires your attention to be accepted into
-                your institution
+                {currentPractitioner?.category} {currentPractitioner?.name}{" "}
+                requires your attention to be accepted into your institution
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -61,7 +69,17 @@ const InstitutionActionNeededRoleModal = ({
               </Modal.Close>
               <Modal.Close
                 className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
-                onClick={() => handleSuccessfullyAdded()}
+                onClick={() =>
+                  approvePractitionerToInstitution({
+                    axios,
+                    dispatch,
+                    hospitalId: currentInstitution
+                      ? currentInstitution?._id
+                      : "",
+                    adminAddress: address ? address : "",
+                    practitionerAddress: currentPractitioner.walletAddress,
+                  })
+                }
               >
                 Approve
               </Modal.Close>

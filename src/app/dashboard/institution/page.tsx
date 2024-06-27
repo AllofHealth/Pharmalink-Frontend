@@ -32,14 +32,14 @@ export default function Institution() {
             <Icon name="Overview" />
             Overview
           </Tabs.Trigger>
-          <Tabs.Trigger
+          {/* <Tabs.Trigger
             value="Wallet"
             className="flex items-center gap-4"
             onClick={() => dispatch(setInstitutionCurrentTab("Wallet"))}
           >
             <Icon name="Wallet" />
             Wallet
-          </Tabs.Trigger>
+          </Tabs.Trigger> */}
           <Tabs.Trigger
             value="Wallet"
             className="flex items-center gap-4"
@@ -57,9 +57,9 @@ export default function Institution() {
         <Tabs.Content value="Overview" className="flex-1">
           <InstitutionOverview />
         </Tabs.Content>
-        <Tabs.Content value="Wallet" className="flex-1">
+        {/* <Tabs.Content value="Wallet" className="flex-1">
           <InstitutionWallet />
-        </Tabs.Content>
+        </Tabs.Content> */}
         <Tabs.Content value="Privacy" className="flex-1">
           <InstitutionPrivacyAndSecurity />
         </Tabs.Content>

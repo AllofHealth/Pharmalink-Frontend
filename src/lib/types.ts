@@ -350,3 +350,18 @@ export interface FamilyMemberMedicalRecordsResponse {
   success: number;
   records: MedicalRecord[];
 }
+
+export interface InstitutionPractitioner {
+  walletAddress: string;
+  hospitalIds: number[];
+  profilePicture: string;
+  name: string;
+  status: string;
+  category: string;
+  _id: string;
+}
+
+export interface InstitutionPractitionersApiResponse {
+  success: number;
+  practitioners: Practitioner[];
+}
