@@ -15,20 +15,18 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2-beta
         with:
-          node-version: '20'
+          node-version: "20"
           check-latest: true
 
+      #   - name: Copy env
+      #     run: |
+      #       echo "${{ secrets.ENV_FILE }}" > .env.production
 
-    #   - name: Copy env
-    #     run: |
-    #       echo "${{ secrets.ENV_FILE }}" > .env.production
-    
       - name: build app
         run: |
           rm -rf node_modules/
           sudo npm install
           sudo npm run build
-          
 
       - name: Sync files
         uses: appleboy/scp-action@v0.1.7
@@ -39,7 +37,7 @@ jobs:
           port: ${{ secrets.DO_PORT }}
           source: "./*"
           target: ~/Pharmalink-Frontend
-  
+
       - name: SSH and Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -52,3 +50,4 @@ jobs:
             pm2 start --name=Pharmalink-Frontend npm -- start
             pm2 startup systemd
             pm2 save
+            sudo systemctl restart nginx
