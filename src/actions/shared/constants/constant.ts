@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export const CONTRACT_ADDRESS =
-  process.env.CONTRACT_ADDRESS || '0xd1345513C56d5925f4c3d614Af0bf5bd7dA4cba1'
+  process.env.CONTRACT_ADDRESS || '0x67f4e76B85391E2d04CB5044589aEe13ADdE58f7'
 export const IPFS_API_KEY =
   process.env.IPFS_API_KEY || '3a7f7aa0e3864e3c97172d8ebabd12c0'
 export const IPFS_API_SECRET =
