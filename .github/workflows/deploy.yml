@@ -47,7 +47,4 @@ jobs:
           port: ${{ secrets.DO_PORT }}
           script: |
             cd ~/Pharmalink-Frontend
-            pm2 start --name=Pharmalink-Frontend npm -- start
-            pm2 startup systemd
-            pm2 save
-            sudo systemctl restart nginx
+            pm2 restart 0
