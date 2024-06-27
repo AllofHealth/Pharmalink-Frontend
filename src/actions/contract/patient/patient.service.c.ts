@@ -15,7 +15,6 @@ import {
   ViewMedicalRecordType,
 } from '@/actions/interfaces/Patient/app.patient.interface'
 import { bytes32ToString } from '@/actions/shared/utils/bytes.utils'
-import { message } from 'antd'
 
 async function addPatient(): Promise<{
   success: number
@@ -410,6 +409,7 @@ async function approveFamilyMemberMedicalRecordAccess(
         if (recordId) {
           const [fullReadResult, fullWriteResult] = await Promise.allSettled([
             approveAccessToExistingFamilyMemberMedicalRecord(args),
+            await new Promise((resolve) => setTimeout(resolve, 2000)),
             approveAccessToAddNewMedicalRecordForFamilyMember({
               doctorAddress: practitionerAddress,
               familyMemberId,
