@@ -15,7 +15,7 @@ export const useGetPatientByAddress = ({
   connected,
   address,
 }: {
-  connected: boolean;
+  connected?: boolean;
   address: string;
 }) => {
   const [patientData, setPatientData] = useState<
@@ -28,10 +28,6 @@ export const useGetPatientByAddress = ({
   const [error, setError] = useState(null);
 
   const fetchPatientData = async () => {
-    if (!connected) {
-      return;
-    }
-
     try {
       const patientDataResponse = await axios.get(
         `/api/patient/getPatientByAddress?walletAddress=${address}`
@@ -49,7 +45,7 @@ export const useGetPatientByAddress = ({
     void fetchPatientData();
   }, [connected, address]);
 
-  if (!connected) {
+  if (!address) {
     return {
       patientData: null,
       loading: false,

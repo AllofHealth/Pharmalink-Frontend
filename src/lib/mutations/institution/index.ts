@@ -1,4 +1,5 @@
 import { toggleInstitutionSuccessfullyAddedModal } from "@/lib/redux/slices/modals/modalSlice";
+import type { UpdateInstitutionValues } from "@/lib/types";
 import type { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import type { AxiosInstance } from "axios";
 import { toast } from "sonner";
@@ -36,6 +37,40 @@ export const approvePractitionerToInstitution = async ({
       toast.error(
         "Failed to send approve practitioner to institution: " + err.message
       );
+    }
+  }
+};
+
+export const updateInstitution = async ({
+  updateInstitutionValues,
+  axios,
+  hospitalId,
+  adminAddress,
+}: {
+  updateInstitutionValues: UpdateInstitutionValues;
+  axios: AxiosInstance;
+  hospitalId: string;
+  adminAddress: string;
+}) => {
+  try {
+    const response = await axios.post(
+      `/api/hospital/updateHospital?hospitalId=${hospitalId}&adminAddress=${adminAddress}`,
+      {
+        name: updateInstitutionValues.name,
+        location: updateInstitutionValues.location,
+      }
+    );
+
+    if (response.data.success === 200) {
+      toast.success("Institution data updated successfully!.");
+    }
+  } catch (err: any) {
+    if (err) {
+      toast.error("Failed to update Institution data: " + err.message);
+      console.error(err);
+    } else {
+      console.error("An unknown error occurred:", err);
+      toast.error("Failed to update Institution data: " + err.message);
     }
   }
 };

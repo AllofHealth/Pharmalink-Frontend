@@ -1,6 +1,11 @@
 import Button from "@/components/button/Button";
+import type { RootState } from "@/lib/redux/rootReducer";
+import { useSelector } from "react-redux";
 
 const InstitutionAccessAndSecurity = () => {
+  const currentInstitution = useSelector(
+    (state: RootState) => state.institution.currentInstitution
+  );
   return (
     <div className="border-t pt-4">
       <h2 className="text-base lg:text-3xl font-semibold mb-4">
@@ -8,11 +13,15 @@ const InstitutionAccessAndSecurity = () => {
       </h2>
       <div className="flex justify-between items-center mb-4">
         <span className="text-sm lg:text-xl font-semibold">Sign-in Email</span>
-        <span className="text-base font-semibold">johnsmith@gmail.com</span>
+        <span className="text-base font-semibold">
+          {currentInstitution?.email}
+        </span>
       </div>
       <div className="flex justify-between items-center mb-4">
         <span className="text-sm lg:text-xl font-semibold">Phone number</span>
-        <span className="text-base font-semibold">+380 93 123 45 67</span>
+        <span className="text-base font-semibold">
+          {currentInstitution?.phoneNo}
+        </span>
       </div>
       <div className="flex justify-between items-center mb-6">
         <span className="text-sm lg:text-xl font-semibold">
@@ -28,7 +37,7 @@ const InstitutionAccessAndSecurity = () => {
           today at 18:34, Safary 198.123.23.23
         </span>
       </div>
-      <div>
+      {/* <div>
         <div className="flex justify-between items-center mb-6">
           <span className="text-base lg:text-xl font-semibold">
             Total active sessions (5)
@@ -50,7 +59,7 @@ const InstitutionAccessAndSecurity = () => {
         <div className="flex justify-end mt-4">
           <Button variant="secondary">+ Reset all active sessions</Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

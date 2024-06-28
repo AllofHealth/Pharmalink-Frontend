@@ -43,14 +43,14 @@ export default function Doctor() {
             <Icon name="Wallet" />
             Approvals
           </Tabs.Trigger>
-          <Tabs.Trigger
+          {/* <Tabs.Trigger
             value="Wallet"
             className="flex items-center gap-4"
             onClick={() => dispatch(setDoctorCurrentTab("Wallet"))}
           >
             <Icon name="Wallet" />
             Wallet
-          </Tabs.Trigger>
+          </Tabs.Trigger> */}
           <Tabs.Trigger
             value="Wallet"
             className="flex items-center gap-4"
@@ -77,9 +77,9 @@ export default function Doctor() {
         <Tabs.Content value="patientMedicalRecordDetails" className="flex-1">
           <ViewPatientMedicalRecord />
         </Tabs.Content>
-        <Tabs.Content value="Wallet" className="flex-1">
+        {/* <Tabs.Content value="Wallet" className="flex-1">
           <DoctorWallet />
-        </Tabs.Content>
+        </Tabs.Content> */}
         <Tabs.Content value="Privacy" className="flex-1">
           <DoctorPrivacyAndSecurity />
         </Tabs.Content>

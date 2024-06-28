@@ -1,15 +1,55 @@
 import Button from "@/components/button/Button";
 import { Icon } from "@/components/icon/Icon";
-import { Form, Input, Select } from "antd";
+import { Form, Input } from "antd";
 import Image from "next/image";
 import InstitutionAccessAndSecurity from "./institutionAccessAndSecurity";
+import { useEffect, useState } from "react";
+import type { UpdateInstitutionValues } from "@/lib/types";
+import useAxios from "@/lib/hooks/useAxios";
+import { updateInstitution } from "@/lib/mutations/institution";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/lib/redux/rootReducer";
+import { useAccount } from "wagmi";
 
 const InstitutionPrivacyAndSecurity = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
+  const values = Form.useWatch<UpdateInstitutionValues>([], form);
+  const [submittable, setSubmittable] = useState(false);
+  const { axios } = useAxios({});
+  const { address } = useAccount();
+
+  const currentInstitution = useSelector(
+    (state: RootState) => state.institution.currentInstitution
+  );
+
+  const updateInstitutionData = async () => {
+    setIsLoading(true);
+
+    const result = await updateInstitution({
+      updateInstitutionValues: values,
+      axios,
+      hospitalId: currentInstitution ? currentInstitution._id : "",
+      adminAddress: address ? address : "",
+    })
+      .then((res) => setIsLoading(false))
+      .catch((err) => setIsLoading(false));
+  };
+
+  useEffect(() => {
+    form.validateFields({ validateOnly: true }).then(
+      () => {
+        setSubmittable(true);
+      },
+      () => {
+        setSubmittable(false);
+      }
+    );
+  }, [values]);
 
   return (
     <section>
-      <h2 className="mb-6 text-xl">Personal Profile</h2>
+      <h2 className="mb-6 text-xl">Institution Profile</h2>
       <Image
         src="/assets/images/profile_image.png"
         alt="Profile display face"
@@ -17,7 +57,6 @@ const InstitutionPrivacyAndSecurity = () => {
         height={144}
       />
       <Form
-        initialValues={{ email: "" }}
         layout="vertical"
         form={form}
         autoComplete="on"
@@ -25,69 +64,35 @@ const InstitutionPrivacyAndSecurity = () => {
       >
         <Form.Item
           className="mb-8"
-          name="first_name"
+          name="name"
           label={
             <span className="text-[18px] font-normal text-text-black2">
-              First Name
+              Hospital Name
             </span>
           }
-          // rules={[{ required: true }]}
+          rules={[{ required: true }]}
         >
           <Input
             type="text"
-            name="first_name"
+            name="name"
             className="border p-3 rounded-[4px] h-10"
-            placeholder="First Name"
-          />
-        </Form.Item>
-        <Form.Item
-          className="mb-8"
-          name="last_name"
-          label={
-            <span className="text-[18px] font-normal text-text-black2">
-              Last Name
-            </span>
-          }
-          // rules={[{ required: true }]}
-        >
-          <Input
-            type="text"
-            name="last_name"
-            className="border p-3 rounded-[4px] h-10"
-            placeholder="Last Name"
-          />
-        </Form.Item>
-        <Form.Item
-          className="mb-8"
-          name="dob"
-          label={
-            <span className="text-[18px] font-normal text-text-black2">
-              Date of Birth
-            </span>
-          }
-          // rules={[{ required: true }]}
-        >
-          <Input
-            type="date"
-            name="dob"
-            className="border p-3 rounded-[4px] h-10"
-            placeholder="Date of birth"
+            placeholder="Full Name"
           />
         </Form.Item>
 
         <Form.Item
           className="mb-8"
-          name="physical_address"
+          name="location"
           label={
             <span className="text-[18px] font-normal text-text-black2">
               Physical Address
             </span>
           }
-          // rules={[{ required: true }]}
+          rules={[{ required: true }]}
         >
           <Input
             type="text"
-            name="physical_address"
+            name="address"
             className="border p-3 rounded-[4px] h-10"
             placeholder="Physical address"
           />
@@ -102,8 +107,9 @@ const InstitutionPrivacyAndSecurity = () => {
           <div className="flex gap-4 justify-end">
             <Button
               variant="primary"
-              type="submit"
+              type="button"
               className="w-[105px] text-[12px] lg:w-[175px] rounded-[4px] h-10 justify-center font-normal p-2"
+              onClick={() => form.resetFields()}
             >
               Cancel
             </Button>
@@ -111,8 +117,10 @@ const InstitutionPrivacyAndSecurity = () => {
               variant="secondary"
               type="submit"
               className="w-[105px] text-[12px] lg:w-[175px] rounded-[4px] h-10 justify-center font-normal p-2"
+              disabled={!submittable}
+              onClick={() => updateInstitutionData()}
             >
-              Save Changes
+              {isLoading ? "Saving" : "Save Changes"}
             </Button>
           </div>
         </Form.Item>

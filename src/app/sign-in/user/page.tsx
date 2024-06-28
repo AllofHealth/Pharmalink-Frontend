@@ -75,6 +75,7 @@ export default function UserSignIn() {
       if (doctorData?.success === 404) {
         router.push("/sign-up/doctor");
       } else if (doctorData?.success === 200 && "doctor" in doctorData) {
+        toast.success("Doctor exist");
         router.push("/dashboard/doctor");
       }
     } else if (selectedUserType === "Pharmacist") {

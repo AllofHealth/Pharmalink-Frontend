@@ -14,6 +14,10 @@ const SuccessfullyEditedMedicalRecordModal = ({
 }) => {
   const dispatch = useDispatch();
 
+  const patientRecordData = useSelector(
+    (state: RootState) => state.doctor.currentPatientRecord
+  );
+
   const isSuccessfullyEditedMedicalRecordModalOpen = useSelector(
     (state: RootState) => state.modal.isSuccessfullyEditedMedicalRecordModalOpen
   );
@@ -47,7 +51,8 @@ const SuccessfullyEditedMedicalRecordModal = ({
                 {title}
               </Modal.Title>
               <p className="lg:my-2 text-[10px] lg:text-base">
-                You have successfully edited Nicci Troainni’s Medical Record
+                You have successfully edited {patientRecordData?.patientName}
+                &apos;s Medical Record
               </p>
             </div>
             <div className="flex items-center justify-center gap-2">
