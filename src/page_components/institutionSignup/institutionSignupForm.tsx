@@ -8,6 +8,7 @@ import { useAccount } from "wagmi";
 import useAxios from "@/lib/hooks/useAxios";
 import { createHospital } from "@/actions/contract/hospital/hospital.service.c";
 import { createInstitution } from "@/lib/mutations/auth";
+import { useDispatch } from "react-redux";
 
 export interface ISignIn {
   email: string;
@@ -23,6 +24,7 @@ export default function InstitutionSignUpForm() {
   const { address } = useAccount();
   const [institutionId, setInstitutionId] = useState(0);
   const { axios } = useAxios({});
+  const dispatch = useDispatch();
 
   const createInstitutionId = async () => {
     const result = await createHospital();
@@ -44,6 +46,7 @@ export default function InstitutionSignUpForm() {
         axios,
         router,
         address,
+        dispatch,
       });
     }
     console.log(institutionId);

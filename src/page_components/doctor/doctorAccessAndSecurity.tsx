@@ -1,6 +1,14 @@
 import Button from "@/components/button/Button";
+import { useGetDoctorByAddress } from "@/lib/queries/auth";
+import type { GetDoctorMessage } from "@/lib/types";
+import { useAccount } from "wagmi";
 
 const DoctorAccessAndSecurity = () => {
+  const { address, isConnected } = useAccount();
+  const { doctorData } = useGetDoctorByAddress({
+    connected: isConnected,
+    address: address ? address : "",
+  });
   return (
     <div className="border-t pt-4">
       <h2 className="text-base lg:text-3xl font-semibold mb-4">
@@ -8,11 +16,15 @@ const DoctorAccessAndSecurity = () => {
       </h2>
       <div className="flex justify-between items-center mb-4">
         <span className="text-sm lg:text-xl font-semibold">Sign-in Email</span>
-        <span className="text-base font-semibold">johnsmith@gmail.com</span>
+        <span className="text-base font-semibold">
+          {(doctorData as GetDoctorMessage)?.doctor.email}
+        </span>
       </div>
       <div className="flex justify-between items-center mb-4">
         <span className="text-sm lg:text-xl font-semibold">Phone number</span>
-        <span className="text-base font-semibold">+380 93 123 45 67</span>
+        <span className="text-base font-semibold">
+          {(doctorData as GetDoctorMessage)?.doctor.phoneNumber}
+        </span>
       </div>
       <div className="flex justify-between items-center mb-6">
         <span className="text-sm lg:text-xl font-semibold">
@@ -28,7 +40,7 @@ const DoctorAccessAndSecurity = () => {
           today at 18:34, Safary 198.123.23.23
         </span>
       </div>
-      <div>
+      {/* <div>
         <div className="flex justify-between items-center mb-6">
           <span className="text-base lg:text-xl font-semibold">
             Total active sessions (5)
@@ -50,7 +62,7 @@ const DoctorAccessAndSecurity = () => {
         <div className="flex justify-end mt-4">
           <Button variant="secondary">+ Reset all active sessions</Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

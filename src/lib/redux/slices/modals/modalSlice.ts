@@ -18,6 +18,7 @@ interface ModalState {
   isGrantAccessToSpecificRecordsModalOpen: boolean;
   isSuccessfullyGrantedAccessToSpecificRecordsModalOpen: boolean;
   isDashboardSidebarOpen: boolean;
+  isApproveRecordRequestModalOpen: boolean;
 }
 
 const initialState: ModalState = {
@@ -38,6 +39,7 @@ const initialState: ModalState = {
   isGrantAccessToSpecificRecordsModalOpen: false,
   isSuccessfullyGrantedAccessToSpecificRecordsModalOpen: false,
   isDashboardSidebarOpen: false,
+  isApproveRecordRequestModalOpen: false,
 };
 
 const modalSlice = createSlice({
@@ -105,6 +107,10 @@ const modalSlice = createSlice({
     toggleDashboardSidebarOpen(state) {
       state.isDashboardSidebarOpen = !state.isDashboardSidebarOpen;
     },
+    toggleApproveRecordRequest(state) {
+      state.isApproveRecordRequestModalOpen =
+        !state.isApproveRecordRequestModalOpen;
+    },
   },
 });
 
@@ -126,5 +132,6 @@ export const {
   toggleGrantAccessToSpecificRecordsModal,
   toggleSuccessfullyGrantedAccessToSpecificRecordsModal,
   toggleDashboardSidebarOpen,
+  toggleApproveRecordRequest,
 } = modalSlice.actions;
 export default modalSlice.reducer;

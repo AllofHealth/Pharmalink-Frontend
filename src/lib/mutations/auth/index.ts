@@ -1,3 +1,4 @@
+import { setCurrentInstitution } from "@/lib/redux/slices/institution/institutionSlice";
 import type {
   CreateDoctorValues,
   CreateInstitutionValues,
@@ -5,6 +6,7 @@ import type {
   CreatePharmacistValues,
   CreateSystemAdminValues,
 } from "@/lib/types";
+import type { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import type { AxiosInstance } from "axios";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { toast } from "sonner";
@@ -175,12 +177,14 @@ export const createInstitution = async ({
   axios,
   router,
   address,
+  dispatch,
 }: {
   institutionId: number;
   institutionValues: CreateInstitutionValues;
   axios: AxiosInstance;
   router: AppRouterInstance;
   address: string | undefined;
+  dispatch: Dispatch<UnknownAction>;
 }) => {
   try {
     const response = await axios.post("/api/hospital/createHospital", {
@@ -196,6 +200,7 @@ export const createInstitution = async ({
     if (response.data) {
       toast.success("Institution created successfully!. Please sign in.");
       router.push("/dashboard/institution");
+      dispatch(setCurrentInstitution(response.data.hospital));
       console.log(response);
     }
   } catch (err: any) {

@@ -46,18 +46,18 @@ export interface GetPatientSuccessResponse {
 interface Doctor {
   _id: string;
   id: number;
-  appointmentCount: number;
+  hospitalIds: number[];
   name: string;
-  age: number;
+  email: string;
   profilePicture: string;
-  address: string;
-  city: string;
+  specialty: string;
+  location: string;
+  phoneNumber: string;
   walletAddress: string;
-  bloodGroup: string;
-  genotype: string;
+  numberOfApprovals: number;
+  status: string;
   category: string;
-  medicalRecords: [];
-  familyMembers: [];
+  activeApprovals: any[];
   __v: number;
 }
 
@@ -247,7 +247,7 @@ export type FamilyMember = {
   dob: string;
   bloodGroup: string;
   genotype: string;
-  medicalRecord: any[];
+  medicalRecord: MedicalRecord[];
   _id: string;
   __v: number;
 };
@@ -256,6 +256,11 @@ export type FamilyMemberApiResponse = {
   success: number;
   members: FamilyMember[];
   message: string;
+};
+
+export type FamilyMemberDetailResponse = {
+  success: number;
+  member: FamilyMember;
 };
 
 export type CreateFamilyMemberValues = {
@@ -350,3 +355,56 @@ export interface FamilyMemberMedicalRecordsResponse {
   success: number;
   records: MedicalRecord[];
 }
+
+export interface InstitutionPractitioner {
+  walletAddress: string;
+  hospitalIds: number[];
+  profilePicture: string;
+  name: string;
+  status: string;
+  category: string;
+  _id: string;
+}
+
+export interface InstitutionPractitionersApiResponse {
+  success: number;
+  practitioners: Practitioner[];
+}
+
+export type UpdateInstitutionValues = {
+  name: string;
+  email: string;
+  phoneNo: string;
+  location: string;
+  description: string;
+  profilePicture: string;
+};
+
+export type Approval = {
+  patientId: number;
+  patientName: string;
+  recordId: number;
+  profilePicture: string;
+  approvalType: string;
+  approvalStatus: string;
+  approvalDuration: string;
+  recordOwner: string;
+  recordTag: string;
+  _id: string;
+  __v: number;
+};
+
+export type ApprovalsResponse = {
+  success: number;
+  approvals: Approval[];
+};
+
+export type CreateMedicalRecordValues = {
+  diagnosis: string;
+  medication: string;
+  products: string;
+};
+
+export type UpdateDoctorValues = {
+  name: string;
+};

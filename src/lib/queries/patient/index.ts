@@ -4,6 +4,7 @@ import {
   type FamilyMemberApiResponse,
   type MedicalRecordsResponse,
   type PatientPrescriptionsApiResponse,
+  type FamilyMemberDetailResponse,
 } from "@/lib/types";
 import { useEffect, useState } from "react";
 
@@ -134,6 +135,46 @@ export const useGetAllPatientMedicalRecords = ({
   return {
     medicalRecords,
     familyMemberMedicalRecords,
+    loading,
+    error,
+  };
+};
+
+export const useGetPatientFamilyMemberDetail = ({
+  walletAddress,
+  familyMemberId,
+}: {
+  walletAddress: string;
+  familyMemberId: number;
+}) => {
+  const [familyMember, setFamilyMember] =
+    useState<FamilyMemberDetailResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { axios } = useAxios({
+    baseURL: process.env.NEXT_PUBLIC_URL_BACKEND,
+  });
+  const [error, setError] = useState(null);
+
+  const fetchFamilyMemberDetail = async () => {
+    try {
+      const familyMember = await axios.get(
+        `/api/patient/getFamilyMemberById?walletAddress=${walletAddress}&memberId=${familyMemberId}`
+      );
+      setFamilyMember(familyMember.data);
+    } catch (error: any) {
+      console.error("Error getting Patient Family member details:", error);
+      setError(error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    void fetchFamilyMemberDetail();
+  }, []);
+
+  return {
+    familyMember,
     loading,
     error,
   };

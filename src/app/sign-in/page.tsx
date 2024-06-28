@@ -12,7 +12,7 @@ export default function SignIn() {
 
   const signIn = () => {
     if (isConnected) {
-      router.push("/sign-up/user");
+      router.push("/sign-in/user");
     }
   };
 
@@ -42,7 +42,7 @@ export default function SignIn() {
               className="rounded-xl text-center justify-self-center w-max mx-auto"
               onClick={() => signIn()}
             >
-              Sign Up
+              Sign In
             </Button>
           </div>
         </div>
