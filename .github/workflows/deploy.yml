@@ -18,9 +18,9 @@ jobs:
           node-version: "20"
           check-latest: true
 
-        - name: Copy env
-          run: |
-            echo "${{ secrets.ENV_FILE }}" > .env
+      - name: Copy env
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
 
       - name: build app
         run: |
