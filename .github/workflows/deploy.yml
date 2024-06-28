@@ -1,0 +1,50 @@
+name: AllOf Health Frontend Application
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "20"
+          check-latest: true
+
+      #   - name: Copy env
+      #     run: |
+      #       echo "${{ secrets.ENV_FILE }}" > .env.production
+
+      - name: build app
+        run: |
+          rm -rf node_modules/
+          sudo npm install
+          sudo npm run build
+
+      - name: Sync files
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          key: ${{ secrets.DO_SSH_KEY }}
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USERNAME }}
+          port: ${{ secrets.DO_PORT }}
+          source: "./*"
+          target: ~/Pharmalink-Frontend
+
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.DO_SSH_KEY }}
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USERNAME }}
+          port: ${{ secrets.DO_PORT }}
+          script: |
+            cd ~/Pharmalink-Frontend
+            pm2 restart 0
