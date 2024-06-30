@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import type { UpdateInstitutionValues } from "@/lib/types";
 import useAxios from "@/lib/hooks/useAxios";
 import { updateInstitution } from "@/lib/mutations/institution";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/lib/redux/rootReducer";
 import { useAccount } from "wagmi";
 
@@ -18,6 +18,7 @@ const InstitutionPrivacyAndSecurity = () => {
   const [submittable, setSubmittable] = useState(false);
   const { axios } = useAxios({});
   const { address } = useAccount();
+  const dispatch = useDispatch();
 
   const currentInstitution = useSelector(
     (state: RootState) => state.institution.currentInstitution
@@ -31,6 +32,7 @@ const InstitutionPrivacyAndSecurity = () => {
       axios,
       hospitalId: currentInstitution ? currentInstitution._id : "",
       adminAddress: address ? address : "",
+      dispatch,
     })
       .then((res) => setIsLoading(false))
       .catch((err) => setIsLoading(false));

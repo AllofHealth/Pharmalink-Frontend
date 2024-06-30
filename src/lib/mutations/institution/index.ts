@@ -1,3 +1,4 @@
+import { setCurrentInstitution } from "@/lib/redux/slices/institution/institutionSlice";
 import { toggleInstitutionSuccessfullyAddedModal } from "@/lib/redux/slices/modals/modalSlice";
 import type { UpdateInstitutionValues } from "@/lib/types";
 import type { Dispatch, UnknownAction } from "@reduxjs/toolkit";
@@ -46,11 +47,13 @@ export const updateInstitution = async ({
   axios,
   hospitalId,
   adminAddress,
+  dispatch,
 }: {
   updateInstitutionValues: UpdateInstitutionValues;
   axios: AxiosInstance;
   hospitalId: string;
   adminAddress: string;
+  dispatch: Dispatch<UnknownAction>;
 }) => {
   try {
     const response = await axios.post(
@@ -63,6 +66,7 @@ export const updateInstitution = async ({
 
     if (response.data.success === 200) {
       toast.success("Institution data updated successfully!.");
+      dispatch(setCurrentInstitution(response.data.updatedHospital));
     }
   } catch (err: any) {
     if (err) {
