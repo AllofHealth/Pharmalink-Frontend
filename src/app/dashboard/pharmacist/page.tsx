@@ -54,14 +54,14 @@ export default function Pharmacist() {
             <Icon name="FindDoctor" />
             Inventory
           </Tabs.Trigger>
-          <Tabs.Trigger
+          {/* <Tabs.Trigger
             value="Wallet"
             className="flex items-center gap-4"
             onClick={() => dispatch(setPharmacistCurrentTab("Wallet"))}
           >
             <Icon name="Wallet" />
             Wallet
-          </Tabs.Trigger>
+          </Tabs.Trigger> */}
           <Tabs.Trigger
             value="Privacy"
             className="flex items-center gap-4"
@@ -97,9 +97,9 @@ export default function Pharmacist() {
         <Tabs.Content value="Edit Medicine" className="flex-1">
           <PharmacistEditMedicine />
         </Tabs.Content>
-        <Tabs.Content value="Wallet" className="flex-1">
+        {/* <Tabs.Content value="Wallet" className="flex-1">
           <PharmacistWallet />
-        </Tabs.Content>
+        </Tabs.Content> */}
         <Tabs.Content value="Privacy" className="flex-1">
           <PharmacistPrivacyAndSecurity />
         </Tabs.Content>

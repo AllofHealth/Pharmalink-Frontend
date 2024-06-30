@@ -1,94 +1,67 @@
 import { AllOfHealthTable } from "@/components/allOfHealthTable/allOfHealth";
-import { setPharmacistCurrentTab } from "@/lib/redux/slices/pharmacist/pharmacistSlice";
+import { useGetSharedPrescriptions } from "@/lib/queries/pharmacist";
+import {
+  setCurrentPrescription,
+  setPharmacistCurrentTab,
+} from "@/lib/redux/slices/pharmacist/pharmacistSlice";
+import type { Prescription } from "@/lib/types";
+import { formatDateToSlashDate } from "@/utils/formatDateToSlashDate";
+import { BiLoaderAlt } from "react-icons/bi";
 import { useDispatch } from "react-redux";
+import { useAccount } from "wagmi";
 
 const PharmacistPrescriptionList = () => {
-  const prescriptionLists = [
-    {
-      date: "02/29/2009",
-      patient: "Adewale Daniel",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      patient: "Adewale Daniel",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      patient: "Adewale Daniel",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      patient: "Adewale Daniel",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      patient: "Adewale Daniel",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      patient: "Adewale Daniel",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      patient: "Adewale Daniel",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      patient: "Adewale Daniel",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-    {
-      date: "02/29/2009",
-      patient: "Adewale Daniel",
-      doctor: "Dr Adewale Daniel",
-      institution: "Hadas Health Centre",
-    },
-  ];
+  const { address } = useAccount();
+
+  const { loading, sharedPrescriptions, error } = useGetSharedPrescriptions({
+    walletAddress: address ? address : "",
+  });
 
   const dispatch = useDispatch();
+
+  const handleViewPrescription = (prescription: Prescription) => {
+    dispatch(setPharmacistCurrentTab("View Prescription"));
+    dispatch(setCurrentPrescription(prescription));
+  };
   return (
     <div className="">
       <h1 className="font-bold lg:text-3xl mb-6">Prescription List</h1>
-      <AllOfHealthTable
-        labels={["Date", "Patient", "Doctor", "Institution"]}
-        caption="Approve Institution Table"
-        headClassName="bg-gray-5 rounded-t-md"
-      >
-        {prescriptionLists.map((prescription, index) => (
-          <tr
-            className="h-16 text-blue4 font-medium"
-            key={index}
-            onClick={() =>
-              dispatch(setPharmacistCurrentTab("View Prescription"))
-            }
-          >
-            <td className="pl-2 lg:pl-7 text-xs lg:text-base">
-              {prescription.date}
-            </td>
-            <td className=" text-xs lg:text-base">{prescription.patient}</td>
+      {loading ? (
+        <div className="flex justify-center items-center mt-10">
+          <BiLoaderAlt className="text-2xl text center animate-spin" />
+        </div>
+      ) : sharedPrescriptions ? (
+        <AllOfHealthTable
+          labels={["Date", "Patient", "Doctor", "Institution"]}
+          caption="Approve Institution Table"
+          headClassName="bg-gray-5 rounded-t-md"
+        >
+          {sharedPrescriptions?.prescriptions?.map((prescription, index) => (
+            <tr
+              className="h-16 text-blue4 font-medium"
+              key={index}
+              onClick={() => handleViewPrescription(prescription)}
+            >
+              <td className="pl-2 lg:pl-7 text-xs lg:text-base">
+                {formatDateToSlashDate(prescription.date)}
+              </td>
+              <td className=" text-xs lg:text-base">
+                {prescription.description}
+              </td>
 
-            <td className=" text-xs lg:text-base">{prescription.doctor}</td>
-            <td className=" text-xs lg:text-base">
-              {prescription.institution}
-            </td>
-          </tr>
-        ))}
-      </AllOfHealthTable>
+              <td className=" text-xs lg:text-base">
+                {prescription.doctorName}
+              </td>
+              <td className=" text-xs lg:text-base">
+                {/* {prescription.institution} */}
+                Your Hospital
+              </td>
+            </tr>
+          ))}
+        </AllOfHealthTable>
+      ) : error ? (
+        <p>Error fetching shared prescriptions...</p>
+      ) : null}
     </div>
   );
 };

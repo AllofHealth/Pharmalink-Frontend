@@ -1,6 +1,13 @@
-import Button from "@/components/button/Button";
+import { useGetPharmacistByAddress } from "@/lib/queries/auth";
+import type { GetPharmacistMessage } from "@/lib/types";
+import { useAccount } from "wagmi";
 
 const PharmacistAccessAndSecurity = () => {
+  const { address, isConnected } = useAccount();
+  const { pharmacistData } = useGetPharmacistByAddress({
+    connected: isConnected,
+    address: address ? address : "",
+  });
   return (
     <div className="border-t pt-4">
       <h2 className="text-base lg:text-3xl font-semibold mb-4">
@@ -8,11 +15,15 @@ const PharmacistAccessAndSecurity = () => {
       </h2>
       <div className="flex justify-between items-center mb-4">
         <span className="text-sm lg:text-xl font-semibold">Sign-in Email</span>
-        <span className="text-base font-semibold">johnsmith@gmail.com</span>
+        <span className="text-base font-semibold">
+          {(pharmacistData as GetPharmacistMessage)?.pharmacist.email}
+        </span>
       </div>
       <div className="flex justify-between items-center mb-4">
         <span className="text-sm lg:text-xl font-semibold">Phone number</span>
-        <span className="text-base font-semibold">+380 93 123 45 67</span>
+        <span className="text-base font-semibold">
+          {(pharmacistData as GetPharmacistMessage)?.pharmacist.phoneNumber}
+        </span>
       </div>
       <div className="flex justify-between items-center mb-6">
         <span className="text-sm lg:text-xl font-semibold">
@@ -28,7 +39,7 @@ const PharmacistAccessAndSecurity = () => {
           today at 18:34, Safary 198.123.23.23
         </span>
       </div>
-      <div>
+      {/* <div>
         <div className="flex justify-between items-center mb-6">
           <span className="text-base lg:text-xl font-semibold">
             Total active sessions (5)
@@ -50,7 +61,7 @@ const PharmacistAccessAndSecurity = () => {
         <div className="flex justify-end mt-4">
           <Button variant="secondary">+ Reset all active sessions</Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

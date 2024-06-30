@@ -80,24 +80,24 @@ export interface GetDoctorSuccessResponse {
 interface Pharmacist {
   _id: string;
   id: number;
-  appointmentCount: number;
+  hospitalIds: number[];
+  numberOfApprovals: number;
   name: string;
-  age: number;
+  email: string;
   profilePicture: string;
-  address: string;
-  city: string;
+  location: string;
+  phoneNumber: string;
   walletAddress: string;
-  bloodGroup: string;
-  genotype: string;
+  status: string;
   category: string;
-  medicalRecords: [];
-  familyMembers: [];
+  approvalList: any[];
+  sharedPrescriptions: any[];
   __v: number;
 }
 
 export interface GetPharmacistMessage {
   success: number;
-  patient: Pharmacist;
+  pharmacist: Pharmacist;
 }
 
 export interface GetPharmacistNotExistMessage {
@@ -406,5 +406,47 @@ export type CreateMedicalRecordValues = {
 };
 
 export type UpdateDoctorValues = {
+  name: string;
+};
+
+export interface Medicine {
+  name: string;
+  price: number;
+  quantity: number;
+  description: string;
+  sideEffects: string;
+  image: string;
+  medicineGroup: string;
+  _id: string;
+  __v: number;
+}
+
+export interface Inventory {
+  numberOfMedicine: number;
+  numberOfMedicineGroup: number;
+  numberOfMedicineSold: number;
+  medicines: Medicine[];
+  _id: string;
+  __v: number;
+}
+
+export interface AllMedicinesApiResponse {
+  success: number;
+  medicines: Medicine[];
+}
+
+export interface AllInventoryApiResponse {
+  success: number;
+  inventory: Inventory;
+}
+
+export type EditMedicineValues = {
+  medicineName: string;
+  medicineId: string;
+  medicineGroup: string;
+  medicineQuantity: string;
+};
+
+export type updatePharmacistValues = {
   name: string;
 };

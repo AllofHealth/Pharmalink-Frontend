@@ -2,26 +2,44 @@ import Button from "@/components/button/Button";
 import { Select } from "@/components/common";
 import { Field } from "@/components/common/forms/Field";
 import { Input } from "@/components/common/forms/Input";
+import type { RootState } from "@/lib/redux/rootReducer";
 import { setPharmacistCurrentTab } from "@/lib/redux/slices/pharmacist/pharmacistSlice";
-import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const PharmacistEditMedicine = () => {
   const dispatch = useDispatch();
-  const options = [
-    { value: "Patient", label: "Patient" },
-    { value: "Doctor", label: "Doctor" },
-    { value: "Pharmacist", label: "Pharmacist" },
-  ];
+
+  const medicine = useSelector(
+    (state: RootState) => state.pharmacist.currentMedicine
+  );
+
+  const [editMedicine, setEditMedicine] = useState({
+    medicineName: "",
+    medicineId: "",
+    medicineGroup: "",
+    medicineQuantity: "",
+  });
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setEditMedicine({
+      ...editMedicine,
+      [name]: value,
+    });
+  };
+
   return (
     <div>
       <div className="flex gap-4 items-center justify-between">
         <div>
           <h1 className="font-bold lg:text-2xl mb-2">
-            Inventory &gt; List of Medicines &gt; Azithral 500 Tablet
+            Inventory &gt; List of Medicines &gt; {medicine?.name}
           </h1>
-          <p className="text-xs lg:text-xl text-gray-7 mb-2">
+          {/* <p className="text-xs lg:text-xl text-gray-7 mb-2">
             List of medicines available for sales.
-          </p>
+          </p> */}
         </div>
         <Field id="approval" label="">
           <Input
@@ -44,32 +62,39 @@ const PharmacistEditMedicine = () => {
         <div className="grid gap-4 lg:flex lg:gap-8">
           <Field label="Medicine Name">
             <Input
-              id="medicine_name"
+              id="medicineName"
               type="text"
               className="bg-blue7 h-10 resize-none rounded-md mb-4 max-w-[705px]"
+              value={editMedicine.medicineName}
+              onChange={handleTextChange}
             />
           </Field>
           <Field label="Medicine ID">
             <Input
-              id="medicine_id"
+              id="medicineId"
               type="text"
               className="bg-blue7 h-10 resize-none rounded-md mb-4 max-w-[705px]"
+              name={editMedicine.medicineId}
             />
           </Field>
         </div>
         <div className="grid gap-4 lg:flex lg:gap-8">
           <Field label="Medicine Group">
-            <Select
-              options={options}
-              placeholder="Select Medicine Group"
+            <Input
+              id="medicineGroup"
+              type="text"
               className="bg-blue7 h-10 resize-none rounded-md mb-4 max-w-[705px]"
+              value={editMedicine.medicineGroup}
+              onChange={handleTextChange}
             />
           </Field>
           <Field label="Quantity in Number">
             <Input
-              id="medicine_id"
+              id="medicineQuantity"
               type="text"
               className="bg-blue7 h-10 resize-none rounded-md mb-4 max-w-[705px]"
+              value={editMedicine.medicineQuantity}
+              onChange={handleTextChange}
             />
           </Field>
         </div>
