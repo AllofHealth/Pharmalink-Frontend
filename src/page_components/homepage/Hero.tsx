@@ -1,5 +1,6 @@
 import Button from "@/components/button/Button";
 import Image from "next/image";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -16,9 +17,12 @@ const Hero = () => {
           healthcare for health institutions, health professionals
           and patients alike.
         </p>
-        <Button variant="homepage" className="h-14 mx-auto xl:mx-0 mb-7">
-          Get Started
-        </Button>
+        <Link href={"/sign-in"}>
+          <Button variant="homepage" className="h-14 mx-auto xl:mx-0 mb-7">
+            Get Started
+          </Button>
+        </Link>
+
         {/* <div className="flex items-center justify-between xl:w-[400px]">
           <div>
             <span className="text-3xl font-bold flex items-center lg:text-4xl">

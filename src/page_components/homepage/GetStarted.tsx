@@ -1,4 +1,5 @@
 import Button from "@/components/button/Button";
+import Link from "next/link";
 
 const GetStarted = () => {
   return (
@@ -12,12 +13,14 @@ const GetStarted = () => {
         with the tools, resources, and support you need to live a healthier,
         happier life.
       </p>
-      <Button
-        variant="homepage"
-        className="rounded-[40px] h-14 lg:h-28 lg:w-60 lg:rounded-[20px] text-center flex justify-center mx-auto"
-      >
-        Get Started
-      </Button>
+      <Link href={"/sign-in"}>
+        <Button
+          variant="homepage"
+          className="rounded-[40px] h-14 lg:h-28 lg:w-60 lg:rounded-[20px] text-center flex justify-center mx-auto"
+        >
+          Get Started
+        </Button>
+      </Link>
     </section>
   );
 };

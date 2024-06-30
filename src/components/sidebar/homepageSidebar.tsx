@@ -5,6 +5,8 @@ import { RootState } from "@/lib/redux/rootReducer";
 import { toggleDashboardSidebarOpen } from "@/lib/redux/slices/modals/modalSlice";
 import Icons from "../icon/Icons";
 import Image from "next/image";
+import Link from "next/link";
+import Button from "../button/Button";
 
 const HomepageSidebar = ({ container }: { container: HTMLElement }) => {
   const dispatch = useDispatch();
@@ -40,6 +42,11 @@ const HomepageSidebar = ({ container }: { container: HTMLElement }) => {
               <span className="text-center">Services</span>
               <span className="text-center">About us</span>
               <span className="text-center">Contact</span>
+              <Link href={"/sign-in"}>
+                <Button variant="homepage" className="rounded-[40px] h-14">
+                  Connect Wallet
+                </Button>
+              </Link>
             </div>
           </div>
         </Modal.Content>
