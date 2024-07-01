@@ -79,7 +79,7 @@ const FindPharmacist = () => {
           caption="Approve Institution Table"
           headClassName="bg-gray-5 rounded-t-md"
         >
-          {pharmacists.map((pharmacist) => (
+          {pharmacists?.pharmacists?.map((pharmacist) => (
             <tr
               className="h-16 text-blue4 font-medium"
               key={pharmacist._id}

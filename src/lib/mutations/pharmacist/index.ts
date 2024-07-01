@@ -2,7 +2,7 @@ import type { EditMedicineValues, updatePharmacistValues } from "@/lib/types";
 import type { AxiosInstance } from "axios";
 import { toast } from "sonner";
 
-export const editMedicine = async ({
+export const updateMedicineDetails = async ({
   editMedicineValues,
   axios,
   address,
@@ -17,7 +17,12 @@ export const editMedicine = async ({
     const response = await axios.post(
       `/api/pharmacist/updateMedicine?walletAddress=${address}&medicineId=${medicineId}`,
       {
-        medicineName: editMedicineValues.medicineName,
+        name: editMedicineValues.name,
+        price: editMedicineValues.price,
+        medicineGroup: editMedicineValues.medicineGroup,
+        quantity: editMedicineValues.quantity,
+        description: editMedicineValues.description,
+        sideEffects: editMedicineValues.sideEffects,
       }
     );
 

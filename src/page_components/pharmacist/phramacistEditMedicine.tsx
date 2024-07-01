@@ -2,26 +2,36 @@ import Button from "@/components/button/Button";
 import { Select } from "@/components/common";
 import { Field } from "@/components/common/forms/Field";
 import { Input } from "@/components/common/forms/Input";
+import useAxios from "@/lib/hooks/useAxios";
+import { updateMedicineDetails } from "@/lib/mutations/pharmacist";
 import type { RootState } from "@/lib/redux/rootReducer";
 import { setPharmacistCurrentTab } from "@/lib/redux/slices/pharmacist/pharmacistSlice";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useAccount } from "wagmi";
 
 const PharmacistEditMedicine = () => {
   const dispatch = useDispatch();
+  const { address } = useAccount();
+  const { axios } = useAxios({});
 
   const medicine = useSelector(
     (state: RootState) => state.pharmacist.currentMedicine
   );
+  console.log(medicine);
 
   const [editMedicine, setEditMedicine] = useState({
-    medicineName: "",
-    medicineId: "",
-    medicineGroup: "",
-    medicineQuantity: "",
+    name: medicine?.name ?? "",
+    price: medicine?.price ?? 0,
+    medicineGroup: medicine?.medicineGroup ?? "",
+    quantity: medicine?.quantity ?? 0,
+    description: medicine?.description ?? "",
+    sideEffects: medicine?.sideEffects ?? "",
   });
 
-  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTextChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
 
     setEditMedicine({
@@ -62,19 +72,22 @@ const PharmacistEditMedicine = () => {
         <div className="grid gap-4 lg:flex lg:gap-8">
           <Field label="Medicine Name">
             <Input
-              id="medicineName"
+              id="Medicine Name"
+              name="name"
               type="text"
               className="bg-blue7 h-10 resize-none rounded-md mb-4 max-w-[705px]"
-              value={editMedicine.medicineName}
+              value={editMedicine.name}
               onChange={handleTextChange}
             />
           </Field>
-          <Field label="Medicine ID">
+          <Field label="Medicine Price">
             <Input
-              id="medicineId"
+              id="Medicine Price"
+              name="price"
               type="text"
               className="bg-blue7 h-10 resize-none rounded-md mb-4 max-w-[705px]"
-              name={editMedicine.medicineId}
+              value={editMedicine.price}
+              onChange={handleTextChange}
             />
           </Field>
         </div>
@@ -82,6 +95,7 @@ const PharmacistEditMedicine = () => {
           <Field label="Medicine Group">
             <Input
               id="medicineGroup"
+              name="medicineGroup"
               type="text"
               className="bg-blue7 h-10 resize-none rounded-md mb-4 max-w-[705px]"
               value={editMedicine.medicineGroup}
@@ -90,22 +104,43 @@ const PharmacistEditMedicine = () => {
           </Field>
           <Field label="Quantity in Number">
             <Input
-              id="medicineQuantity"
+              id="quantity"
+              name="quantity"
               type="text"
               className="bg-blue7 h-10 resize-none rounded-md mb-4 max-w-[705px]"
-              value={editMedicine.medicineQuantity}
+              value={editMedicine.quantity}
               onChange={handleTextChange}
             />
           </Field>
         </div>
         <Field label="How to Use">
-          <textarea className="bg-blue7 h-24 resize-none rounded-md mb-4 max-w-[705px]" />
+          <textarea
+            className="bg-blue7 h-24 resize-none rounded-md mb-4 max-w-[705px] p-4"
+            name="description"
+            value={editMedicine.description}
+            onChange={handleTextChange}
+          />
         </Field>
         <Field label="Side Effects">
-          <textarea className="bg-blue7 h-24 resize-none rounded-md mb-4 max-w-[705px]" />
+          <textarea
+            className="bg-blue7 h-24 resize-none rounded-md mb-4 max-w-[705px] p-4"
+            name="sideEffects"
+            value={editMedicine.sideEffects}
+            onChange={handleTextChange}
+          />
         </Field>
-        <Button variant="secondary" className="mx-auto">
-          {" "}
+        <Button
+          variant="secondary"
+          className="mx-auto"
+          onClick={() =>
+            updateMedicineDetails({
+              axios,
+              editMedicineValues: editMedicine,
+              address,
+              medicineId: medicine?._id ?? "",
+            })
+          }
+        >
           Save details
         </Button>
       </div>

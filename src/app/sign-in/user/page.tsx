@@ -83,7 +83,7 @@ export default function UserSignIn() {
         router.push("/sign-up/pharmacist");
       } else if (
         pharmacistData?.success === 200 &&
-        "doctor" in pharmacistData
+        "pharmacist" in pharmacistData
       ) {
         router.push("/dashboard/pharmacist");
       }

@@ -332,7 +332,10 @@ export interface AllPharmacist {
   __v: number;
 }
 
-export type AllPharmacistAPIResponse = AllPharmacist[];
+export type AllPharmacistAPIResponse = {
+  success: number;
+  pharmacists: AllPharmacist[];
+};
 
 export interface MedicalRecord {
   id: number;
@@ -441,10 +444,12 @@ export interface AllInventoryApiResponse {
 }
 
 export type EditMedicineValues = {
-  medicineName: string;
-  medicineId: string;
+  name: string;
+  price: number;
   medicineGroup: string;
-  medicineQuantity: string;
+  quantity: number;
+  description: string;
+  sideEffects: string;
 };
 
 export type updatePharmacistValues = {

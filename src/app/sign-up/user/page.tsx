@@ -86,7 +86,7 @@ export default function UserSignUp() {
         router.push("/sign-up/pharmacist");
       } else if (
         pharmacistData?.success === 200 &&
-        "doctor" in pharmacistData
+        "pharmacist" in pharmacistData
       ) {
         toast.success("Pharmacist exists");
         router.push("/dashboard/pharmacist");
