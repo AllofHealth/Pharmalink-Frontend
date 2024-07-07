@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icon/Icon";
 import { useGetPatientByAddress } from "@/lib/queries/auth";
 import { useGetAllDoctors } from "@/lib/queries/doctor";
+import { useGetAllPatientPresciptions } from "@/lib/queries/patient";
 import type { GetPatientMessage } from "@/lib/types";
 import Image from "next/image";
 import { BiLoaderAlt } from "react-icons/bi";
@@ -13,6 +14,10 @@ const PatientOverview = () => {
   const { loading: loadingPatientData, patientData } = useGetPatientByAddress({
     connected: isConnected,
     address: address ? address : "",
+  });
+
+  const { patientPrescriptions } = useGetAllPatientPresciptions({
+    walletAddress: address ? address : "",
   });
   return (
     <>
@@ -42,19 +47,21 @@ const PatientOverview = () => {
                 </div>
               </div>
               <div className="lg:flex lg:gap-4 ">
-                <div className="bg-blue5 px-4 py-2 lg:py-4 rounded-2xl mb-4 lg:mb-0">
+                {/* <div className="bg-blue5 px-4 py-2 lg:py-4 rounded-2xl mb-4 lg:mb-0">
                   <p className="text-sm lg:text-[18px] font-semibold mb-4 flex gap-2">
                     <Icon name="FindDoctor" />
                     Appointments
                   </p>
                   <span className="text-[20px] lg:text-4xl">1250</span>
-                </div>
+                </div> */}
                 <div className="bg-blue5 px-4 py-2 lg:py-4 rounded-2xl mb-4 lg:mb-0">
                   <p className="text-sm lg:text-[18px] mb-4 flex gap-2 font-semibold">
                     <Icon name="Prescription" />
                     Prescriptions
                   </p>
-                  <span className="text-[20px] lg:text-4xl">50</span>
+                  <span className="text-[20px] lg:text-4xl">
+                    {patientPrescriptions?.prescriptions.length}
+                  </span>
                 </div>
               </div>
             </div>
