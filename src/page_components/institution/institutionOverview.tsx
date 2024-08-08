@@ -128,7 +128,7 @@ const InstitutionOverview = () => {
         <div className="flex justify-center items-center mt-10">
           <BiLoaderAlt className="text-2xl text center animate-spin" />
         </div>
-      ) : practitionerInInstitutions ? (
+      ) : practitionerInInstitutions?.practitioners ? (
         <AllOfHealthTable
           labels={[
             "Practitioner’s Name",
@@ -168,6 +168,24 @@ const InstitutionOverview = () => {
             )
           )}
         </AllOfHealthTable>
+      ) : !practitionerInInstitutions?.practitioners ? (
+        <div className="lg:flex justify-between items-center max-w-[80%] mx-auto">
+          <div className="max-w-[513px]">
+            <p className="text-base lg:text-3xl font-semibold text-blue2">
+              Institution Not Yet Verified
+            </p>
+            <p className="text-sm lg:text-xl font-normal text-[#1E1E1E]">
+              Your institution is currently not verified and cannot view any
+              practitioner profiles. Kindly wait to be verified
+            </p>
+          </div>
+          <Image
+            src={"/assets/images/no-data-found.png"}
+            alt="No data for institutions"
+            width={396}
+            height={344}
+          />
+        </div>
       ) : error ? (
         <p>Error fetching data....</p>
       ) : null}

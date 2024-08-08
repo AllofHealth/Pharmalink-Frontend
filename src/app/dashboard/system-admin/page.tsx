@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/rootReducer";
 import { setSystemAdminCurrentTab } from "@/lib/redux/slices/systemAdmin/systemAdminSlice";
 import { useRouter } from "next/navigation";
+import Practitioners from "@/page_components/SystemAdmin/Practitioners";
+import ApprovedInstitutions from "@/page_components/SystemAdmin/ApprovedInstitutionsTable";
 
 export default function SystemAdmin() {
   const dispatch = useDispatch();
@@ -46,6 +48,24 @@ export default function SystemAdmin() {
             <Icon name="DesignateRoles" />
             Designate Roles
           </Tabs.Trigger>
+          <Tabs.Trigger
+            value="Approved Institutions"
+            className="flex items-center gap-4"
+            onClick={() =>
+              dispatch(setSystemAdminCurrentTab("Approved Institutions"))
+            }
+          >
+            <Icon name="DesignateRoles" />
+            Approved Institutions
+          </Tabs.Trigger>
+          <Tabs.Trigger
+            value="Practitioners"
+            className="flex items-center gap-4"
+            onClick={() => dispatch(setSystemAdminCurrentTab("Practitioners"))}
+          >
+            <Icon name="DesignateRoles" />
+            Practitioners
+          </Tabs.Trigger>
 
           <span
             className="flex items-center gap-4 mt-60"
@@ -60,6 +80,12 @@ export default function SystemAdmin() {
         </Tabs.Content>
         <Tabs.Content value="DesignateRoles" className="flex-1">
           <DesignateRoles />
+        </Tabs.Content>
+        <Tabs.Content value="Practitioners" className="flex-1">
+          <Practitioners />
+        </Tabs.Content>
+        <Tabs.Content value="Approved Institutions" className="flex-1">
+          <ApprovedInstitutions />
         </Tabs.Content>
       </Tabs.Root>
     </section>
