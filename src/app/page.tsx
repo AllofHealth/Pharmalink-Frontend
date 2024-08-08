@@ -75,10 +75,10 @@ export default function Home() {
         </nav>
       </header>
       <Hero />
-      <WhyAllofHealth />
-      <OurMainServices />
-      {/* <OurQualifiedDoctors /> */}
       <AboutAllofHealth />
+      <OurMainServices />
+      <WhyAllofHealth />
+      {/* <OurQualifiedDoctors /> */}
       {/* <OurTeam /> */}
       <GetStarted />
       <Testimonials />

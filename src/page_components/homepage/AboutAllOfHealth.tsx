@@ -3,10 +3,10 @@ import Image from "next/image";
 const AboutAllofHealth = () => {
   return (
     <section className="pt-20 px-7 lg:px-20">
-      <h3 className="gradient-text text-4xl font-bold text-center">
+      <h3 className="gradient-text text-4xl font-bold text-center mb-6">
         About AllOf Health
       </h3>
-      <p className="text-[20px] text-gray-3 text-center py-4 max-w-[900px] mx-auto my-">
+      <p className="text-[20px] text-gray-3 text-center py-4 max-w-[920px] mx-auto mb-6">
         Welcome to AllOf Health, where innovation meets compassion. We are
         dedicated to revolutionizing health care through cutting-edge technology
         and a patient-centered approach. Our team of experts brings together
@@ -22,7 +22,7 @@ const AboutAllofHealth = () => {
           alt="Patient Heartbeat"
           width={1300}
           height={583}
-          className="w-[90%] object-contain rounded-lg lg:rounded-[30px] mx-auto"
+          className="w-[90%] object-contain rounded-lg lg:rounded-[30px] mx-auto sm:w-auto sm:mx-0"
         />
       </div>
       <div className="flex justify-between gap-4 mt-7 lg:mt-14">
