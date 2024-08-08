@@ -41,6 +41,7 @@ import Warning from "../../../public/assets/svgs/warning.tsx";
 import WalletConnect from "../../../public/assets/svgs/walletconnect.tsx";
 import FooterInstagram from "../../../public/assets/svgs/footer-instagram.tsx";
 import FooterLinkedIn from "../../../public/assets/svgs/footer-linkedin.tsx";
+import Upload from "../../../public/assets/svgs/upload.tsx";
 
 const Menu = () => {
   return (
@@ -140,6 +141,7 @@ const Icons = {
   WalletConnect,
   FooterInstagram,
   FooterLinkedIn,
+  Upload,
 };
 
 export type IconType = keyof typeof Icons;

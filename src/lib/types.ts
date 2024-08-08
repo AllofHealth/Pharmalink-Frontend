@@ -455,3 +455,8 @@ export type EditMedicineValues = {
 export type updatePharmacistValues = {
   name: string;
 };
+
+export interface VerificationDocuments {
+  identificationCard: string;
+  medicalLicense: string;
+}
