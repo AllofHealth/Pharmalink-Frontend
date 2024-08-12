@@ -40,7 +40,7 @@ export default function Doctor() {
           <Tabs.Trigger
             value="Approvals"
             className="flex items-center gap-4"
-            onClick={() => dispatch(setDoctorCurrentTab("EditMedicationList"))}
+            onClick={() => dispatch(setDoctorCurrentTab("Approvals"))}
           >
             <Icon name="Wallet" />
             Approvals
