@@ -15,44 +15,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useAccount } from "wagmi";
 
 const PatientMedicalRecord = () => {
-  const records = [
-    {
-      date: "12/09/2021",
-      diagnosis: "Malaria",
-      doctor: "Dr. John Doe",
-      institution: "YongiDuu Hospital",
-      action: "View",
-    },
-    {
-      date: "12/09/2021",
-      diagnosis: "Malaria",
-      doctor: "Dr. John Doe",
-      institution: "YongiDuu Hospital",
-      action: "View",
-    },
-    {
-      date: "12/09/2021",
-      diagnosis: "Malaria",
-      doctor: "Dr. John Doe",
-      institution: "YongiDuu Hospital",
-      action: "View",
-    },
-    {
-      date: "12/09/2021",
-      diagnosis: "Malaria",
-      doctor: "Dr. John Doe",
-      institution: "YongiDuu Hospital",
-      action: "View",
-    },
-    {
-      date: "12/09/2021",
-      diagnosis: "Malaria",
-      doctor: "Dr. John Doe",
-      institution: "YongiDuu Hospital",
-      action: "View",
-    },
-  ];
-
   // const { address, isConnected } = useAccount();
   const patientRecordData = useSelector(
     (state: RootState) => state.doctor.currentPatientRecord

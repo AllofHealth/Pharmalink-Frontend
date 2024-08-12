@@ -11,6 +11,8 @@ import PatientMedicalRecord from "@/page_components/doctor/patientMedicalRecord"
 import ViewPatientMedicalRecord from "@/page_components/doctor/viewPatientMedicalRecord";
 import DoctorWallet from "@/page_components/doctor/doctorWallet";
 import DoctorPrivacyAndSecurity from "@/page_components/doctor/doctorPrivacyAndSecurity";
+import EditPatientMedicalRecord from "@/page_components/doctor/editPatientMedicalRecord";
+import EditMedicationList from "@/page_components/doctor/medicationList";
 
 export default function Doctor() {
   const dispatch = useDispatch();
@@ -38,7 +40,7 @@ export default function Doctor() {
           <Tabs.Trigger
             value="Approvals"
             className="flex items-center gap-4"
-            onClick={() => dispatch(setDoctorCurrentTab("Approvals"))}
+            onClick={() => dispatch(setDoctorCurrentTab("EditMedicationList"))}
           >
             <Icon name="Wallet" />
             Approvals
@@ -74,8 +76,14 @@ export default function Doctor() {
         <Tabs.Content value="Patient Medical Record" className="flex-1">
           <PatientMedicalRecord />
         </Tabs.Content>
+        <Tabs.Content value="EditPatientMedicalRecord" className="flex-1">
+          <EditPatientMedicalRecord />
+        </Tabs.Content>
         <Tabs.Content value="patientMedicalRecordDetails" className="flex-1">
           <ViewPatientMedicalRecord />
+        </Tabs.Content>
+        <Tabs.Content value="EditMedicationList" className="flex-1">
+          <EditMedicationList />
         </Tabs.Content>
         {/* <Tabs.Content value="Wallet" className="flex-1">
           <DoctorWallet />
