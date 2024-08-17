@@ -110,26 +110,13 @@ async function validateRecordAccessPermission(
 }
 
 async function addMedicalRecord(args: AddMedicalRecordType) {
-  const {
-    patientAddress,
-    patientId,
-    diagnosis,
-    ipfsHash,
-    recordImageHash,
-  } = args
+  const { patientAddress, patientId, diagnosis, ipfsHash } = args
   try {
     const doctorAddress = await getSigner().then((signer) =>
       signer.getAddress(),
     )
     const encodedDiagnosis = string2Bytes32(diagnosis)
     const encodedIpfsHash = string2Bytes32(ipfsHash)
-    let encodedRecordImageHash
-
-    if (recordImageHash) {
-      encodedRecordImageHash = string2Bytes32(recordImageHash)
-    } else {
-      encodedRecordImageHash = getEmptyBytes32()
-    }
 
     const contract = await provideContract()
     const transaction = await contract.addMedicalRecord(
@@ -138,7 +125,6 @@ async function addMedicalRecord(args: AddMedicalRecordType) {
       patientId,
       encodedDiagnosis,
       encodedIpfsHash,
-      encodedRecordImageHash,
     )
 
     const receipt = await transaction.wait()
