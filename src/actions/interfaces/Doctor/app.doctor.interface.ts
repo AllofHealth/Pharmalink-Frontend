@@ -13,7 +13,6 @@ export interface AddMedicalRecordType {
   patientId: number
   diagnosis: string
   ipfsHash: string
-  recordImageHash?: string
 }
 
 export interface RecordApprovalType {

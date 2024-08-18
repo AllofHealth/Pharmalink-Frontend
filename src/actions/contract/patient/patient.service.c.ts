@@ -261,7 +261,6 @@ async function viewMedicalRecord(args: ViewMedicalRecordType) {
     return {
       diagnosis: bytes32ToString(eventResult.diagnosis),
       recordDetailsUri: bytes32ToString(eventResult.recordDetailsUri),
-      recordImageUri: bytes32ToString(eventResult.recordImageUri),
     }
   } catch (error) {
     console.error(error)
