@@ -98,7 +98,6 @@ contract AllofHealthv2 {
         address approvedDoctor;
         bytes32 diagnosis;
         bytes32 recordDetailsUri;
-        bytes32 recordImageUri;
     }
 
     struct PatientFamilyMedicalRecord {
@@ -110,13 +109,12 @@ contract AllofHealthv2 {
         address approvedDoctor;
         bytes32 diagnosis;
         bytes32 recordDetailsUri;
-        bytes32 recordImageUri;
     }
 
     /**
      * State Variables
      */
-    address public immutable ADMIN;
+    address private immutable ADMIN;
     uint256 public hospitalCount;
     uint256 public doctorCount;
     uint256 public approvedDoctorCount;
@@ -237,8 +235,7 @@ contract AllofHealthv2 {
 
     event MedicalRecordAccessed(
         bytes32 indexed diagnosis,
-        bytes32 indexed recordDetailsUri,
-        bytes32 indexed recordImageUri
+        bytes32 indexed recordDetailsUri
     );
 
     event PatientAdded(address indexed patient, uint256 indexed patientId);
@@ -374,11 +371,12 @@ contract AllofHealthv2 {
     constructor() {
         ADMIN = msg.sender;
         systemAdmins[msg.sender] = true;
+        systemAdminCount++;
     }
 
     receive() external payable {}
 
-    /**
+    /*
      * External Functions
      */
     function addSystemAdmin(address _admin) external onlyAdmin {
@@ -1030,8 +1028,7 @@ contract AllofHealthv2 {
         ) {
             emit MedicalRecordAccessed(
                 record.diagnosis,
-                record.recordDetailsUri,
-                record.recordImageUri
+                record.recordDetailsUri
             );
         }
     }
@@ -1073,8 +1070,7 @@ contract AllofHealthv2 {
         ) {
             emit MedicalRecordAccessed(
                 record.diagnosis,
-                record.recordDetailsUri,
-                record.recordImageUri
+                record.recordDetailsUri
             );
         }
     }
@@ -1084,8 +1080,7 @@ contract AllofHealthv2 {
         address _patientAddress,
         uint256 _patientId,
         bytes32 _diagnosis,
-        bytes32 _recordDetailsUri,
-        bytes32 _recordImageUri
+        bytes32 _recordDetailsUri
     )
         external
         patientIdCompliance(_patientId)
@@ -1110,8 +1105,7 @@ contract AllofHealthv2 {
             patient: _patientAddress,
             approvedDoctor: address(0),
             diagnosis: _diagnosis,
-            recordDetailsUri: _recordDetailsUri,
-            recordImageUri: _recordImageUri
+            recordDetailsUri: _recordDetailsUri
         });
         patientMedicalRecords[_patientId][medicalRecordId] = record;
 
@@ -1129,8 +1123,7 @@ contract AllofHealthv2 {
         uint256 _principalPatientId,
         uint256 _familyMemberId,
         bytes32 _diagnosis,
-        bytes32 _recordDetailsUri,
-        bytes32 _recordImageUri
+        bytes32 _recordDetailsUri
     )
         external
         patientIdCompliance(_principalPatientId)
@@ -1160,8 +1153,7 @@ contract AllofHealthv2 {
             expiration: 0 seconds,
             approvedDoctor: address(0),
             diagnosis: _diagnosis,
-            recordDetailsUri: _recordDetailsUri,
-            recordImageUri: _recordImageUri
+            recordDetailsUri: _recordDetailsUri
         });
 
         patientFamilyMedicalRecord[_principalPatientId][_familyMemberId][
