@@ -379,14 +379,14 @@ contract AllofHealthv2 {
     /*
      * External Functions
      */
-    function addSystemAdmin(address _admin) external onlyAdmin {
+    function addSystemAdmin(address _admin) external onlySystemAdmin {
         require(_admin != address(0), "Invalid address");
         systemAdmins[_admin] = true;
         systemAdminCount++;
         emit SystemAdminAdded(_admin, systemAdminCount);
     }
 
-    function removeSystemAdmin(address _admin) external onlyAdmin {
+    function removeSystemAdmin(address _admin) external onlySystemAdmin {
         require(_admin != address(0), "Invalid address");
         systemAdmins[_admin] = false;
         systemAdminCount--;
