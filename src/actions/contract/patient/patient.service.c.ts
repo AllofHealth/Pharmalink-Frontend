@@ -14,7 +14,7 @@ import {
   RevokeMedicalRecordAccessType,
   ViewMedicalRecordType,
 } from '@/actions/interfaces/Patient/app.patient.interface'
-import { bytes32ToString } from '@/actions/shared/utils/bytes.utils'
+
 
 async function addPatient(): Promise<{
   success: number
@@ -259,8 +259,7 @@ async function viewMedicalRecord(args: ViewMedicalRecordType) {
     )
 
     return {
-      diagnosis: bytes32ToString(eventResult.diagnosis),
-      recordDetailsUri: bytes32ToString(eventResult.recordDetailsUri),
+      recordDetailsUri: eventResult.recordDetailsUri,
     }
   } catch (error) {
     console.error(error)
