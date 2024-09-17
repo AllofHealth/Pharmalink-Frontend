@@ -138,10 +138,10 @@ export const requestMedicalRecordApproval = async ({
 }) => {
   try {
     const response = await axios.post(
-      `/api/patient/approveMedicalRecordAccess?doctorAddress=${doctorAddress}`,
+      `/api/patient/approveMedicalRecordAccess?walletAddress=${patientAddress}`,
       {
         recordId: records,
-        patientAddress,
+        doctorAddress,
         approvalType,
         approvalDurationInSec: 36000,
       }

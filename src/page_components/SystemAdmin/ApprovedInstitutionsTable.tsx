@@ -1,9 +1,12 @@
 import { AllOfHealthTable } from "@/components/allOfHealthTable/allOfHealth";
-import { useGetInstitutions } from "@/lib/queries/institutions";
+import {
+  useGetApprovedInstitutions,
+  useGetInstitutions,
+} from "@/lib/queries/institutions";
 import { BiLoaderAlt } from "react-icons/bi";
 
 const ApprovedInstitutions = () => {
-  const { institutions, loading, error } = useGetInstitutions();
+  const { institutions, loading, error } = useGetApprovedInstitutions();
 
   const trimText = (text: string, maxLength: number = 10): string => {
     return text?.toString().length > maxLength

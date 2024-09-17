@@ -2,16 +2,16 @@ import Button from "@/components/button/Button";
 import { Field } from "@/components/common/forms/Field";
 import { useState } from "react";
 
-const EditMedicationList = () => {
+const CreatePrescription = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div>
-      <h1 className="font-bold lg:text-3xl mb-8">Medication List</h1>
+      <h1 className="font-bold lg:text-3xl mb-8">Add Prescription</h1>
       <Field
         label={
           <span className="text-[18px] font-normal text-text-black2">
-            Products to be administered
+            Products to be Administered
           </span>
         }
       >
@@ -20,7 +20,7 @@ const EditMedicationList = () => {
       <Field
         label={
           <span className="text-[18px] font-normal text-text-black2">
-            Benefits of the medication
+            Side Effects
           </span>
         }
       >
@@ -38,4 +38,4 @@ const EditMedicationList = () => {
   );
 };
 
-export default EditMedicationList;
+export default CreatePrescription;

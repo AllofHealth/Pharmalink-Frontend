@@ -12,7 +12,7 @@ import ViewPatientMedicalRecord from "@/page_components/doctor/viewPatientMedica
 import DoctorWallet from "@/page_components/doctor/doctorWallet";
 import DoctorPrivacyAndSecurity from "@/page_components/doctor/doctorPrivacyAndSecurity";
 import EditPatientMedicalRecord from "@/page_components/doctor/editPatientMedicalRecord";
-import EditMedicationList from "@/page_components/doctor/medicationList";
+import CreatePrescription from "@/page_components/doctor/createPrescription";
 
 export default function Doctor() {
   const dispatch = useDispatch();
@@ -82,8 +82,8 @@ export default function Doctor() {
         <Tabs.Content value="patientMedicalRecordDetails" className="flex-1">
           <ViewPatientMedicalRecord />
         </Tabs.Content>
-        <Tabs.Content value="EditMedicationList" className="flex-1">
-          <EditMedicationList />
+        <Tabs.Content value="CreatePrescription" className="flex-1">
+          <CreatePrescription />
         </Tabs.Content>
         {/* <Tabs.Content value="Wallet" className="flex-1">
           <DoctorWallet />

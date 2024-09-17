@@ -1,4 +1,3 @@
-import { bytes32ToString } from '@/actions/shared/utils/bytes.utils'
 import { provideContract } from '../provider/contract.provider'
 import { processEvent } from '@/actions/shared/utils/EventLogger/event.processor'
 import {

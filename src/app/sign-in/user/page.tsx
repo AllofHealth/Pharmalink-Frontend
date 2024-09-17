@@ -101,7 +101,7 @@ export default function UserSignIn() {
         router.push("/sign-up/system_admin");
       } else if ((adminData as Admin)?.id) {
         toast.success("System Admin exists");
-        router.push("/dashboard/system_admin");
+        router.push("/dashboard/system-admin");
       }
     }
   };

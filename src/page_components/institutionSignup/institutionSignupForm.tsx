@@ -90,10 +90,28 @@ export default function InstitutionSignUpForm() {
 
       <Form.Item
         className="mb-8"
+        name="type"
+        label={
+          <span className="text-[18px] font-normal text-text-black2">
+            Institution Type
+          </span>
+        }
+        rules={[{ required: true }]}
+      >
+        <Input
+          type="text"
+          name="type"
+          className="border p-3 rounded-xl h-14"
+          placeholder="Type E.g General, Private"
+        />
+      </Form.Item>
+
+      <Form.Item
+        className="mb-8"
         name="location"
         label={
           <span className="text-[18px] font-normal text-text-black2">
-            Location
+            Physical address
           </span>
         }
         rules={[{ required: true }]}
@@ -157,6 +175,24 @@ export default function InstitutionSignUpForm() {
           name="description"
           className="border p-3 rounded-xl h-14"
           placeholder="Enter your description"
+        />
+      </Form.Item>
+
+      <Form.Item
+        className="mb-8"
+        name="regNo"
+        label={
+          <span className="text-[18px] font-normal text-text-black2">
+            Institution Registration Number
+          </span>
+        }
+        rules={[{ required: true }]}
+      >
+        <Input
+          type="text"
+          name="regNo"
+          className="border p-3 rounded-xl h-14"
+          placeholder="Registration no. provided by govt."
         />
       </Form.Item>
 

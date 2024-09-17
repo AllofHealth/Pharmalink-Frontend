@@ -4,15 +4,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { type RootState } from "@/lib/redux/rootReducer";
 import { toggleOtpSuccessModal } from "@/lib/redux/slices/modals/modalSlice";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const OtpSuccessModal = ({
   container,
   title,
+  route,
 }: {
   container: HTMLElement;
   title: string;
+  route: string;
 }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const isOtpSuccessModalOpen = useSelector(
     (state: RootState) => state.modal.isOtpSuccessModalOpen
@@ -51,7 +55,10 @@ const OtpSuccessModal = ({
               </p>
             </div>
             <div className="flex items-center justify-center gap-2">
-              <Modal.Close className="w-[100px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]">
+              <Modal.Close
+                className="w-[100px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
+                onClick={() => router.push(`${route}`)}
+              >
                 Go to Dashboard
               </Modal.Close>
             </div>

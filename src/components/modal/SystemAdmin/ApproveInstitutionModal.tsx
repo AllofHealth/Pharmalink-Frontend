@@ -69,7 +69,7 @@ const ApproveInstitutionModal = ({
                 className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
                 onClick={() =>
                   approveInstitution({
-                    institutionId: institution.id,
+                    institutionId: institution._id,
                     axios,
                     address,
                     dispatch,

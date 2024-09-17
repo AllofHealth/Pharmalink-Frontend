@@ -74,11 +74,13 @@ const InstitutionOverview = () => {
       : text;
   };
 
+  console.log(practitionerInInstitutions);
+
   return (
     <section>
       <span className="bg-gray-6 h-10 rounded-lg py-2 px-8">
         {" "}
-        {currentInstitution?.status === "pending" ? "Not Verified" : "Verified"}
+        {currentInstitution?.status !== "pending" ? "Verified" : "Not Verified"}
       </span>
       <div className="my-4">
         <span className="text-base font-bold lg:text-3xl lg:font-extrabold">
@@ -111,7 +113,7 @@ const InstitutionOverview = () => {
             <div className="bg-blue5 px-10 py-1 lg:py-4 rounded-2xl mb-4 lg:mb-0">
               <p className="text-xs lg:text-[18px] mb-4">Total Pharmacist</p>
               <span className="text-[20px] lg:text-4xl">
-                {currentInstitution?.doctors.length}
+                {currentInstitution?.pharmacists.length}
               </span>
             </div>
           </div>
@@ -126,49 +128,61 @@ const InstitutionOverview = () => {
       </div>
       {loading ? (
         <div className="flex justify-center items-center mt-10">
-          <BiLoaderAlt className="text-2xl text center animate-spin" />
+          <BiLoaderAlt className="text-2xl text-center animate-spin" />
         </div>
-      ) : practitionerInInstitutions?.practitioners ? (
-        <AllOfHealthTable
-          labels={[
-            "Practitioner’s Name",
-            "City",
-            "Mobile Number",
-            "Wallet Address",
-            "Status",
-            "Action",
-          ]}
-          caption="Approve Institution Table"
-          headClassName="bg-gray-5 rounded-t-md"
-        >
-          {practitionerInInstitutions.practitioners?.map(
-            (practitioner, index) => (
-              <tr
-                className="h-16 text-blue4 font-medium"
-                key={index}
-                onClick={() => handleToggleActionNeeded(practitioner)}
-              >
-                <td className="pl-2 lg:pl-7 text-xs lg:text-base">
-                  {practitioner.name}
-                </td>
-                <td className=" text-xs lg:text-base">
-                  {practitioner.location ?? "No loaction"}
-                </td>
-                <td className=" text-xs lg:text-base">
-                  {practitioner.phoneNumber ?? "No phoneNumber"}
-                </td>
-                <td className=" text-xs lg:text-base">
-                  {trimText(practitioner.walletAddress)}
-                </td>
-                <td className=" text-xs lg:text-base">{practitioner.status}</td>
-                <td>
-                  <Icon name="Ellipse" className="mx-auto" />
-                </td>
-              </tr>
-            )
-          )}
-        </AllOfHealthTable>
-      ) : !practitionerInInstitutions?.practitioners ? (
+      ) : currentInstitution?.status === "approved" ? (
+        practitionerInInstitutions?.practitioners ? (
+          <AllOfHealthTable
+            labels={[
+              "Practitioner’s Name",
+              "City",
+              "Mobile Number",
+              "Wallet Address",
+              "Status",
+              "Action",
+            ]}
+            caption="Approve Institution Table"
+            headClassName="bg-gray-5 rounded-t-md"
+          >
+            {practitionerInInstitutions.practitioners.map(
+              (practitioner, index) => (
+                <tr
+                  className="h-16 text-blue4 font-medium"
+                  key={index}
+                  onClick={() => handleToggleActionNeeded(practitioner)}
+                >
+                  <td className="pl-2 lg:pl-7 text-xs lg:text-base">
+                    {practitioner.name}
+                  </td>
+                  <td className="text-xs lg:text-base">
+                    {practitioner.location ?? "No location"}
+                  </td>
+                  <td className="text-xs lg:text-base">
+                    {practitioner.phoneNumber ?? "No phone number"}
+                  </td>
+                  <td className="text-xs lg:text-base">
+                    {trimText(practitioner.walletAddress)}
+                  </td>
+                  <td className="text-xs lg:text-base">
+                    {practitioner.status}
+                  </td>
+                  <td>
+                    <Icon name="Ellipse" className="mx-auto" />
+                  </td>
+                </tr>
+              )
+            )}
+          </AllOfHealthTable>
+        ) : (
+          <div className="lg:flex justify-between items-center max-w-[80%] mx-auto">
+            <div className="max-w-[513px]">
+              <p className="text-base lg:text-3xl font-semibold text-blue2">
+                No Practitioners Found
+              </p>
+            </div>
+          </div>
+        )
+      ) : currentInstitution?.status !== "approved" ? (
         <div className="lg:flex justify-between items-center max-w-[80%] mx-auto">
           <div className="max-w-[513px]">
             <p className="text-base lg:text-3xl font-semibold text-blue2">
@@ -176,7 +190,7 @@ const InstitutionOverview = () => {
             </p>
             <p className="text-sm lg:text-xl font-normal text-[#1E1E1E]">
               Your institution is currently not verified and cannot view any
-              practitioner profiles. Kindly wait to be verified
+              practitioner profiles. Kindly wait to be verified.
             </p>
           </div>
           <Image

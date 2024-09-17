@@ -1,3 +1,5 @@
+import type { UploadImageInterface } from "@/actions/interfaces/Record/app.record.interface";
+
 export interface AllofHealthTableProps {
   children: React.ReactNode;
   labels: string[];
@@ -8,7 +10,7 @@ export interface AllofHealthTableProps {
   className?: string;
 }
 
-interface Patient {
+export interface Patient {
   _id: string;
   id: number;
   appointmentCount: number;
@@ -134,6 +136,7 @@ export interface CreatePatientValues {
   address: string;
   city: string;
   walletAddress: string;
+  phoneNo: string;
   bloodGroup: string;
   genotype: string;
 }
@@ -166,6 +169,8 @@ export interface CreateInstitutionValues {
   phoneNo: string;
   location: string;
   description: string;
+  regNo: string;
+  type: string;
 }
 
 export type Institution = {
@@ -180,6 +185,7 @@ export type Institution = {
   profilePicture: string;
   description: string;
   status: string;
+  isVerified: boolean;
   category: string;
   doctors: any[];
   pharmacists: any[];
@@ -459,4 +465,18 @@ export type updatePharmacistValues = {
 export interface VerificationDocuments {
   identificationCard: string;
   medicalLicense: string;
+}
+
+export interface Record {
+  diagnosis: string;
+  description: string;
+  testname: string;
+  referenceRange: string;
+  units: string;
+  comments: string;
+  heartbeat: string;
+  bloodPressure: string;
+  sugarLevel: string;
+  haemoglobin: string;
+  labImages: UploadImageInterface[];
 }

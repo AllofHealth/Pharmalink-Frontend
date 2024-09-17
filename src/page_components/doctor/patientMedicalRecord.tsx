@@ -114,7 +114,7 @@ const PatientMedicalRecord = () => {
             <Button
               variant="primary"
               onClick={() =>
-                dispatch(setDoctorCurrentTab("patientMedicalRecordDetails"))
+                dispatch(setDoctorCurrentTab("EditPatientMedicalRecord"))
               }
             >
               Add to Record
