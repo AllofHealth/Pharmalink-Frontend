@@ -96,21 +96,15 @@ async function approvePharmacist(args: ApprovePharmacistType) {
   }
 }
 
-async function determinePractitionerRole(practitionerId: number) {
+async function determinePractitionerRole(practitionerAddress: string) {
+  let isDoctor = false;
+  let isPharmacist = false;
   try {
     const contract = await provideContract()
-    const [isDoctor, isPharmacist] = await Promise.all([
-      contract.isDoctor(practitionerId),
-      contract.isPharmacist(practitionerId),
-    ])
+    isDoctor = await contract.isDoctor(practitionerAddress)
+    isPharmacist = await contract.isPharmacist(practitionerAddress);
 
-    if (isDoctor) {
-      return { isDoctor: true, isPharmacist: false }
-    } else if (isPharmacist) {
-      return { isDoctor: false, isPharmacist: true }
-    } else {
-      throw new Error('Address is not a practitioner')
-    }
+    return {isDoctor, isPharmacist}
   } catch (error) {
     console.error(error)
     throw new Error('An error occurred while determining practitioner role')
@@ -121,7 +115,7 @@ async function approvePractitioner(args: ApprovePractitionerType) {
   const { practitionerAddress, hospitalId, practitionerId } = args
   try {
     const { isDoctor, isPharmacist } = await determinePractitionerRole(
-      practitionerId,
+      practitionerAddress,
     )
     if (isDoctor) {
       return await approveDoctor({
