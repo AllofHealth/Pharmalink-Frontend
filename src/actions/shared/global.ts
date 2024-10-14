@@ -61,7 +61,7 @@ export enum ContractEvents {
   WriteAccessGranted = 'event WriteAccessGranted(address indexed doctor, uint256 indexed patientId)',
   RecordAccessRevoked = 'event RecordAccessRevoked(address indexed patient, address indexed approvedDoctor, uint256 indexed medicalRecordId)',
   MedicalRecordAdded = 'event MedicalRecordAdded(address indexed doctor, address indexed patient, uint256 indexed medicalRecordId)',
-  MedicalRecordAccessed = ' event MedicalRecordAccessed(string indexed recordDetailsUri)',
+  MedicalRecordAccessed = 'event MedicalRecordAccessed(string indexed recordDetailsUri)',
   ReadAccessGranted = 'event MedicalRecordAccessApproved(address indexed patient, address indexed approvedDoctor, uint256 indexed medicalRecordId)',
 }
 
