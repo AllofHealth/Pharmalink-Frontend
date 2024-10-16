@@ -160,7 +160,7 @@ async function approveAccessToExistingRecord(
     if (viewerHasAccess) {
       return {
         success: ErrorCodes.Error,
-        message: 'You already have access to this record',
+        message: 'Viewer already have access to this record',
       }
     }
     const transaction = await contract.approveMedicalRecordAccess(
@@ -211,6 +211,12 @@ async function approveMedicalRecordAccess(
     switch (approvalType) {
       case 'view':
         const readResult = await approveAccessToExistingRecord(args)
+        if (readResult.success === ErrorCodes.Error) {
+          return {
+            success: ErrorCodes.Success,
+            message: readResult.message,
+          }
+        }
         return {
           ...readResult,
         }
@@ -227,6 +233,12 @@ async function approveMedicalRecordAccess(
       case 'view & modify':
         if (recordId) {
           const readResult = await approveAccessToExistingRecord(args)
+          if (readResult.success === ErrorCodes.Error) {
+            return {
+              success: ErrorCodes.Success,
+              message: readResult.message,
+            }
+          }
           if (readResult.success === ErrorCodes.Success) {
             const writeResult = await approveAccessToAddNewMedicalRecord(
               practitionerAddress,
