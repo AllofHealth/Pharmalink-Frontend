@@ -142,7 +142,7 @@ async function approveMedicalRecordAccess(
   approvalType: RecordApprovalType,
   args: ApproveMedicalRecordAccessType,
 ) {
-  const { practitionerAddress, patientId, recordId, durationInSeconds } = args
+  const { practitionerAddress, patientId, recordId} = args
   try {
     const contract = await provideContract()
     const isDoctorApproved: boolean = await contract.approvedDoctors(
@@ -174,27 +174,20 @@ async function approveMedicalRecordAccess(
 
       case 'view & modify':
         if (recordId) {
-          const [readResult, writeResult] = await Promise.allSettled([
-            approveAccessToExistingRecord(args),
-            approveAccessToAddNewMedicalRecord(practitionerAddress, patientId),
-          ])
-
-          return {
-            viewAccessGranted:
-              readResult.status === 'fulfilled'
-                ? readResult.value
-                : {
-                    success: ErrorCodes.Error,
-                    message: 'Error granting read access',
-                  },
-            writeAccessGranted:
-              writeResult.status === 'fulfilled'
-                ? writeResult.value
-                : {
-                    success: ErrorCodes.Error,
-                    message: 'Error granting write access',
-                  },
+          const readResult = await approveAccessToExistingRecord(args);
+          if(readResult.success === ErrorCodes.Success) {
+            const writeResult = await approveAccessToAddNewMedicalRecord(
+                practitionerAddress,
+                patientId,
+            )
+            return  {
+              success: ErrorCodes.Success,
+              patientId: writeResult.patientId,
+              recordId: readResult.medicalRecordId,
+              message: "full access granted"
+            }
           }
+          throw new Error('an error occurred while granting full access')
         } else {
           const writeResult = await approveAccessToAddNewMedicalRecord(
             practitionerAddress,
