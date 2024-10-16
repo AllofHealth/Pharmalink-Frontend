@@ -11,6 +11,7 @@ import type { InstitutionPractitioner } from "@/lib/types";
 import { approvePractitionerToInstitution } from "@/lib/mutations/institution";
 import useAxios from "@/lib/hooks/useAxios";
 import { useAccount } from "wagmi";
+import { approvePractitioner } from "@/actions/contract/hospital/hospital.service.c";
 
 const InstitutionActionNeededRoleModal = ({
   container,
@@ -24,6 +25,8 @@ const InstitutionActionNeededRoleModal = ({
   const dispatch = useDispatch();
   const { axios } = useAxios({});
   const { address } = useAccount();
+
+  console.log(currentPractitioner);
 
   const currentInstitution = useSelector(
     (state: RootState) => state.institution.currentInstitution
@@ -39,6 +42,24 @@ const InstitutionActionNeededRoleModal = ({
 
   const handleAccessDenied = () => {
     dispatch(toggleInstitutionAccessDeniedModal());
+  };
+
+  const handleApprovePractitioner = async () => {
+    const contractResponse = await approvePractitioner({
+      practitionerAddress: currentPractitioner.walletAddress ?? "",
+      hospitalId: currentPractitioner.hospitalIds[0],
+      practitionerId: currentPractitioner.id,
+    });
+
+    if (contractResponse) {
+      approvePractitionerToInstitution({
+        axios,
+        dispatch,
+        hospitalId: currentInstitution ? currentInstitution?._id : "",
+        adminAddress: address ? address : "",
+        practitionerAddress: currentPractitioner.walletAddress,
+      });
+    }
   };
 
   return (
@@ -69,17 +90,7 @@ const InstitutionActionNeededRoleModal = ({
               </Modal.Close>
               <Modal.Close
                 className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
-                onClick={() =>
-                  approvePractitionerToInstitution({
-                    axios,
-                    dispatch,
-                    hospitalId: currentInstitution
-                      ? currentInstitution?._id
-                      : "",
-                    adminAddress: address ? address : "",
-                    practitionerAddress: currentPractitioner.walletAddress,
-                  })
-                }
+                onClick={() => handleApprovePractitioner()}
               >
                 Approve
               </Modal.Close>

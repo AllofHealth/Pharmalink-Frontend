@@ -23,7 +23,7 @@ export default function Doctor() {
   return (
     <section className="px-7 lg:px-14">
       <Tabs.Root
-        defaultValue="Overview"
+        defaultValue="CreatePrescription"
         className="flex gap-10"
         value={doctorCurrentTab}
       >

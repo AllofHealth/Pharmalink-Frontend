@@ -6,13 +6,15 @@ interface DoctorState {
   currentDoctor: AllDoctor | null;
   currentPatientRecord: Approval | null;
   doctorSignUpValues: CreateDoctorValues | null;
+  currentPatientAddress: string;
 }
 
 const initialState: DoctorState = {
-  doctorCurrentTab: "Overview",
+  doctorCurrentTab: "CreatePrescription",
   currentDoctor: null,
   currentPatientRecord: null,
   doctorSignUpValues: null,
+  currentPatientAddress: "",
 };
 
 const Doctor = createSlice({
@@ -31,6 +33,9 @@ const Doctor = createSlice({
     setDoctorSignUpValues(state, action: PayloadAction<CreateDoctorValues>) {
       state.doctorSignUpValues = action.payload;
     },
+    setCurrentPatientAddress(state, action: PayloadAction<string>) {
+      state.currentPatientAddress = action.payload;
+    },
   },
 });
 
@@ -39,5 +44,6 @@ export const {
   setCurrentDoctor,
   setCurrentPatientRecord,
   setDoctorSignUpValues,
+  setCurrentPatientAddress,
 } = Doctor.actions;
 export default Doctor.reducer;

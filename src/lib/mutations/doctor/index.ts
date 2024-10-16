@@ -6,8 +6,10 @@ import { toggleSuccessfullyEditedMedicalRecordModal } from "@/lib/redux/slices/m
 import type {
   Approval,
   CreateMedicalRecordValues,
+  Medicine,
   UpdateDoctorValues,
 } from "@/lib/types";
+import type { PrescriptionMedicine } from "@/page_components/doctor/createPrescription";
 import type { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import type { AxiosInstance } from "axios";
 import { toast } from "sonner";
@@ -69,9 +71,9 @@ export const createMedicalRecord = async ({
 }) => {
   try {
     const response = await axios.post(
-      `/api/doctor/createMedicalRecordPreview?patientAddress=${patientAddress}&doctorAddress=${doctorAddress}`,
+      `/api/doctor/createMedicalRecord?patientAddress=${patientAddress}&doctorAddress=${doctorAddress}`,
       {
-        recordId,
+        recordId: Number(recordId),
         diagnosis: medicalRecordValues.diagnosis,
       }
     );
@@ -79,6 +81,7 @@ export const createMedicalRecord = async ({
     if (response.data) {
       toast.success("Created medical record successfully!.");
       dispatch(toggleSuccessfullyEditedMedicalRecordModal());
+      dispatch(setDoctorCurrentTab("CreatePrescription"));
     }
   } catch (err: any) {
     if (err) {
@@ -118,6 +121,48 @@ export const updateDoctor = async ({
     } else {
       console.error("An unknown error occurred:", err);
       toast.error("Failed to update doctor data: " + err.message);
+    }
+  }
+};
+
+export const addMedicinePrescription = async ({
+  prescription,
+  axios,
+  patientAddress,
+  doctorAddress,
+  recordId,
+  dispatch,
+}: {
+  prescription: PrescriptionMedicine[];
+  axios: AxiosInstance;
+  patientAddress: string | undefined;
+  doctorAddress: string | undefined;
+  recordId: number;
+  dispatch: Dispatch<UnknownAction>;
+}) => {
+  try {
+    const response = await axios.post(
+      `/api/doctor/addPatientPrescription?patientAddress=${patientAddress}&doctorAddress=${doctorAddress}`,
+      {
+        recordId,
+        medicine: prescription,
+      }
+    );
+    console.log(response.data.success);
+
+    if (response.data.success === (200 || 201)) {
+      toast.success("Prescription added successfully!.");
+      dispatch(setDoctorCurrentTab("Overview"));
+    } else {
+      toast.error(response.data.message);
+    }
+  } catch (err: any) {
+    if (err) {
+      toast.error("Failed to add prescription: " + err.message);
+      console.error(err);
+    } else {
+      console.error("An unknown error occurred:", err);
+      toast.error("Failed to add prescription: " + err.message);
     }
   }
 };

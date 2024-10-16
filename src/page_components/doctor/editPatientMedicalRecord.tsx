@@ -12,6 +12,7 @@ import useAxios from "@/lib/hooks/useAxios";
 import { createMedicalRecord } from "@/lib/mutations/doctor";
 import { useGetDoctorByAddress } from "@/lib/queries/auth";
 import type { RootState } from "@/lib/redux/rootReducer";
+import { setDoctorCurrentTab } from "@/lib/redux/slices/doctor/doctorSlice";
 import type {
   GetDoctorMessage,
   Record,
@@ -19,6 +20,7 @@ import type {
 } from "@/lib/types";
 import {} from "antd";
 import TextArea from "antd/es/input/TextArea";
+import { useRouter } from "next/router";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAccount } from "wagmi";
@@ -138,6 +140,8 @@ const EditPatientMedicalRecord = () => {
     doctorToAddMedicalRecord();
   }, [ipfsHash]); // Runs when ipfsHash is updated
 
+  console.log(medicalRecordId);
+
   // Step 3: Call when medicalRecordId changes
   useEffect(() => {
     const sendMedicalRecordToDB = async () => {
@@ -155,6 +159,7 @@ const EditPatientMedicalRecord = () => {
             },
             dispatch,
           });
+          dispatch(setDoctorCurrentTab("CreatePrescription"));
         } catch (error) {
           console.error("Error saving record to DB:", error);
         }
@@ -165,7 +170,12 @@ const EditPatientMedicalRecord = () => {
 
   return (
     <div>
-      <h1 className="font-bold lg:text-3xl mb-6">Add to Patient Record</h1>
+      <h1
+        className="font-bold lg:text-3xl mb-6"
+        onClick={() => dispatch(setDoctorCurrentTab("CreatePrescription"))}
+      >
+        Add to Patient Record
+      </h1>
       <Field
         label={
           <span className="text-[18px] font-normal text-text-black2">

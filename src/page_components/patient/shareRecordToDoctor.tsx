@@ -1,3 +1,5 @@
+import { approveMedicalRecordAccess } from "@/actions/contract/patient/patient.service.c";
+import type { RecordApprovalType } from "@/actions/interfaces/Patient/app.patient.interface";
 import { AllOfHealthTable } from "@/components/allOfHealthTable/allOfHealth";
 import Button from "@/components/button/Button";
 import GrantAccessToSpecificRecordsModal from "@/components/modal/patient/grantAccessToSpecificRecordsModal";
@@ -7,20 +9,28 @@ import {
   requestFamilyMemberMedicalRecordApproval,
   requestMedicalRecordApproval,
 } from "@/lib/mutations/patient";
+import { useGetPatientByAddress } from "@/lib/queries/auth";
 import { useGetAllPatientMedicalRecords } from "@/lib/queries/patient";
 import { RootState } from "@/lib/redux/rootReducer";
 import { toggleGrantAccessToSpecificRecordsModal } from "@/lib/redux/slices/modals/modalSlice";
 import { setApprovalType } from "@/lib/redux/slices/patient/patientSlice";
+import type { GetPatientMessage } from "@/lib/types";
 import { formatDateToSlashDate } from "@/utils/formatDateToSlashDate";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import { useAccount } from "wagmi";
 
 const ShareRecordToDoctor = () => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { axios } = useAxios({});
+
+  const { loading: loadingPatientData, patientData } = useGetPatientByAddress({
+    connected: isConnected,
+    address: address ? address : "",
+  });
 
   const doctor = useSelector((state: RootState) => state.doctor.currentDoctor);
   const familyMemberId = useSelector(
@@ -36,6 +46,12 @@ const ShareRecordToDoctor = () => {
   const [selectedRecords, setSelectedRecords] = useState<number[]>([]);
 
   const handleCheckboxChange = (id: number, checked: boolean) => {
+    if (selectedRecords.length >= 1 && checked) {
+      // Display an error toast if more than one record is selected
+      toast.error("You can only select one record.");
+      return;
+    }
+
     setSelectedRecords((prevSelectedRecords) =>
       checked
         ? [...prevSelectedRecords, id]
@@ -90,19 +106,28 @@ const ShareRecordToDoctor = () => {
       ? familyMemberMedicalRecords?.records
       : medicalRecords?.medicalRecords;
 
-  const handleRequestEmptyRecord = async () => {
+  const handleRequestEmptyRecord = async (approvalType: RecordApprovalType) => {
     if (familyMemberId === 0) {
-      try {
-        await requestMedicalRecordApproval({
-          axios,
-          dispatch,
-          records: [],
-          patientAddress: address,
-          doctorAddress: doctor ? doctor.walletAddress : "",
-          approvalType: "FULL",
-        });
-      } catch (error) {
-        console.error("Error requesting medical record approval", error);
+      const contractResponse = await approveMedicalRecordAccess(approvalType, {
+        practitionerAddress: doctor?.walletAddress ?? "",
+        patientId: (patientData as GetPatientMessage).patient.id,
+        recordId: 0,
+        durationInSeconds: 36000,
+      });
+      console.log(contractResponse);
+      if (contractResponse) {
+        try {
+          await requestMedicalRecordApproval({
+            axios,
+            dispatch,
+            records: [],
+            patientAddress: address,
+            doctorAddress: doctor ? doctor.walletAddress : "",
+            approvalType: "FULL",
+          });
+        } catch (error) {
+          console.error("Error requesting medical record approval", error);
+        }
       }
     } else {
       try {
@@ -179,12 +204,12 @@ const ShareRecordToDoctor = () => {
             <p className="text-6B6B6B sm:text-2xl">
               There are currently no diagnoses to select. Please continue with
               your consultation or contact our support team for further
-              assistance.
+              assistance. aliana
             </p>
             <Button
               variant="secondary"
               className="mx-auto flex justify-center w-[155px] mt-4"
-              onClick={() => handleRequestEmptyRecord()}
+              onClick={() => handleRequestEmptyRecord("view & modify")}
             >
               Create a record request
             </Button>

@@ -1,3 +1,4 @@
+import { viewMedicalRecord } from "@/actions/contract/patient/patient.service.c";
 import { AllOfHealthTable } from "@/components/allOfHealthTable/allOfHealth";
 import Button from "@/components/button/Button";
 import { Field } from "@/components/common/forms/Field";
@@ -57,6 +58,7 @@ const ViewPatientMedicalRecord = () => {
 
   const { axios } = useAxios({});
   const { address } = useAccount();
+  const [ipfsHash, setIpfsHash] = useState("");
   const successfullyEditedMedicalRecordModalRef = useRef<HTMLDivElement | null>(
     null
   );
@@ -120,6 +122,31 @@ const ViewPatientMedicalRecord = () => {
   console.log(medicalRecord);
 
   const isFormFilled = medicalRecord.diagnosis;
+
+  const getIpfsHash = async () => {
+    if (patientRecordData && address) {
+      const ipfsHash = await viewMedicalRecord({
+        patientId: patientRecordData!.patientId,
+        viewerAddress: address ?? "",
+        recordId: patientRecordData?.recordId ?? 0,
+      });
+
+      setIpfsHash(ipfsHash.recordDetailsUri);
+    }
+  };
+
+  const medicalRecordAccess = async () => {
+    try {
+    } catch (error) {}
+  };
+
+  console.log(ipfsHash);
+
+  useEffect(() => {
+    if (patientRecordData && address) {
+      getIpfsHash();
+    }
+  }, []);
 
   return (
     <div>

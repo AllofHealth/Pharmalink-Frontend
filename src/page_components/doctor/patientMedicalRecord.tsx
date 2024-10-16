@@ -197,7 +197,13 @@ const PatientMedicalRecord = () => {
           headClassName="bg-gray-5 rounded-t-md"
         >
           {medicalRecords?.medicalRecords?.map((record) => (
-            <tr className="h-16 text-blue4 font-medium" key={record._id}>
+            <tr
+              className="h-16 text-blue4 font-medium"
+              key={record._id}
+              onClick={() =>
+                dispatch(setDoctorCurrentTab("patientMedicalRecordDetails"))
+              }
+            >
               <td className="pl-2 lg:pl-7 text-xs lg:text-base">
                 {formatDate(record.date)}
               </td>

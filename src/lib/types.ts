@@ -373,6 +373,7 @@ export interface InstitutionPractitioner {
   status: string;
   category: string;
   _id: string;
+  id: number;
 }
 
 export interface InstitutionPractitionersApiResponse {

@@ -81,7 +81,7 @@ async function approveAccessToAddNewMedicalRecord(
 ) {
   try {
     const contract = await provideContract()
-    const transaction = await contract.approveAccessToAddNewMedicalRecord(
+    const transaction = await contract.approveAccessToAddNewRecord(
       doctorAddress,
       patientId,
     )
