@@ -11,6 +11,7 @@ import {
   ApproveMedicalRecordAccessType,
   ApproveNewRecordAccessForFamilyMemberType,
   IPractitionerAccess,
+  IPractitionerFamilyMemberAccess,
   RecordApprovalType,
   RevokeMedicalRecordAccessType,
   ViewMedicalRecordType,
@@ -119,6 +120,28 @@ async function checkPractitionerAccess(args: IPractitionerAccess) {
   } catch (error) {
     console.error(error)
     throw new PatientError('Error checking practitioner access')
+  }
+}
+
+async function checkPractitionerAccessToFamilyMemberRecords(
+  args: IPractitionerFamilyMemberAccess,
+) {
+  const { practitionerAddress, patientId, familyMemberId, recordId } = args
+  try {
+    const contract = await provideContract()
+    const hasAccess = await contract.viewerHasAccessToPatientFamilyMemberMedicalRecord(
+      practitionerAddress,
+      patientId,
+      familyMemberId,
+      recordId,
+    )
+
+    return hasAccess
+  } catch (error) {
+    console.error(error)
+    throw new PatientError(
+      'Error checking practitioner access to family member records',
+    )
   }
 }
 
@@ -356,6 +379,19 @@ async function approveAccessToExistingFamilyMemberMedicalRecord(
   } = args
   try {
     const contract = await provideContract()
+    const viewerHasAccess = await checkPractitionerAccessToFamilyMemberRecords({
+      practitionerAddress,
+      patientId,
+      familyMemberId,
+      recordId: recordId as number,
+    })
+
+    if (viewerHasAccess) {
+      return {
+        success: ErrorCodes.Error,
+        message: 'Viewer already has access to this record',
+      }
+    }
     const transaction = await contract.approveFamilyMemberMedicalRecordAccess(
       practitionerAddress,
       patientId,
