@@ -15,6 +15,16 @@ export interface ApproveMedicalRecordAccessType {
   durationInSeconds?: number
 }
 
+export interface IPractitionerAccess {
+  practitionerAddress: string
+  patientId: number
+  recordId: number
+}
+
+export interface IPractitionerFamilyMemberAccess extends IPractitionerAccess {
+  familyMemberId: number
+}
+
 export interface ApproveNewRecordAccessForFamilyMemberType {
   doctorAddress: string
   familyMemberId: number
