@@ -21,6 +21,10 @@ export interface IPractitionerAccess {
   recordId: number
 }
 
+export interface IPractitionerFamilyMemberAccess extends IPractitionerAccess {
+  familyMemberId: number
+}
+
 export interface ApproveNewRecordAccessForFamilyMemberType {
   doctorAddress: string
   familyMemberId: number
