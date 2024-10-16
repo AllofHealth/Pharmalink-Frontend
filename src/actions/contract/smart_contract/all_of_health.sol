@@ -1177,7 +1177,7 @@ contract AllofHealthv2 {
     function patientFamilyMemberHasRecords(
         uint256 _principalPatientId,
         uint256 _familyMemberId
-    ) internal view returns (bool) {
+    ) public view returns (bool) {
         return
             patientFamilyMembers[_principalPatientId][_familyMemberId]
             .familyMemberMedicalRecordCount > 0;

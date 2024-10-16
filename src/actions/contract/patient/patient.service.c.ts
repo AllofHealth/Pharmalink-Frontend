@@ -213,7 +213,7 @@ async function approveMedicalRecordAccess(
         const readResult = await approveAccessToExistingRecord(args)
         if (readResult.success === ErrorCodes.Error) {
           return {
-            success: ErrorCodes.Success,
+            success: ErrorCodes.Error,
             message: readResult.message,
           }
         }
@@ -235,7 +235,7 @@ async function approveMedicalRecordAccess(
           const readResult = await approveAccessToExistingRecord(args)
           if (readResult.success === ErrorCodes.Error) {
             return {
-              success: ErrorCodes.Success,
+              success: ErrorCodes.Error,
               message: readResult.message,
             }
           }
@@ -458,6 +458,13 @@ async function approveFamilyMemberMedicalRecordAccess(
           args,
         )
 
+        if (readResult.success === ErrorCodes.Error) {
+          return {
+            success: ErrorCodes.Error,
+            message: readResult.message,
+          }
+        }
+
         return {
           ...readResult,
         }
@@ -475,32 +482,37 @@ async function approveFamilyMemberMedicalRecordAccess(
         }
       case 'view & modify':
         if (recordId) {
-          const [fullReadResult, fullWriteResult] = await Promise.allSettled([
-            approveAccessToExistingFamilyMemberMedicalRecord(args),
-            await new Promise((resolve) => setTimeout(resolve, 2000)),
-            approveAccessToAddNewMedicalRecordForFamilyMember({
-              doctorAddress: practitionerAddress,
-              familyMemberId,
-              principalPatientId: patientId,
-            }),
-          ])
+          const readResult = await approveAccessToExistingFamilyMemberMedicalRecord(
+            args,
+          )
 
-          return {
-            viewAccessGranted:
-              fullReadResult.status === 'fulfilled'
-                ? fullReadResult.value
-                : {
-                    success: ErrorCodes.Error,
-                    message: 'Read Access Not Granted',
-                  },
-            writeAccessGranted:
-              fullWriteResult.status === 'fulfilled'
-                ? fullWriteResult.value
-                : {
-                    success: ErrorCodes.Error,
-                    message: 'Write Access Not Granted',
-                  },
+          if (readResult.success === ErrorCodes.Error) {
+            return {
+              success: ErrorCodes.Error,
+              message: readResult.message,
+            }
           }
+
+          if (readResult.success === ErrorCodes.Success) {
+            const writeResult = await approveAccessToAddNewMedicalRecordForFamilyMember(
+              {
+                doctorAddress: practitionerAddress,
+                familyMemberId,
+                principalPatientId: patientId,
+              },
+            )
+
+            if (writeResult.success === ErrorCodes.Success) {
+              return {
+                success: ErrorCodes.Success,
+                familyMemberId: Number(writeResult.familyMemberId),
+                doctorAddress: readResult.doctorAddress,
+                message: 'Full Access Granted',
+              }
+            }
+          }
+
+          throw new Error('an error occurred while granting full access')
         } else {
           const fullWriteResult = await approveAccessToAddNewMedicalRecordForFamilyMember(
             {
