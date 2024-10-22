@@ -12,6 +12,7 @@ import {
   ApproveNewRecordAccessForFamilyMemberType,
   IPractitionerAccess,
   IPractitionerFamilyMemberAccess,
+  IViewFamilyMemberRecord,
   RecordApprovalType,
   RevokeMedicalRecordAccessType,
   ViewMedicalRecordType,
@@ -302,21 +303,34 @@ async function viewMedicalRecord(args: ViewMedicalRecordType) {
   const { recordId, patientId, viewerAddress } = args
   try {
     const contract = await provideContract()
-    const transaction = await contract.viewMedicalRecord(
+    const hash = await contract.viewMedicalRecord(
       recordId,
       patientId,
       viewerAddress,
     )
 
-    const receipt = await transaction.wait()
-    const eventResult = await processEvent(
-      receipt,
-      EventNames.MedicalRecordAccessed,
-      ContractEvents.MedicalRecordAccessed,
+    return {
+      ipfs_hash: String(hash),
+    }
+  } catch (error) {
+    console.error(error)
+    throw new PatientError('An error occurred while accessing medical record')
+  }
+}
+
+async function viewFamilyMemberMedicalRecord(args: IViewFamilyMemberRecord) {
+  const { recordId, principalPatientId, familyMemberId, viewerAddress } = args
+  try {
+    const contract = await provideContract()
+    const hash = await contract.viewFamilyMemberMedicalRecord(
+      recordId,
+      principalPatientId,
+      familyMemberId,
+      viewerAddress,
     )
 
     return {
-      recordDetailsUri: eventResult.recordDetailsUri,
+      ipfs_hash: String(hash),
     }
   } catch (error) {
     console.error(error)
@@ -540,6 +554,7 @@ export {
   approveMedicalRecordAccess,
   revokeMedicalRecordAccess,
   viewMedicalRecord,
+  viewFamilyMemberMedicalRecord,
   approveFamilyMemberMedicalRecordAccess,
   getPatientRecordCount,
 }
