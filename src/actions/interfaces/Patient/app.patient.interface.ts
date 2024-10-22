@@ -47,3 +47,10 @@ export interface ViewMedicalRecordType {
   patientId: number
   viewerAddress: string
 }
+
+export interface IViewFamilyMemberRecord {
+  recordId: number
+  principalPatientId: number
+  familyMemberId: number
+  viewerAddress: string
+}
