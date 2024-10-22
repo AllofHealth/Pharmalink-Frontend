@@ -294,16 +294,6 @@ export const abi = [
   },
   {
     "type": "function",
-    "name": "hospitalApprovedPractitioners",
-    "inputs": [
-      { "name": "", "type": "uint256", "internalType": "uint256" },
-      { "name": "", "type": "address", "internalType": "address" }
-    ],
-    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
     "name": "hospitalCount",
     "inputs": [],
     "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
@@ -311,29 +301,9 @@ export const abi = [
   },
   {
     "type": "function",
-    "name": "hospitalDoctors",
-    "inputs": [
-      { "name": "", "type": "uint256", "internalType": "uint256" },
-      { "name": "", "type": "uint256", "internalType": "uint256" }
-    ],
-    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
     "name": "hospitalExists",
     "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
     "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "hospitalPharmacists",
-    "inputs": [
-      { "name": "", "type": "uint256", "internalType": "uint256" },
-      { "name": "", "type": "uint256", "internalType": "uint256" }
-    ],
-    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
     "stateMutability": "view"
   },
   {
@@ -441,98 +411,6 @@ export const abi = [
     "name": "patientCount",
     "inputs": [],
     "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "patientFamilyMedicalRecord",
-    "inputs": [
-      { "name": "", "type": "uint256", "internalType": "uint256" },
-      { "name": "", "type": "uint256", "internalType": "uint256" },
-      { "name": "", "type": "uint256", "internalType": "uint256" }
-    ],
-    "outputs": [
-      {
-        "name": "medicalRecordId",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "principalPatientId",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      { "name": "patientId", "type": "uint256", "internalType": "uint256" },
-      { "name": "duration", "type": "uint256", "internalType": "uint256" },
-      { "name": "expiration", "type": "uint256", "internalType": "uint256" },
-      {
-        "name": "approvedDoctor",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "recordDetailsUri",
-        "type": "string",
-        "internalType": "string"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "patientFamilyMembers",
-    "inputs": [
-      { "name": "", "type": "uint256", "internalType": "uint256" },
-      { "name": "", "type": "uint256", "internalType": "uint256" }
-    ],
-    "outputs": [
-      { "name": "patientId", "type": "uint256", "internalType": "uint256" },
-      {
-        "name": "approvalCount",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "principalPatientId",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "familyMemberMedicalRecordCount",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "patientMedicalRecords",
-    "inputs": [
-      { "name": "", "type": "uint256", "internalType": "uint256" },
-      { "name": "", "type": "uint256", "internalType": "uint256" }
-    ],
-    "outputs": [
-      {
-        "name": "medicalRecordId",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      { "name": "patientId", "type": "uint256", "internalType": "uint256" },
-      { "name": "duration", "type": "uint256", "internalType": "uint256" },
-      { "name": "expiration", "type": "uint256", "internalType": "uint256" },
-      { "name": "patient", "type": "address", "internalType": "address" },
-      {
-        "name": "approvedDoctor",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "recordDetailsUri",
-        "type": "string",
-        "internalType": "string"
-      }
-    ],
     "stateMutability": "view"
   },
   {
@@ -799,8 +677,10 @@ export const abi = [
       },
       { "name": "_viewer", "type": "address", "internalType": "address" }
     ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
+    "outputs": [
+      { "name": "_recordDetails", "type": "string", "internalType": "string" }
+    ],
+    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -810,8 +690,10 @@ export const abi = [
       { "name": "_patientId", "type": "uint256", "internalType": "uint256" },
       { "name": "_viewer", "type": "address", "internalType": "address" }
     ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
+    "outputs": [
+      { "name": "_recordDetails", "type": "string", "internalType": "string" }
+    ],
+    "stateMutability": "view"
   },
   {
     "type": "function",
