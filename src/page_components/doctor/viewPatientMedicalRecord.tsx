@@ -1,4 +1,5 @@
 import { viewMedicalRecord } from "@/actions/contract/patient/patient.service.c";
+import { retrieveRecordFromIpfs } from "@/actions/shared/utils/upload.to.ipfs";
 import { AllOfHealthTable } from "@/components/allOfHealthTable/allOfHealth";
 import Button from "@/components/button/Button";
 import { Field } from "@/components/common/forms/Field";
@@ -136,17 +137,32 @@ const ViewPatientMedicalRecord = () => {
   };
 
   const medicalRecordAccess = async () => {
-    try {
-    } catch (error) {}
+    if (ipfsHash) {
+      try {
+        const patientMedicalRecord = await retrieveRecordFromIpfs(ipfsHash);
+        console.log(patientMedicalRecord);
+      } catch (error) {}
+    }
   };
 
-  console.log(ipfsHash);
+  console.log(
+    JSON.stringify(ipfsHash),
+    patientRecordData!.patientId,
+    address ?? "",
+    patientRecordData?.recordId ?? 0
+  );
 
   useEffect(() => {
-    if (patientRecordData && address) {
+    if (patientRecordData && address && !ipfsHash) {
       getIpfsHash();
     }
   }, []);
+
+  useEffect(() => {
+    if (ipfsHash) {
+      medicalRecordAccess();
+    }
+  }, [ipfsHash]);
 
   return (
     <div>

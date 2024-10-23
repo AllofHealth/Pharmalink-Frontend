@@ -106,6 +106,8 @@ const ShareRecordToDoctor = () => {
       ? familyMemberMedicalRecords?.records
       : medicalRecords?.medicalRecords;
 
+  console.log(patientData);
+
   const handleRequestEmptyRecord = async (approvalType: RecordApprovalType) => {
     if (familyMemberId === 0) {
       const contractResponse = await approveMedicalRecordAccess(approvalType, {
@@ -123,7 +125,7 @@ const ShareRecordToDoctor = () => {
             records: [],
             patientAddress: address,
             doctorAddress: doctor ? doctor.walletAddress : "",
-            approvalType: "FULL",
+            approvalType: "view & modify",
           });
         } catch (error) {
           console.error("Error requesting medical record approval", error);
@@ -138,7 +140,7 @@ const ShareRecordToDoctor = () => {
           records: [],
           patientAddress: address,
           doctorAddress: doctor ? doctor.walletAddress : "",
-          approvalType: "FULL",
+          approvalType: "view & modify",
         });
       } catch (error) {
         console.error("Error requesting medical record approval", error);

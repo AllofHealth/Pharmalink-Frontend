@@ -10,7 +10,7 @@ interface DoctorState {
 }
 
 const initialState: DoctorState = {
-  doctorCurrentTab: "CreatePrescription",
+  doctorCurrentTab: "Overview",
   currentDoctor: null,
   currentPatientRecord: null,
   doctorSignUpValues: null,

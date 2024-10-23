@@ -55,8 +55,8 @@ const SuccessfullyGrantedAccessToSpecificRecordsModal = ({
               </Modal.Title>
               <p className="lg:my-2 text-[10px] lg:text-base">
                 You have successfully given {doctor?.name} access to{" "}
-                {accessType === "FULL" ? "VIEW AND MODIFY" : "VIEW"} your
-                medical records
+                {accessType === "view & modify" ? "VIEW AND MODIFY" : "VIEW"}{" "}
+                your medical records
               </p>
             </div>
             <div className="flex items-center justify-center gap-2">

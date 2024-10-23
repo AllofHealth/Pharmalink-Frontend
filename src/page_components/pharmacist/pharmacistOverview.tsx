@@ -56,14 +56,14 @@ const PharmacistOverview = () => {
             <div className="py-4 pr-2 h-max lg:pt-10">
               <div className="flex items-center gap-4 mb-4 lg:mb-8">
                 <Icon name="Asset" />
-                <div>
+                {/* <div>
                   <span className="text-base font-medium lg:text-2xl text-white">
                     Total assets
                   </span>
                   <p className="text-2xl lg:text-[40px] font-bold text-white">
                     $ 87.743
                   </p>
-                </div>
+                </div> */}
               </div>
               <div className="grid grid-cols-2 xl:flex gap-2 lg:gap-4">
                 <article className="bg-white w-20 pt-2 rounded-[4px] border border-green-2 lg:w-max lg: min-w-[110px]">
