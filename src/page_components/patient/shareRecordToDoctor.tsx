@@ -24,13 +24,12 @@ import { toast } from "sonner";
 import { useAccount } from "wagmi";
 
 const ShareRecordToDoctor = () => {
-  const { address, isConnected } = useAccount();
+  const { address } = useAccount();
   const { axios } = useAxios({});
 
-  const { loading: loadingPatientData, patientData } = useGetPatientByAddress({
-    connected: isConnected,
-    address: address ? address : "",
-  });
+  const patientData = useSelector(
+    (state: RootState) => state.patient.currentPatientData
+  );
 
   const doctor = useSelector((state: RootState) => state.doctor.currentDoctor);
   const familyMemberId = useSelector(
@@ -116,7 +115,7 @@ const ShareRecordToDoctor = () => {
         recordId: 0,
         durationInSeconds: 36000,
       });
-      console.log(contractResponse);
+
       if (contractResponse) {
         try {
           await requestMedicalRecordApproval({

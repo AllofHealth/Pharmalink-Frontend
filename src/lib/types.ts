@@ -285,17 +285,26 @@ export type UpdatePatientValues = {
   name: string;
 };
 
+type PrescriptionMedicine = {
+  productPrescribed: string;
+  productCategory: string;
+  productDosage: string;
+  practitionerNote: string;
+  date: string; // ISO date string
+  isDispensed: boolean;
+  _id: string;
+  __v: number;
+};
+
 export interface Prescription {
-  doctorName: string;
   recordId: number;
-  patientAddress: string;
+  doctorName: string;
   doctorAddress: string;
-  medicineName: string;
-  medicineId: string;
-  medicineGroup: string;
-  description: string;
-  sideEffects: string;
-  date: string;
+  institutionName: string;
+  patientName: string;
+  patientAddress: string;
+  medicine: PrescriptionMedicine[];
+  date: string; // ISO date string
   _id: string;
   __v: number;
 }
@@ -431,11 +440,18 @@ export interface Medicine {
   __v: number;
 }
 
+export interface Product {
+  _id: string;
+  category: string;
+  description: string;
+  medications: Medicine[];
+}
+
 export interface Inventory {
   numberOfMedicine: number;
-  numberOfMedicineGroup: number;
+  numberOfCategory: number;
   numberOfMedicineSold: number;
-  medicines: Medicine[];
+  products: Product[];
   _id: string;
   __v: number;
 }
@@ -480,4 +496,37 @@ export interface Record {
   sugarLevel: string;
   haemoglobin: string;
   labImages: UploadImageInterface[];
+}
+
+interface GeneralReport {
+  bloodPressure: string;
+  haemoglobin: string;
+  heartBeat: string;
+  sugarLevel: string;
+}
+
+interface LabResults {
+  testName: string;
+  referenceRange: string;
+  units: string;
+  comments: string;
+}
+
+export interface PatientMedicalRecordFromChain {
+  content: string;
+  date: string;
+  diagnosis: string;
+  doctorsName: string;
+  generalReport: GeneralReport;
+  hospitalName: string;
+  labResults: LabResults;
+  recordImages: string[];
+}
+
+export interface NewMedicationFields {
+  name: string;
+  price: number;
+  quantity: number;
+  sideEffects: string;
+  category: string;
 }

@@ -18,9 +18,11 @@ import FamilyRegistrationForm from "@/page_components/patient/familyRegistration
 import PatientPrivacyAndSecurity from "@/page_components/patient/patientPrivacyAndSecurity";
 import MedicalRecord from "@/page_components/patient/medicalRecord";
 import ViewPatientMedicalRecord from "@/page_components/patient/viewPatientMedicalRecord";
+import { useRouter } from "next/navigation";
 
 export default function PAtient() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const patientCurrentTab = useSelector(
     (state: RootState) => state.patient.patientCurrentTab
   );
@@ -93,7 +95,10 @@ export default function PAtient() {
             Privacy and Security
           </Tabs.Trigger>
 
-          <span className="flex items-center gap-4 my-24">
+          <span
+            className="flex items-center gap-4 my-24"
+            onClick={() => router.push("/sign-in")}
+          >
             <LogOut />
             Log Out
           </span>

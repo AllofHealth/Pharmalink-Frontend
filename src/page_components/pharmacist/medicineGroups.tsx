@@ -20,7 +20,7 @@ import { BiLoaderAlt } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { useAccount } from "wagmi";
 
-const PharmacistListOfMedicines = () => {
+const PharmacistMedicineGroups = () => {
   const { address } = useAccount();
 
   const { loading, inventory, error } = useGetInventory({
@@ -30,15 +30,10 @@ const PharmacistListOfMedicines = () => {
   const dispatch = useDispatch();
 
   const handleViewMedicine = (medicine: Product, index: number) => {
-    dispatch(setPharmacistCurrentTab("Medicine Detail"));
+    dispatch(setPharmacistCurrentTab("Medicine Group Detail"));
     dispatch(setCurrentMedicine(medicine));
     dispatch(setCurrentMedicineIndex(index));
   };
-
-  const totalMedications = inventory?.inventory?.products.reduce(
-    (total, product) => total + product.medications.length,
-    0
-  );
 
   return (
     <div className="">
@@ -51,10 +46,11 @@ const PharmacistListOfMedicines = () => {
           <div className="flex gap-4 items-center justify-between">
             <div>
               <h1 className="font-bold lg:text-3xl mb-2">
-                Inventory &gt; List of Medicines ({totalMedications})
+                Inventory &gt; List of Medicine Groups (
+                {inventory?.inventory?.products.length})
               </h1>
               <p className="text-xs lg:text-xl text-gray-7 mb-2">
-                List of medicines available for sales.
+                List of medicine groups available for sales.
               </p>
             </div>
             {/* <Field id="approval" label="">
@@ -69,42 +65,37 @@ const PharmacistListOfMedicines = () => {
             <Button
               variant="primary"
               className="text-[8px] lg:text-sm max-h-11"
-              onClick={() => dispatch(setPharmacistCurrentTab("Medication"))}
+              onClick={() =>
+                dispatch(setPharmacistCurrentTab("AddMedicineGroup"))
+              }
             >
-              + Add New Item
+              + Add New Group
             </Button>
           </div>
 
           <AllOfHealthTable
-            labels={[
-              "Medicine Name",
-              "Medicine ID",
-              "Group Name",
-              "Stock in Qty",
-              "Action",
-            ]}
-            caption="Approve Institution Table"
+            labels={["Medicine Group", "Description", "No of Drugs", "Action"]}
+            caption="Medicine Groups Table"
             headClassName="bg-gray-5 rounded-t-md"
           >
-            {inventory?.inventory?.products?.map((product) =>
-              product.medications.map((medicine, index) => (
-                <tr
-                  className="h-16 text-blue4 font-medium"
-                  key={index}
-                  onClick={() => handleViewMedicine(product, index)}
-                >
-                  <td className="pl-2 lg:pl-7 text-xs lg:text-base">
-                    {medicine.name}
-                  </td>
-                  <td className="text-xs lg:text-base">{medicine._id}</td>
-                  <td className="text-xs lg:text-base">{product.category}</td>
-                  <td className="text-xs lg:text-base">{medicine.quantity}</td>
-                  <td className="text-xs lg:text-base">
-                    View Full Detail &gt;&gt;
-                  </td>
-                </tr>
-              ))
-            )}
+            {inventory?.inventory?.products?.map((product, index) => (
+              <tr
+                className="h-16 text-blue4 font-medium"
+                key={index}
+                onClick={() => handleViewMedicine(product, index)}
+              >
+                <td className="pl-2 lg:pl-7 text-xs lg:text-base">
+                  {product.category}
+                </td>
+                <td className="text-xs lg:text-base">{product.description}</td>
+                <td className="text-xs lg:text-base">
+                  {product.medications.length}
+                </td>
+                <td className="text-xs lg:text-base">
+                  View Full Detail &gt;&gt;
+                </td>
+              </tr>
+            ))}
           </AllOfHealthTable>
         </>
       ) : error ? (
@@ -114,4 +105,4 @@ const PharmacistListOfMedicines = () => {
   );
 };
 
-export default PharmacistListOfMedicines;
+export default PharmacistMedicineGroups;

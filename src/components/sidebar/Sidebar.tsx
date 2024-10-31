@@ -223,6 +223,17 @@ const Sidebar = ({ container }: { container: HTMLElement }) => {
               {pathname.includes("pharmacist") ? (
                 <span
                   className="flex items-center gap-4"
+                  onClick={() =>
+                    dispatch(setPharmacistCurrentTab("Medication"))
+                  }
+                >
+                  <Icon name="Prescription" />
+                  Medication
+                </span>
+              ) : null}
+              {pathname.includes("pharmacist") ? (
+                <span
+                  className="flex items-center gap-4"
                   onClick={() => dispatch(setPharmacistCurrentTab("Inventory"))}
                 >
                   <Icon name="FindDoctor" />

@@ -1,3 +1,5 @@
+import { viewMedicalRecord } from "@/actions/contract/patient/patient.service.c";
+import { retrieveRecordFromIpfs } from "@/actions/shared/utils/upload.to.ipfs";
 import { AllOfHealthTable } from "@/components/allOfHealthTable/allOfHealth";
 import Button from "@/components/button/Button";
 import { Field } from "@/components/common/forms/Field";
@@ -11,52 +13,55 @@ import {
 } from "@/lib/queries/patient";
 import { RootState } from "@/lib/redux/rootReducer";
 import { toggleSuccessfullyEditedMedicalRecordModal } from "@/lib/redux/slices/modals/modalSlice";
-import type { GetPatientMessage } from "@/lib/types";
+import type {
+  GetPatientMessage,
+  PatientMedicalRecordFromChain,
+} from "@/lib/types";
+import { formatDate } from "@/utils/formatDate";
+import { current } from "@reduxjs/toolkit";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import { useAccount } from "wagmi";
 
 const ViewPatientMedicalRecord = () => {
-  const labResult = [
-    {
-      testName: "Complete blood count",
-      date: "2024-01-09",
-      referenceRange: "4,000 - 11,000 cells/μL90%",
-      units: "cells/μL",
-      comments: "Within normal range",
-    },
-    {
-      testName: "Complete blood count",
-      date: "2024-01-09",
-      referenceRange: "4,000 - 11,000 cells/μL90%",
-      units: "cells/μL",
-      comments: "Within normal range",
-    },
-  ];
+  const { address } = useAccount();
+  const {
+    loading: loadingPatientData,
+    patientData,
+    error: errorPatientData,
+  } = useGetPatientByAddress({
+    address: address ? address : "",
+  });
 
-  const otherInformation = [
-    {
-      categories: "SOCIAL HISTORY",
-      details: "Non-, occasional alcohol-use",
-    },
-    {
-      categories: "KNOWN ALLERGIES",
-      details: "Lactose intolerant, ginger",
-    },
-    {
-      categories: "OCCUPATIONAL HISTORY",
-      details: "Office worker with no known occupational hazards",
-    },
-    {
-      categories: "PERSON/FAMILY STRESSORS",
-      details: "None",
-    },
-  ];
+  const currentPatientRecord = useSelector(
+    (state: RootState) => state.patient.currentRecord
+  );
+
+  const [ipfsHash, setIpfsHash] = useState("");
+
+  // const otherInformation = [
+  //   {
+  //     categories: "SOCIAL HISTORY",
+  //     details: "Non-, occasional alcohol-use",
+  //   },
+  //   {
+  //     categories: "KNOWN ALLERGIES",
+  //     details: "Lactose intolerant, ginger",
+  //   },
+  //   {
+  //     categories: "OCCUPATIONAL HISTORY",
+  //     details: "Office worker with no known occupational hazards",
+  //   },
+  //   {
+  //     categories: "PERSON/FAMILY STRESSORS",
+  //     details: "None",
+  //   },
+  // ];
 
   const { axios } = useAxios({});
-  const { address } = useAccount();
   const successfullyEditedMedicalRecordModalRef = useRef<HTMLDivElement | null>(
     null
   );
@@ -78,6 +83,47 @@ const ViewPatientMedicalRecord = () => {
     }
   }, [isSuccessfullyEditedMedicalRecordModalOpen]);
 
+  const getIpfsHash = async () => {
+    if (address && patientData) {
+      const ipfsHash = await viewMedicalRecord({
+        patientId: (patientData as GetPatientMessage)?.patient?.id,
+        viewerAddress: address ?? "",
+        recordId: currentPatientRecord,
+      });
+
+      setIpfsHash(ipfsHash.ipfs_hash);
+    }
+  };
+
+  const [patientMedicalRecord, setPatientMedicalRecord] =
+    useState<PatientMedicalRecordFromChain | null>(null);
+
+  const medicalRecordAccess = async () => {
+    if (ipfsHash) {
+      try {
+        const patientMedicalRecord = await retrieveRecordFromIpfs(ipfsHash);
+        setPatientMedicalRecord(patientMedicalRecord);
+      } catch (error) {
+        toast.error("Cannot fetch patient medical record");
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (address && !ipfsHash) {
+      getIpfsHash();
+    }
+  }, [patientData]);
+
+  useEffect(() => {
+    if (ipfsHash) {
+      medicalRecordAccess();
+    }
+  }, [ipfsHash]);
+
+  if (loadingPatientData || patientMedicalRecord === null)
+    return <BiLoaderAlt className="text-xl text-center mx-auto" />;
+
   return (
     <div>
       <h1 className="font-bold lg:text-3xl mb-6">Patient Medical Record</h1>
@@ -93,7 +139,7 @@ const ViewPatientMedicalRecord = () => {
             />
             <div>
               <h3 className="text-2xl lg:text-[32px] mb-4 font-semibold">
-                Aliu
+                {(patientData as GetPatientMessage)?.patient?.name}
               </h3>
               <div className="flex gap-2 itmes-center mb-2">
                 <span className="font-bold">Role: </span>
@@ -101,7 +147,9 @@ const ViewPatientMedicalRecord = () => {
               </div>
               <div className="flex gap-2 itmes-center mb-2">
                 <span className="font-bold">Email: </span>
-                <span className="font-normal">aliu@gmail.com</span>
+                <span className="font-normal">
+                  {(patientData as GetPatientMessage)?.patient?.email}
+                </span>
               </div>
               {/* <div className="flex gap-2 itmes-center mb-2">
           <span className="font-bold">Phone Number: </span>
@@ -110,12 +158,14 @@ const ViewPatientMedicalRecord = () => {
               <div className="flex gap-2 itmes-center mb-2">
                 <span className="font-bold">Address: </span>
                 <span className="font-normal">
-                  No 25 Kabiyesi street, ibadan
+                  {(patientData as GetPatientMessage)?.patient?.address}
                 </span>
               </div>
               <div className="flex gap-2 itmes-center mb-2">
                 <span className="font-bold">Age: </span>
-                <span className="font-normal">30</span>
+                <span className="font-normal">
+                  {(patientData as GetPatientMessage)?.patient?.age}
+                </span>
               </div>
               {/* <div className="flex gap-2 itmes-center mb-2">
           <span className="font-bold">Date of birth: </span>
@@ -123,11 +173,15 @@ const ViewPatientMedicalRecord = () => {
         </div> */}
               <div className="flex gap-2 itmes-center mb-2">
                 <span className="font-bold">Blood Group:</span>
-                <span className="font-normal">O+</span>
+                <span className="font-normal">
+                  {(patientData as GetPatientMessage)?.patient?.bloodGroup}
+                </span>
               </div>
               <div className="flex gap-2 itmes-center mb-2">
                 <span className="font-bold">Genotype: </span>
-                <span className="font-normal">AA</span>
+                <span className="font-normal">
+                  {(patientData as GetPatientMessage)?.patient?.genotype}
+                </span>
               </div>
             </div>
           </article>
@@ -138,19 +192,27 @@ const ViewPatientMedicalRecord = () => {
             </h3>
             <div className="flex flex-row gap-2 items-center mb-4">
               <span className="font-bold">Heartbeat: </span>
-              <span className="font-normal">89% </span>
+              <span className="font-normal">
+                {patientMedicalRecord?.generalReport.heartBeat}{" "}
+              </span>
             </div>
             <div className="flex flex-row gap-2 items-center mb-4">
               <span className="font-bold">Blood Pressure: </span>
-              <span className="font-normal">90% </span>
+              <span className="font-normal">
+                {patientMedicalRecord?.generalReport.bloodPressure}
+              </span>
             </div>
             <div className="flex flex-row gap-2 items-center mb-4">
-              <span className="font-bold">Sugar: </span>
-              <span className="font-normal">89% </span>
+              <span className="font-bold">Sugar Level: </span>
+              <span className="font-normal">
+                {patientMedicalRecord?.generalReport.sugarLevel}
+              </span>
             </div>
             <div className="flex flex-row gap-2 items-center mb-4">
               <span className="font-bold">Haemoglobin: </span>
-              <span className="font-normal">90% </span>
+              <span className="font-normal">
+                {patientMedicalRecord?.generalReport.haemoglobin}{" "}
+              </span>
             </div>
           </article>
         </div>
@@ -160,7 +222,7 @@ const ViewPatientMedicalRecord = () => {
             key={1}
             className="text-base lg:text-2xl px-6 py-4 rounded-2xl h-14 lg:h-20 bg-gradient-to-b from-teal-55 to-gray-55 block w-max mb-8"
           >
-            DIAGNOSIS: MALARIA
+            DIAGNOSIS: {patientMedicalRecord?.diagnosis}
           </span>
         </div>
 
@@ -169,7 +231,7 @@ const ViewPatientMedicalRecord = () => {
           <AllOfHealthTable
             labels={[
               "Test Name",
-              "Date",
+              "Test Date",
               "Reference Range",
               "Units",
               "Comments",
@@ -177,60 +239,50 @@ const ViewPatientMedicalRecord = () => {
             caption="Approve Institution Table"
             headClassName="bg-gray-5 rounded-t-md"
           >
-            {labResult.map((resultDetail, index) => (
-              <tr className="h-16 text-blue4 font-medium" key={index}>
-                <td className="pl-2 lg:pl-7 text-xs lg:text-base">
-                  {resultDetail.testName}
-                </td>
-                <td className=" text-xs lg:text-base">{resultDetail.date}</td>
-                <td className=" text-xs lg:text-base">
-                  {resultDetail.referenceRange}
-                </td>
-                <td className=" text-xs lg:text-base">{resultDetail.units}</td>
-                <td className=" text-xs lg:text-base">
-                  {resultDetail.comments}
-                </td>
-              </tr>
-            ))}
+            <tr className="h-16 text-blue4 font-medium">
+              <td className="pl-2 lg:pl-7 text-xs lg:text-base">
+                {patientMedicalRecord?.labResults.testName}
+              </td>
+              <td className="pl-2 lg:pl-7 text-xs lg:text-base">
+                {formatDate(patientMedicalRecord?.date ?? "")}
+              </td>
+              <td className=" text-xs lg:text-base">
+                {patientMedicalRecord?.labResults.referenceRange}
+              </td>
+              <td className=" text-xs lg:text-base">
+                {patientMedicalRecord?.labResults.units}
+              </td>
+              <td className=" text-xs lg:text-base">
+                {patientMedicalRecord?.labResults.comments}
+              </td>
+            </tr>
           </AllOfHealthTable>
         </div>
 
         <div className="my-8">
           <h4 className="text-base lg:text-2xl mb-4">IMAGES</h4>
           <div className="flex items-center gap-4">
-            <div className="flex flex-col gap-4">
-              <Image
-                src="/assets/images/lab_result_img.jpg"
-                alt="Lab Image"
-                width={376}
-                height={414}
-                className="rounded-[10px]"
-              />
-              <p className="text-xs lg:text-base">POST OP X-RAYS</p>
-            </div>
-            <div className="flex flex-col gap-4">
-              <Image
-                src="/assets/images/lab_result_img.jpg"
-                alt="Lab Image"
-                width={376}
-                height={414}
-                className="rounded-[10px]"
-              />
-              <p className="text-xs lg:text-base">POST OP X-RAYS</p>
-            </div>
-            <div className="flex flex-col gap-4">
-              <Image
-                src="/assets/images/lab_result_img.jpg"
-                alt="Lab Image"
-                width={376}
-                height={414}
-                className="rounded-[10px]"
-              />
-              <p className="text-xs lg:text-base">POST OP X-RAYS</p>
-            </div>
+            {patientMedicalRecord?.recordImages ? (
+              <p className="font-bold uppercase text-2xl">No images</p>
+            ) : (
+              patientMedicalRecord?.recordImages.map((image) => {
+                return (
+                  <div className="flex flex-col gap-4" key={image}>
+                    <Image
+                      src="/assets/images/lab_result_img.jpg"
+                      alt="Lab Image"
+                      width={376}
+                      height={414}
+                      className="rounded-[10px]"
+                    />
+                    <p className="text-xs lg:text-base">Test image</p>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
-        <div>
+        {/* <div>
           <h4 className="text-base lg:text-2xl mb-4">OTHER INFORMATION</h4>
           <AllOfHealthTable
             labels={["Categories", "Details"]}
@@ -246,7 +298,7 @@ const ViewPatientMedicalRecord = () => {
               </tr>
             ))}
           </AllOfHealthTable>
-        </div>
+        </div> */}
       </>
       {/* <div className="flex flex-col sm:flex-row justify-between items-center mt-12">
         <div className="grid gap-2">

@@ -20,20 +20,17 @@ const PharmacistOverview = () => {
   });
 
   const {
-    loading: loadingMedicines,
-    medicines,
-    error: errorMedicines,
-  } = useGetAllMedicines({
-    walletAddress: address ? address : "",
-  });
-
-  const {
     loading: loadingInventory,
     inventory,
     error: errorInventory,
   } = useGetInventory({
     walletAddress: address ? address : "",
   });
+
+  const totalMedications = inventory?.inventory?.products.reduce(
+    (total, product) => total + product.medications.length,
+    0
+  );
 
   return (
     <section>
@@ -81,18 +78,18 @@ const PharmacistOverview = () => {
                     View Detailed Report &gt;&gt;
                   </span>
                 </article>
-                {loadingMedicines ? (
+                {loadingInventory ? (
                   <div className="flex justify-center items-center mt-10">
                     <BiLoaderAlt className="text-2xl text center animate-spin" />
                   </div>
-                ) : medicines ? (
+                ) : inventory ? (
                   <article className="bg-white w-20 pt-2 rounded-[4px] border border-blue10 lg:w-max lg: min-w-[110px]">
                     <Icon
                       name="BlueFirstAidBox"
                       className="flex justify-center w-full my-1"
                     />
                     <h3 className="text-[12px] lg:text-base font-semibold text-center">
-                      {medicines.medicines?.length}
+                      {totalMedications ?? 0}
                     </h3>
                     <p className="text-[8px] lg:text-xs font-medium text-center mb-1 px-2">
                       Medicine Available
@@ -101,7 +98,7 @@ const PharmacistOverview = () => {
                       View Inventory &gt;&gt;
                     </span>
                   </article>
-                ) : errorMedicines ? (
+                ) : errorInventory ? (
                   <p>Error fetching medicines...</p>
                 ) : null}
                 {/* <article className="bg-white w-20 pt-2 rounded-[4px] border border-yellow-1 lg:w-max lg: min-w-[110px]">
@@ -157,7 +154,7 @@ const PharmacistOverview = () => {
                 <div className="flex justify-between items-center px-6 py-4">
                   <span>
                     <h3 className="text-xl font-bold">
-                      {inventory.inventory?.numberOfMedicine}
+                      {inventory?.inventory?.numberOfMedicine ?? 0}
                     </h3>
                     <p className="text-sm font-medium">
                       Total number of medicine
@@ -165,7 +162,7 @@ const PharmacistOverview = () => {
                   </span>
                   <span>
                     <h3 className="text-xl font-bold">
-                      {inventory.inventory?.numberOfMedicineGroup}
+                      {inventory?.inventory?.products.length ?? 0}
                     </h3>
                     <p className="text-sm font-medium">Medicine Group</p>
                   </span>
@@ -178,9 +175,9 @@ const PharmacistOverview = () => {
                 <div className="flex justify-between items-center px-6 py-4">
                   <span>
                     <h3 className="text-xl font-bold">
-                      {inventory.inventory?.numberOfMedicineSold}
+                      {inventory?.inventory?.numberOfMedicineSold ?? 0}
                     </h3>
-                    <p className="text-sm font-medium">Qty of Med. Sold</p>
+                    <p className="text-sm font-medium">Qty of Med sold</p>
                   </span>
                 </div>
               </article>

@@ -4,11 +4,18 @@ import { Field } from "@/components/common/forms/Field";
 import { Input } from "@/components/common/forms/Input";
 import useAxios from "@/lib/hooks/useAxios";
 import { updateMedicineDetails } from "@/lib/mutations/pharmacist";
+import { useGetAllMedicinesCategory } from "@/lib/queries/medicine";
 import type { RootState } from "@/lib/redux/rootReducer";
 import { setPharmacistCurrentTab } from "@/lib/redux/slices/pharmacist/pharmacistSlice";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import type { SingleValue } from "react-select";
 import { useAccount } from "wagmi";
+
+type OptionType = {
+  value: string;
+  label: string;
+};
 
 const PharmacistEditMedicine = () => {
   const dispatch = useDispatch();
@@ -18,15 +25,18 @@ const PharmacistEditMedicine = () => {
   const medicine = useSelector(
     (state: RootState) => state.pharmacist.currentMedicine
   );
+  const medicineIndex = useSelector(
+    (state: RootState) => state.pharmacist.currentMedicineIndex
+  );
   console.log(medicine);
 
   const [editMedicine, setEditMedicine] = useState({
-    name: medicine?.name ?? "",
-    price: medicine?.price ?? 0,
-    medicineGroup: medicine?.medicineGroup ?? "",
-    quantity: medicine?.quantity ?? 0,
+    name: medicine?.medications[medicineIndex].name ?? "",
+    price: medicine?.medications[medicineIndex].price ?? 0,
+    medicineGroup: medicine?.category ?? "",
+    quantity: medicine?.medications[medicineIndex].quantity ?? 0,
     description: medicine?.description ?? "",
-    sideEffects: medicine?.sideEffects ?? "",
+    sideEffects: medicine?.medications[medicineIndex].sideEffects ?? "",
   });
 
   const handleTextChange = (
@@ -40,12 +50,20 @@ const PharmacistEditMedicine = () => {
     });
   };
 
+  const { medicinesCategory, loading } = useGetAllMedicinesCategory();
+  const medicinesCategoryOptions: OptionType[] =
+    medicinesCategory?.map((medicineCategory: string) => ({
+      value: medicineCategory,
+      label: medicineCategory,
+    })) ?? [];
+
   return (
     <div>
       <div className="flex gap-4 items-center justify-between">
         <div>
           <h1 className="font-bold lg:text-2xl mb-2">
-            Inventory &gt; List of Medicines &gt; {medicine?.name}
+            Inventory &gt; List of Medicines &gt;{" "}
+            {medicine?.medications[medicineIndex].name}
           </h1>
           {/* <p className="text-xs lg:text-xl text-gray-7 mb-2">
             List of medicines available for sales.
@@ -93,13 +111,25 @@ const PharmacistEditMedicine = () => {
         </div>
         <div className="grid gap-4 lg:flex lg:gap-8">
           <Field label="Medicine Group">
-            <Input
-              id="medicineGroup"
-              name="medicineGroup"
-              type="text"
-              className="bg-blue7 h-10 resize-none rounded-md mb-4 max-w-[705px]"
-              value={editMedicine.medicineGroup}
-              onChange={handleTextChange}
+            <Select
+              options={medicinesCategoryOptions}
+              placeholder="Select product category"
+              value={{
+                label: editMedicine.medicineGroup,
+                value: editMedicine.medicineGroup,
+              }}
+              onChange={(
+                selectedOption: SingleValue<{
+                  label: string;
+                  value: string;
+                }>
+              ) =>
+                setEditMedicine({
+                  ...editMedicine,
+                  medicineGroup: selectedOption?.value ?? "",
+                })
+              }
+              className="bg-blue7 h-10 rounded-md mb-4 max-w-[705px]"
             />
           </Field>
           <Field label="Quantity in Number">
@@ -137,7 +167,8 @@ const PharmacistEditMedicine = () => {
               axios,
               editMedicineValues: editMedicine,
               address,
-              medicineId: medicine?._id ?? "",
+              medicineId: medicine?.medications[medicineIndex]._id ?? "",
+              productId: medicine?._id ?? "",
             })
           }
         >

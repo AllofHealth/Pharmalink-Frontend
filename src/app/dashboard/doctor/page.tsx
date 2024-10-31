@@ -13,9 +13,11 @@ import DoctorWallet from "@/page_components/doctor/doctorWallet";
 import DoctorPrivacyAndSecurity from "@/page_components/doctor/doctorPrivacyAndSecurity";
 import EditPatientMedicalRecord from "@/page_components/doctor/editPatientMedicalRecord";
 import CreatePrescription from "@/page_components/doctor/createPrescription";
+import { useRouter } from "next/navigation";
 
 export default function Doctor() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const doctorCurrentTab = useSelector(
     (state: RootState) => state.doctor.doctorCurrentTab
   );
@@ -62,7 +64,10 @@ export default function Doctor() {
             Privacy and Security
           </Tabs.Trigger>
 
-          <span className="flex items-center gap-4 mt-60">
+          <span
+            className="flex items-center gap-4 mt-60"
+            onClick={() => router.push("/sign-in")}
+          >
             <LogOut />
             Log Out
           </span>

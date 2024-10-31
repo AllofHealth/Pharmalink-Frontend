@@ -1,4 +1,8 @@
-import type { CreatePatientValues, Prescription } from "@/lib/types";
+import type {
+  CreatePatientValues,
+  GetPatientMessage,
+  Prescription,
+} from "@/lib/types";
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface PatientState {
@@ -7,6 +11,8 @@ interface PatientState {
   approvalType: string;
   approveRequestFamilyMemberMedicalRecord: number;
   patientSignupValues: CreatePatientValues | null;
+  currentPatientData: GetPatientMessage | null;
+  currentRecord: number;
 }
 
 const initialState: PatientState = {
@@ -15,6 +21,8 @@ const initialState: PatientState = {
   approvalType: "",
   approveRequestFamilyMemberMedicalRecord: 0,
   patientSignupValues: null,
+  currentPatientData: null,
+  currentRecord: 0,
 };
 
 const Patient = createSlice({
@@ -40,6 +48,12 @@ const Patient = createSlice({
     setPatientSignupValues(state, action: PayloadAction<CreatePatientValues>) {
       state.patientSignupValues = action.payload;
     },
+    setCurrentPatientData(state, action: PayloadAction<GetPatientMessage>) {
+      state.currentPatientData = action.payload;
+    },
+    setCurrentRecord(state, action: PayloadAction<number>) {
+      state.currentRecord = action.payload;
+    },
   },
 });
 
@@ -49,5 +63,7 @@ export const {
   setApprovalType,
   setApproveRequestFamilyMemberMedicalRecord,
   setPatientSignupValues,
+  setCurrentPatientData,
+  setCurrentRecord,
 } = Patient.actions;
 export default Patient.reducer;

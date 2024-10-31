@@ -14,9 +14,15 @@ import PharmacistInventoryMedicineDetail from "@/page_components/pharmacist/phar
 import PharmacistEditMedicine from "@/page_components/pharmacist/phramacistEditMedicine";
 import PharmacistWallet from "@/page_components/pharmacist/pharmacistWallet";
 import PharmacistPrivacyAndSecurity from "@/page_components/pharmacist/pharmacistPrivacyandSecurity";
+import AddNewMedication from "@/page_components/pharmacist/AddNewMedication";
+import PharmacistMedicineGroups from "@/page_components/pharmacist/medicineGroups";
+import PharmacistMedicineGroupDetail from "@/page_components/pharmacist/medicineGroupDetail";
+import AddMedicationGroup from "@/page_components/pharmacist/AddMedicationGroup";
+import { useRouter } from "next/navigation";
 
 export default function Pharmacist() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const pharmacistCurrentTab = useSelector(
     (state: RootState) => state.pharmacist.pharmacistCurrentTab
   );
@@ -47,6 +53,14 @@ export default function Pharmacist() {
             Prescription
           </Tabs.Trigger>
           <Tabs.Trigger
+            value="Medication"
+            className="flex items-center gap-4"
+            onClick={() => dispatch(setPharmacistCurrentTab("Medication"))}
+          >
+            <Icon name="Prescription" />
+            Medication
+          </Tabs.Trigger>
+          <Tabs.Trigger
             value="Inventory"
             className="flex items-center gap-4"
             onClick={() => dispatch(setPharmacistCurrentTab("Inventory"))}
@@ -71,7 +85,10 @@ export default function Pharmacist() {
             Privacy and Security
           </Tabs.Trigger>
 
-          <span className="flex items-center gap-4 my-24">
+          <span
+            className="flex items-center gap-4 my-24"
+            onClick={() => router.push("/sign-in")}
+          >
             <LogOut />
             Log Out
           </span>
@@ -94,8 +111,20 @@ export default function Pharmacist() {
         <Tabs.Content value="Medicine Detail" className="flex-1">
           <PharmacistInventoryMedicineDetail />
         </Tabs.Content>
+        <Tabs.Content value="Medication" className="flex-1">
+          <AddNewMedication />
+        </Tabs.Content>
         <Tabs.Content value="Edit Medicine" className="flex-1">
           <PharmacistEditMedicine />
+        </Tabs.Content>
+        <Tabs.Content value="MedicineGroups" className="flex-1">
+          <PharmacistMedicineGroups />
+        </Tabs.Content>
+        <Tabs.Content value="Medicine Group Detail" className="flex-1">
+          <PharmacistMedicineGroupDetail />
+        </Tabs.Content>
+        <Tabs.Content value="AddMedicineGroup" className="flex-1">
+          <AddMedicationGroup />
         </Tabs.Content>
         {/* <Tabs.Content value="Wallet" className="flex-1">
           <PharmacistWallet />

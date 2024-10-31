@@ -2,13 +2,17 @@ import { Icon } from "@/components/icon/Icon";
 import { useGetPatientByAddress } from "@/lib/queries/auth";
 import { useGetAllDoctors } from "@/lib/queries/doctor";
 import { useGetAllPatientPresciptions } from "@/lib/queries/patient";
+import { setCurrentPatientData } from "@/lib/redux/slices/patient/patientSlice";
 import type { GetPatientMessage } from "@/lib/types";
 import Image from "next/image";
+import { useEffect } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
+import { useDispatch } from "react-redux";
 import { useAccount } from "wagmi";
 
 const PatientOverview = () => {
   const { isConnected, address } = useAccount();
+  const dispatch = useDispatch();
 
   const { doctors, loading } = useGetAllDoctors();
   const { loading: loadingPatientData, patientData } = useGetPatientByAddress({
@@ -19,6 +23,11 @@ const PatientOverview = () => {
   const { patientPrescriptions } = useGetAllPatientPresciptions({
     walletAddress: address ? address : "",
   });
+
+  useEffect(() => {
+    dispatch(setCurrentPatientData(patientData as GetPatientMessage));
+  }, [patientData, dispatch]);
+
   return (
     <>
       {loadingPatientData ? (

@@ -20,7 +20,7 @@ import type {
 } from "@/lib/types";
 import {} from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAccount } from "wagmi";

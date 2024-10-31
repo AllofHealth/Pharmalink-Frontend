@@ -30,7 +30,7 @@ const PrescriptionList = () => {
         <BiLoaderAlt className="text-xl text-center mx-auto" />
       ) : patientPrescriptions ? (
         <AllOfHealthTable
-          labels={["Date", "Doctor", "Medicine"]}
+          labels={["Date", "Doctor", "Patient"]}
           caption="Approve Institution Table"
           headClassName="bg-gray-5 rounded-t-md"
         >
@@ -48,7 +48,7 @@ const PrescriptionList = () => {
                   {prescription.doctorName}
                 </td>
                 <td className=" text-xs lg:text-base">
-                  {prescription.medicineGroup}
+                  {prescription.patientName}
                 </td>
               </tr>
             );

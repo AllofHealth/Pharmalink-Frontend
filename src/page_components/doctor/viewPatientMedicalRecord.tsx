@@ -13,11 +13,16 @@ import {
 } from "@/lib/queries/patient";
 import { RootState } from "@/lib/redux/rootReducer";
 import { toggleSuccessfullyEditedMedicalRecordModal } from "@/lib/redux/slices/modals/modalSlice";
-import type { GetPatientMessage } from "@/lib/types";
+import type {
+  GetPatientMessage,
+  PatientMedicalRecordFromChain,
+} from "@/lib/types";
+import { formatDate } from "@/utils/formatDate";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import { useAccount } from "wagmi";
 
 const ViewPatientMedicalRecord = () => {
@@ -132,25 +137,23 @@ const ViewPatientMedicalRecord = () => {
         recordId: patientRecordData?.recordId ?? 0,
       });
 
-      setIpfsHash(ipfsHash.recordDetailsUri);
+      setIpfsHash(ipfsHash.ipfs_hash);
     }
   };
+
+  const [patientMedicalRecord, setPatientMedicalRecord] =
+    useState<PatientMedicalRecordFromChain | null>(null);
 
   const medicalRecordAccess = async () => {
     if (ipfsHash) {
       try {
         const patientMedicalRecord = await retrieveRecordFromIpfs(ipfsHash);
-        console.log(patientMedicalRecord);
-      } catch (error) {}
+        setPatientMedicalRecord(patientMedicalRecord);
+      } catch (error) {
+        toast.error("Cannot fetch patient medical record");
+      }
     }
   };
-
-  console.log(
-    JSON.stringify(ipfsHash),
-    patientRecordData!.patientId,
-    address ?? "",
-    patientRecordData?.recordId ?? 0
-  );
 
   useEffect(() => {
     if (patientRecordData && address && !ipfsHash) {
@@ -298,19 +301,35 @@ const ViewPatientMedicalRecord = () => {
             <p>Error fetching data...</p>
           ) : null}
         </>
-        {/* <article className="flex flex-col gap-4 px-4 py-6 items-center bg-white shadow-md rounded-3xl mb-8 flex-1 h-max max-w-[430px]">
+        <article className="flex flex-col gap-4 px-4 py-6 items-center bg-white shadow-md rounded-3xl mb-8 flex-1 h-max max-w-[430px]">
           <h3 className="text-xl lg:text-2xl mb-4 font-semibold">
             General Report
           </h3>
           <div className="flex flex-col gap-2 items-center mb-4">
-            <span className="font-bold">Blood Group: </span>
-            <span className="font-normal">89% </span>
+            <span className="font-bold">Blood Pressure: </span>
+            <span className="font-normal">
+              {patientMedicalRecord?.generalReport.bloodPressure}{" "}
+            </span>
           </div>
           <div className="flex flex-col gap-2 items-center mb-4">
-            <span className="font-bold">Genotype: </span>
-            <span className="font-normal">90% </span>
+            <span className="font-bold">Haemoglobin: </span>
+            <span className="font-normal">
+              {patientMedicalRecord?.generalReport.haemoglobin}{" "}
+            </span>
           </div>
-        </article> */}
+          <div className="flex flex-col gap-2 items-center mb-4">
+            <span className="font-bold">Heart Beat: </span>
+            <span className="font-normal">
+              {patientMedicalRecord?.generalReport.heartBeat}{" "}
+            </span>
+          </div>
+          <div className="flex flex-col gap-2 items-center mb-4">
+            <span className="font-bold">Sugar Level: </span>
+            <span className="font-normal">
+              {patientMedicalRecord?.generalReport.sugarLevel}{" "}
+            </span>
+          </div>
+        </article>
       </div>
       {loading ? (
         <div className="flex justify-center items-center mt-10">
@@ -347,64 +366,62 @@ const ViewPatientMedicalRecord = () => {
         <p>Error fetching data...</p>
       ) : null}
 
-      {/* <div>
+      <div>
         <h4 className="text-base lg:text-2xl mb-4">LAB RESULT</h4>
         <AllOfHealthTable
-          labels={["Test Name", "Date", "Reference Range", "Units", "Comments"]}
+          labels={[
+            "Test Name",
+            "Test Date",
+            "Reference Range",
+            "Units",
+            "Comments",
+          ]}
           caption="Approve Institution Table"
           headClassName="bg-gray-5 rounded-t-md"
         >
-          {labResult.map((resultDetail, index) => (
-            <tr className="h-16 text-blue4 font-medium" key={index}>
-              <td className="pl-2 lg:pl-7 text-xs lg:text-base">
-                {resultDetail.testName}
-              </td>
-              <td className=" text-xs lg:text-base">{resultDetail.date}</td>
-              <td className=" text-xs lg:text-base">
-                {resultDetail.referenceRange}
-              </td>
-              <td className=" text-xs lg:text-base">{resultDetail.units}</td>
-              <td className=" text-xs lg:text-base">{resultDetail.comments}</td>
-            </tr>
-          ))}
+          <tr className="h-16 text-blue4 font-medium">
+            <td className="pl-2 lg:pl-7 text-xs lg:text-base">
+              {patientMedicalRecord?.labResults.testName}
+            </td>
+            <td className="pl-2 lg:pl-7 text-xs lg:text-base">
+              {formatDate(patientMedicalRecord?.date ?? "")}
+            </td>
+            <td className=" text-xs lg:text-base">
+              {patientMedicalRecord?.labResults.referenceRange}
+            </td>
+            <td className=" text-xs lg:text-base">
+              {patientMedicalRecord?.labResults.units}
+            </td>
+            <td className=" text-xs lg:text-base">
+              {patientMedicalRecord?.labResults.comments}
+            </td>
+          </tr>
         </AllOfHealthTable>
-      </div> */}
+      </div>
 
-      {/* <div className="my-8">
+      <div className="my-8">
         <h4 className="text-base lg:text-2xl mb-4">IMAGES</h4>
         <div className="flex items-center gap-4">
-          <div className="flex flex-col gap-4">
-            <Image
-              src="/assets/images/lab_result_img.jpg"
-              alt="Lab Image"
-              width={376}
-              height={414}
-              className="rounded-[10px]"
-            />
-            <p className="text-xs lg:text-base">POST OP X-RAYS</p>
-          </div>
-          <div className="flex flex-col gap-4">
-            <Image
-              src="/assets/images/lab_result_img.jpg"
-              alt="Lab Image"
-              width={376}
-              height={414}
-              className="rounded-[10px]"
-            />
-            <p className="text-xs lg:text-base">POST OP X-RAYS</p>
-          </div>
-          <div className="flex flex-col gap-4">
-            <Image
-              src="/assets/images/lab_result_img.jpg"
-              alt="Lab Image"
-              width={376}
-              height={414}
-              className="rounded-[10px]"
-            />
-            <p className="text-xs lg:text-base">POST OP X-RAYS</p>
-          </div>
+          {patientMedicalRecord?.recordImages ? (
+            <p className="font-bold uppercase text-2xl">No images</p>
+          ) : (
+            patientMedicalRecord?.recordImages.map((image) => {
+              return (
+                <div className="flex flex-col gap-4" key={image}>
+                  <Image
+                    src="/assets/images/lab_result_img.jpg"
+                    alt="Lab Image"
+                    width={376}
+                    height={414}
+                    className="rounded-[10px]"
+                  />
+                  <p className="text-xs lg:text-base">Test image</p>
+                </div>
+              );
+            })
+          )}
         </div>
-      </div> */}
+      </div>
       {/* <div>
         <h4 className="text-base lg:text-2xl mb-4">OTHER INFORMATION</h4>
         <AllOfHealthTable
@@ -422,7 +439,7 @@ const ViewPatientMedicalRecord = () => {
           ))}
         </AllOfHealthTable>
       </div> */}
-      <div>
+      {/* <div>
         <h4 className="text-base lg:text-2xl mb-4 font-semibold">
           ADD TO PATIENT RECORD
         </h4>
@@ -433,8 +450,8 @@ const ViewPatientMedicalRecord = () => {
             value={medicalRecord.diagnosis}
             onChange={handleInputFormChange}
           />
-        </Field>
-        {/* <Field label="MEDICATION">
+        </Field> */}
+      {/* <Field label="MEDICATION">
           <textarea
             name="medication"
             className="bg-blue7 h-24 resize-none rounded-md mb-4 max-w-[705px]"
@@ -450,7 +467,7 @@ const ViewPatientMedicalRecord = () => {
             onChange={handleInputFormChange}
           />
         </Field> */}
-        <Button
+      {/* <Button
           variant="secondary"
           className="mx-auto"
           onClick={() =>
@@ -467,8 +484,8 @@ const ViewPatientMedicalRecord = () => {
         >
           {" "}
           Save details
-        </Button>
-      </div>
+        </Button> */}
+      {/* </div> */}
       <div ref={successfullyEditedMedicalRecordModalRef}>
         <SuccessfullyEditedMedicalRecordModal
           container={successfullyEditedMedicalRecordModalContainer!}
