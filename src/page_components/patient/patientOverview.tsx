@@ -40,7 +40,7 @@ const PatientOverview = () => {
               {(patientData as GetPatientMessage).patient?.name ?? ""}
             </span>
             <p className="text-xs lg:text-base text-gray-7 my-2">
-              Have a nice day at work today!.
+              Your health journey is our priority.
             </p>
           </div>
           <div className="bg-gradient-to-r from-[#00758A] via-[#47CDD4] to-[#017489] flex justify-between rounded-2xl pl-4 mb-4 lg:pl-20">

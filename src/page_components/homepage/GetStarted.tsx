@@ -7,12 +7,12 @@ const GetStarted = () => {
       <h3 className="gradient-text font-bold text-4xl lg:text-6xl text-center">
         Get started with AllOf Health
       </h3>
-      <p className="text-[18px] lg:text-4xl text-center my-4 max-w-[80vw] mx-auto">
+      {/* <p className="text-[18px] lg:text-4xl text-center my-4 max-w-[80vw] mx-auto">
         At AllOf Health, we believe that true wellness is a holistic journey
         that encompasses mind, body, and spirit. Our mission is to empower you
         with the tools, resources, and support you need to live a healthier,
         happier life.
-      </p>
+      </p> */}
       <Link href={"/sign-in"}>
         <Button
           variant="homepage"
