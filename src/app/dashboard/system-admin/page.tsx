@@ -75,7 +75,7 @@ export default function SystemAdmin() {
             Log Out
           </span>
         </Tabs.List>
-        <Tabs.Content value="ApproveInstitution" className="flex-1">
+        <Tabs.Content value="ApproveInstitution" className="flex-1 w-full">
           <ApproveInstitution />
         </Tabs.Content>
         <Tabs.Content value="DesignateRoles" className="flex-1">
@@ -84,7 +84,7 @@ export default function SystemAdmin() {
         <Tabs.Content value="Practitioners" className="flex-1">
           <Practitioners />
         </Tabs.Content>
-        <Tabs.Content value="Approved Institutions" className="flex-1">
+        <Tabs.Content value="Approved Institutions" className="flex-1 w-full">
           <ApprovedInstitutions />
         </Tabs.Content>
       </Tabs.Root>

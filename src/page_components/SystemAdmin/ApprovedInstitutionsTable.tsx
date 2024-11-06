@@ -15,7 +15,7 @@ const ApprovedInstitutions = () => {
   };
 
   return (
-    <div className="">
+    <div className="w-full">
       <h1 className="font-bold lg:text-3xl mb-6">Approved Institutions</h1>
       <AllOfHealthTable
         labels={[
@@ -36,9 +36,7 @@ const ApprovedInstitutions = () => {
                 <td className="pl-2 lg:pl-7 text-xs lg:text-base">
                   {institution.name}
                 </td>
-                <td className=" text-xs lg:text-base">
-                  {trimText(institution.regNo)}
-                </td>
+                <td className=" text-xs lg:text-base">{institution.regNo}</td>
                 <td className=" text-xs lg:text-base">
                   {trimText(institution.admin)}
                 </td>

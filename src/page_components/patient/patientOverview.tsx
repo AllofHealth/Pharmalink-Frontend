@@ -117,10 +117,10 @@ const PatientOverview = () => {
                         <p className="text-xs text-gray-8 font-semibold">
                           {doctor.specialty}
                         </p>
-                        <span className="flex items-center gap-4 p-1 text-[#407CE2]">
+                        {/* <span className="flex items-center gap-4 p-1 text-[#407CE2]">
                           <Icon name="StarBlue" />
                           4.7
-                        </span>
+                        </span> */}
                       </div>
                     </article>
                   ))}

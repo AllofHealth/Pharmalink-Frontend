@@ -58,14 +58,14 @@ const ApproveInstitution = () => {
     isAccessDeniedModalOpen,
   ]);
 
-  const trimText = (text: string, maxLength: number = 10): string => {
+  const trimText = (text: string, maxLength: number = 15): string => {
     return text?.toString().length > maxLength
       ? `${text.slice(0, maxLength)}...`
       : text;
   };
 
   return (
-    <div className="">
+    <div className="w-full">
       <h1 className="font-bold lg:text-3xl mb-6">Approve Institution</h1>
       <AllOfHealthTable
         labels={[
@@ -83,16 +83,14 @@ const ApproveInstitution = () => {
           <>
             {institutions?.hospitals.map((institution, index) => (
               <tr
-                className="h-16 text-blue4 font-medium"
+                className="h-16 text-blue4 font-medium max-w-full"
                 key={institution.id}
                 onClick={() => handleToggleActionNeeded(institution)}
               >
                 <td className="pl-2 lg:pl-7 text-xs lg:text-base">
                   {institution.name}
                 </td>
-                <td className=" text-xs lg:text-base">
-                  {trimText(institution.regNo)}
-                </td>
+                <td className=" text-xs lg:text-base">{institution.regNo}</td>
                 <td className=" text-xs lg:text-base">
                   {trimText(institution.admin)}
                 </td>
