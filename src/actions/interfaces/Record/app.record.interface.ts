@@ -5,7 +5,7 @@ export interface RecordInterface {
   hospitalName: string
   labResults: LabResultInterface
   generalReport: GeneralReportInterface
-  images?: UploadImageInterface[]
+  images?: File[]
   date: Date
 }
 
