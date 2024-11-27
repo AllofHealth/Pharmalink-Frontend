@@ -41,19 +41,21 @@ export default function SignInInstitution() {
         </div>
       ) : practitionerInstitutions ? (
         <div>
-          {practitionerInstitutions.hospital?.map((practitionerInstitution) => {
-            return (
-              <p
-                key={practitionerInstitution.id}
-                className="text-center uppercase mt-10 font-bold text-xl border border-gray-1 p-8 w-max mx-auto cursor-pointer"
-                onClick={() =>
-                  handleSignIntoInstitution(practitionerInstitution)
-                }
-              >
-                {practitionerInstitution.name}
-              </p>
-            );
-          })}
+          {practitionerInstitutions.hospitals?.map(
+            (practitionerInstitution) => {
+              return (
+                <p
+                  key={practitionerInstitution.id}
+                  className="text-center uppercase mt-10 font-bold text-xl border border-gray-1 p-8 w-max mx-auto cursor-pointer"
+                  onClick={() =>
+                    handleSignIntoInstitution(practitionerInstitution)
+                  }
+                >
+                  {practitionerInstitution.name}
+                </p>
+              );
+            }
+          )}
         </div>
       ) : error ? (
         <p>Error fetching practitioner Institutions...</p>

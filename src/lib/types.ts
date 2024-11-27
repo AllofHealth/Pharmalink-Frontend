@@ -29,6 +29,11 @@ export interface Patient {
   __v: number;
 }
 
+export interface PatientApiResponse {
+  status: number;
+  patients: Patient[];
+}
+
 export interface GetPatientMessage {
   success: number;
   patient: Patient;
@@ -195,6 +200,7 @@ export type Institution = {
 export type InstitutionApiResponse = {
   success: number;
   hospital: Institution[];
+  hospitals: Institution[];
 };
 
 export interface Practitioner {

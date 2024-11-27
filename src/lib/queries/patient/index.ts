@@ -6,6 +6,7 @@ import {
   type PatientPrescriptionsApiResponse,
   type FamilyMemberDetailResponse,
   type Patient,
+  type PatientApiResponse,
 } from "@/lib/types";
 import { useEffect, useState } from "react";
 
@@ -48,7 +49,7 @@ export const useGetAllPatientFamilyMembers = ({
 };
 
 export const useGetAllPatients = () => {
-  const [patients, setPatients] = useState<Patient[] | null>(null);
+  const [patients, setPatients] = useState<PatientApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const { axios } = useAxios({
     baseURL: process.env.NEXT_PUBLIC_URL_BACKEND,

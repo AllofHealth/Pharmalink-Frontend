@@ -124,7 +124,7 @@ const Practitioners = () => {
           </>
         ) : activeTab === "Patients" && patients ? (
           <>
-            {patients.map((patient, index) => (
+            {patients.patients.map((patient, index) => (
               <tr className="h-16 text-blue4 font-medium" key={patient.id}>
                 <td className="pl-2 lg:pl-7 text-xs lg:text-base">
                   {patient.name}
