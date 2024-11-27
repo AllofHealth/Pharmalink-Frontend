@@ -102,6 +102,7 @@ const ViewPatientMedicalRecord = () => {
     if (ipfsHash) {
       try {
         const patientMedicalRecord = await retrieveRecordFromIpfs(ipfsHash);
+        console.log(patientMedicalRecord);
         setPatientMedicalRecord(patientMedicalRecord);
       } catch (error) {
         toast.error("Cannot fetch patient medical record");

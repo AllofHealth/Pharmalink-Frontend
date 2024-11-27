@@ -81,7 +81,7 @@ const ApproveInstitution = () => {
           <BiLoaderAlt className="text-xl text-center animate-spin h-20" />
         ) : institutions ? (
           <>
-            {institutions?.hospitals.map((institution, index) => (
+            {institutions?.hospital.map((institution, index) => (
               <tr
                 className="h-16 text-blue4 font-medium max-w-full"
                 key={institution.id}

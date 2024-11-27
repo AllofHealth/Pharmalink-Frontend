@@ -92,7 +92,7 @@ const Practitioners = () => {
           <BiLoaderAlt className="text-xl text-center animate-spin h-20" />
         ) : activeTab === "Institutions" && institutions ? (
           <>
-            {institutions?.hospitals.map((institution, index) => (
+            {institutions?.hospital.map((institution, index) => (
               <tr className="h-16 text-blue4 font-medium" key={institution.id}>
                 <td className="pl-2 lg:pl-7 text-xs lg:text-base">
                   {institution.name}

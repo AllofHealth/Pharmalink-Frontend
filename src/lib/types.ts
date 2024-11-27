@@ -194,7 +194,7 @@ export type Institution = {
 
 export type InstitutionApiResponse = {
   success: number;
-  hospitals: Institution[];
+  hospital: Institution[];
 };
 
 export interface Practitioner {
