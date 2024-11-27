@@ -30,7 +30,7 @@ export default function DoctorSignUpForm() {
   const dispatch = useDispatch();
 
   const InstitutionType: InstitutionType[] =
-    institutions?.hospitals.map((institution: Institution) => ({
+    institutions?.hospitals?.map((institution: Institution) => ({
       value: institution.id,
       label: institution.name,
     })) ?? [];
