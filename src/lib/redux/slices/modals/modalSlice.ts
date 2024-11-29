@@ -19,6 +19,7 @@ interface ModalState {
   isSuccessfullyGrantedAccessToSpecificRecordsModalOpen: boolean;
   isDashboardSidebarOpen: boolean;
   isApproveRecordRequestModalOpen: boolean;
+  isOtpSuccessModalOpen: boolean;
 }
 
 const initialState: ModalState = {
@@ -40,6 +41,7 @@ const initialState: ModalState = {
   isSuccessfullyGrantedAccessToSpecificRecordsModalOpen: false,
   isDashboardSidebarOpen: false,
   isApproveRecordRequestModalOpen: false,
+  isOtpSuccessModalOpen: false,
 };
 
 const modalSlice = createSlice({
@@ -111,6 +113,9 @@ const modalSlice = createSlice({
       state.isApproveRecordRequestModalOpen =
         !state.isApproveRecordRequestModalOpen;
     },
+    toggleOtpSuccessModal(state) {
+      state.isOtpSuccessModalOpen = !state.isOtpSuccessModalOpen;
+    },
   },
 });
 
@@ -133,5 +138,6 @@ export const {
   toggleSuccessfullyGrantedAccessToSpecificRecordsModal,
   toggleDashboardSidebarOpen,
   toggleApproveRecordRequest,
+  toggleOtpSuccessModal,
 } = modalSlice.actions;
 export default modalSlice.reducer;

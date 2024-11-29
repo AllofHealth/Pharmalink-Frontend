@@ -43,14 +43,14 @@ const DoctorOverview = () => {
             <div className="py-4 pr-2 h-max lg:pt-10">
               <div className="flex items-center gap-4 mb-4 lg:mb-8">
                 <Icon name="Asset" />
-                <div>
+                {/* <div>
                   <span className="text-base font-medium lg:text-2xl text-white">
                     Total assets
                   </span>
                   <p className="text-2xl lg:text-[40px] font-bold text-white">
                     $ 87.743
                   </p>
-                </div>
+                </div> */}
               </div>
               <div className="lg:flex lg:gap-4 ">
                 <div className="bg-blue5 px-4 py-2 lg:py-4 rounded-2xl mb-4 lg:mb-0">
@@ -87,7 +87,7 @@ const DoctorOverview = () => {
             <div className="flex justify-center items-center mt-10">
               <BiLoaderAlt className="text-2xl text center animate-spin" />
             </div>
-          ) : doctorApprovalList ? (
+          ) : (doctorData as GetDoctorMessage)?.doctor.status === "approved" ? (
             <div>
               <span className="flex justify-between mb-6">
                 <h3 className="text-[18px] lg:text-xl font-bold">
@@ -121,6 +121,25 @@ const DoctorOverview = () => {
                   </div>
                 );
               })}
+            </div>
+          ) : (doctorData as GetDoctorMessage)?.doctor.status !== "approved" ? (
+            <div className="lg:flex justify-between items-center max-w-[80%] mx-auto">
+              <div className="max-w-[513px]">
+                <p className="text-base lg:text-3xl font-semibold text-blue2">
+                  Doctor Not Yet Verified
+                </p>
+                <p className="text-sm lg:text-xl font-normal text-[#1E1E1E]">
+                  This doctor is currently not verified and cannot perform any
+                  doctor roles. Kindly wait to be verified by an
+                  institution/hospital.
+                </p>
+              </div>
+              <Image
+                src={"/assets/images/no-data-found.png"}
+                alt="No data for institutions"
+                width={396}
+                height={344}
+              />
             </div>
           ) : error ? (
             <p>Error fetching approval List...</p>

@@ -4,13 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { type RootState } from "@/lib/redux/rootReducer";
 import { toggleInstitutionSuccessfullyAddedModal } from "@/lib/redux/slices/modals/modalSlice";
 import Image from "next/image";
+import type { InstitutionPractitioner } from "@/lib/types";
 
 const InstitutionSuccessfullyAddedModal = ({
   container,
   title,
+  currentPractitioner,
 }: {
   container: HTMLElement;
   title: string;
+  currentPractitioner: InstitutionPractitioner;
 }) => {
   const dispatch = useDispatch();
 
@@ -44,8 +47,8 @@ const InstitutionSuccessfullyAddedModal = ({
                 {title}
               </Modal.Title>
               <p className="lg:my-2 text-[10px] lg:text-base">
-                Pharm Nicci Tolani has been added to your institution and he
-                will be notified shortly
+                {currentPractitioner?.name} has been added to your institution
+                and he will be notified shortly
               </p>
             </div>
             <div className="flex items-center justify-center gap-2">

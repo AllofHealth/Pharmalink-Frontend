@@ -1,6 +1,6 @@
 'use client';
 
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, useEffect, useState} from 'react';
 import {
     retrieveRecordFromIpfs,
     uploadRecordImageToIpfs,
@@ -14,7 +14,7 @@ import Image from "next/image";
 const Page = () => {
     const [file, setFile] = useState<File | null>(null);
     const [imageCid, setImageCid] = useState<string | null>(null);
-    const [imageUrl, setImageUrl] = useState<string | null>('https://ipfs.io/ipfs/QmWF58aQjdW2Zhz67SH1ntEJaPZNoxyExq6frsf7tvo26Q')
+    const [imageUrl, setImageUrl] = useState<string | null>('https://ipfs.io/ipfs/QmUYma78kXDBRc9Rx2rdMxdge6Zr9kaTHJXEd7bUK9j2w4')
 
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +64,6 @@ const Page = () => {
             haemoglobin: '80gh',
         },
         date: new Date(Date.now()),
-        images: [file as File]
     };
 
     const uploadRecord = async () => {
@@ -79,7 +78,6 @@ const Page = () => {
         console.log(record.doctorsName, record.content);
     };
 
-
     const getRecordForContract = async () => {
         const hash = await viewMedicalRecord({
             recordId: 1,
@@ -89,6 +87,7 @@ const Page = () => {
 
         console.log(hash);
     };
+
 
 
     return (
@@ -116,7 +115,7 @@ const Page = () => {
                 </div>
                 <button
                     className="border border-black rounded-[12px] bg-black px-3 shadow-md w-[fit-content] text-white"
-                    onClick={uploadRecord}
+                    onClick={getRecordForContract}
                 >
                     Upload Record
                 </button>

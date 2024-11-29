@@ -8,6 +8,7 @@ import { useAccount } from "wagmi";
 import useAxios from "@/lib/hooks/useAxios";
 import { createSystemAdmin as addAdmin } from "@/actions/contract/admin/admin.service.c";
 import { createSystemAdmin } from "@/lib/mutations/auth";
+import { useDispatch } from "react-redux";
 
 export interface ISignIn {
   email: string;
@@ -23,6 +24,7 @@ export default function SystemAdminSignUpForm() {
   const { address } = useAccount();
   const [systemAdminId, setSystemAdminId] = useState(0);
   const { axios } = useAxios({});
+  const dispatch = useDispatch();
 
   console.log(values);
 
@@ -35,18 +37,17 @@ export default function SystemAdminSignUpForm() {
 
   const handleAdminSignUp = async () => {
     setIsLoading(true);
-    await createAdminId();
+    // await createAdminId();
+    createSystemAdmin({
+      systemAdminValues: values,
+      axios,
+      router,
+      address,
+    });
   };
 
   useEffect(() => {
     if (systemAdminId > 0) {
-      createSystemAdmin({
-        systemAdminId,
-        systemAdminValues: values,
-        axios,
-        router,
-        address,
-      });
     }
     console.log(systemAdminId);
   }, [systemAdminId]);

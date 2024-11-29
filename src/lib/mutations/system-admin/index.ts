@@ -12,7 +12,7 @@ export const approveInstitution = async ({
   address,
   dispatch,
 }: {
-  institutionId: number;
+  institutionId: string;
   axios: AxiosInstance;
   address: string | undefined;
   dispatch: Dispatch<UnknownAction>;
@@ -21,15 +21,8 @@ export const approveInstitution = async ({
     const response = await axios.post(
       `/api/admin/approveHospital?hospitalId=${institutionId}&adminAddress=${address}`
     );
-
-    if (response.data == (200 || 201)) {
-      toast.success("Approve Institution successfully");
-      dispatch(toggleSuccessfullyAddedModal());
-      console.log(response);
-    } else {
-      toast.error(response.data.message ?? "Failed to approve institution");
-      console.error(response);
-    }
+    toast.success(response.data.message);
+    dispatch(toggleSuccessfullyAddedModal());
   } catch (err: any) {
     if (err) {
       toast.error("Failed to approve institution: " + err.message);

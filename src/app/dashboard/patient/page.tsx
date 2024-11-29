@@ -16,9 +16,13 @@ import PatientWallet from "@/page_components/patient/patientWallet";
 import FamilyRegistration from "@/page_components/patient/familyRegistration";
 import FamilyRegistrationForm from "@/page_components/patient/familyRegistrationForm";
 import PatientPrivacyAndSecurity from "@/page_components/patient/patientPrivacyAndSecurity";
+import MedicalRecord from "@/page_components/patient/medicalRecord";
+import ViewPatientMedicalRecord from "@/page_components/patient/viewPatientMedicalRecord";
+import { useRouter } from "next/navigation";
 
 export default function PAtient() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const patientCurrentTab = useSelector(
     (state: RootState) => state.patient.patientCurrentTab
   );
@@ -75,6 +79,14 @@ export default function PAtient() {
             Family Registration
           </Tabs.Trigger>
           <Tabs.Trigger
+            value="MedicalRecord"
+            className="flex items-center gap-4"
+            onClick={() => dispatch(setPatientCurrentTab("MedicalRecord"))}
+          >
+            <Icon name="Privacy" />
+            Medical Record
+          </Tabs.Trigger>
+          <Tabs.Trigger
             value="Privacy"
             className="flex items-center gap-4"
             onClick={() => dispatch(setPatientCurrentTab("Privacy"))}
@@ -83,7 +95,10 @@ export default function PAtient() {
             Privacy and Security
           </Tabs.Trigger>
 
-          <span className="flex items-center gap-4 my-24">
+          <span
+            className="flex items-center gap-4 my-24"
+            onClick={() => router.push("/sign-in")}
+          >
             <LogOut />
             Log Out
           </span>
@@ -117,6 +132,12 @@ export default function PAtient() {
         </Tabs.Content>
         <Tabs.Content value="Family Registration Form" className="flex-1">
           <FamilyRegistrationForm />
+        </Tabs.Content>
+        <Tabs.Content value="MedicalRecord" className="flex-1">
+          <MedicalRecord />
+        </Tabs.Content>
+        <Tabs.Content value="ViewPatientMedicalRecord" className="flex-1">
+          <ViewPatientMedicalRecord />
         </Tabs.Content>
         <Tabs.Content value="Privacy" className="flex-1">
           <PatientPrivacyAndSecurity />

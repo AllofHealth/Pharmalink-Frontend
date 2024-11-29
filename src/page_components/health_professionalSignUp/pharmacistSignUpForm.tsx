@@ -10,6 +10,7 @@ import { useGetInstitutions } from "@/lib/queries/institutions";
 import { BiLoaderAlt } from "react-icons/bi";
 import { addPharmacist } from "@/actions/contract/pharmacist/pharmacist.service.c";
 import { createPharmacist } from "@/lib/mutations/auth";
+import { useDispatch } from "react-redux";
 
 type InstitutionType = {
   value: number;
@@ -26,9 +27,10 @@ export default function PharmacistSignUpForm() {
   const [pharmacistId, setPharmacistId] = useState(0);
   const { axios } = useAxios({});
   const { loading, institutions, error } = useGetInstitutions();
+  const dispatch = useDispatch();
 
   const InstitutionType: InstitutionType[] =
-    institutions?.hospitals.map((institution: Institution) => ({
+    institutions?.hospital.map((institution: Institution) => ({
       value: institution.id,
       label: institution.name,
     })) ?? [];
@@ -54,6 +56,7 @@ export default function PharmacistSignUpForm() {
         axios,
         router,
         address,
+        dispatch,
       });
     }
     console.log(pharmacistId);

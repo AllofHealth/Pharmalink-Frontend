@@ -11,6 +11,7 @@ import type { Institution } from "@/lib/types";
 import { useAccount } from "wagmi";
 import { approveInstitution } from "@/lib/mutations/system-admin";
 import useAxios from "@/lib/hooks/useAxios";
+import { approveHospital } from "@/actions/contract/admin/admin.service.c";
 
 const ApproveInstitutionModal = ({
   container,
@@ -35,6 +36,21 @@ const ApproveInstitutionModal = ({
 
   const handleAccessDenied = () => {
     dispatch(toggleAccessDeniedModal());
+  };
+
+  const handleApproveInstitution = async () => {
+    const contractApproveInstitution = await approveHospital(institution.id);
+
+    console.log(contractApproveInstitution);
+
+    if (contractApproveInstitution.success) {
+      approveInstitution({
+        institutionId: institution._id,
+        axios,
+        address,
+        dispatch,
+      });
+    }
   };
 
   return (
@@ -67,14 +83,7 @@ const ApproveInstitutionModal = ({
               </Modal.Close>
               <Modal.Close
                 className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
-                onClick={() =>
-                  approveInstitution({
-                    institutionId: institution.id,
-                    axios,
-                    address,
-                    dispatch,
-                  })
-                }
+                onClick={() => handleApproveInstitution()}
               >
                 Approve
               </Modal.Close>

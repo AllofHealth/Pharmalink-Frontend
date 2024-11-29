@@ -10,6 +10,7 @@ import { createDoctor } from "@/lib/mutations/auth";
 import { useGetInstitutions } from "@/lib/queries/institutions";
 import { addDoctor } from "@/actions/contract/doctor/doctor.service.c";
 import { BiLoaderAlt } from "react-icons/bi";
+import { useDispatch } from "react-redux";
 
 type InstitutionType = {
   value: number;
@@ -26,9 +27,10 @@ export default function DoctorSignUpForm() {
   const [doctorId, setDoctorId] = useState(0);
   const { axios } = useAxios({});
   const { loading, institutions, error } = useGetInstitutions();
+  const dispatch = useDispatch();
 
   const InstitutionType: InstitutionType[] =
-    institutions?.hospitals.map((institution: Institution) => ({
+    institutions?.hospital.map((institution: Institution) => ({
       value: institution.id,
       label: institution.name,
     })) ?? [];
@@ -54,6 +56,7 @@ export default function DoctorSignUpForm() {
         axios,
         router,
         address,
+        dispatch,
       });
     }
     console.log(doctorId);
@@ -159,7 +162,7 @@ export default function DoctorSignUpForm() {
         name="location"
         label={
           <span className="text-[18px] font-normal text-text-black2">
-            Location
+            Physical Address
           </span>
         }
         rules={[{ required: true }]}
@@ -168,7 +171,7 @@ export default function DoctorSignUpForm() {
           type="text"
           name="location"
           className="border p-3 rounded-xl h-14"
-          placeholder="Enter your Location"
+          placeholder="Enter your physical address"
         />
       </Form.Item>
 

@@ -19,8 +19,7 @@ export default function SystemAdminSignUp() {
             Create an account
           </h2>
           <p className="text-base font-normal text-center max-w-[460px] mb-8">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
-            lobortis maximus
+            FIll in your details
           </p>
           <SystemAdminSignUpForm />
         </div>

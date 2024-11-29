@@ -21,7 +21,7 @@ const PharmacistInventory = () => {
     <div>
       <div className="flex justify-between items-center max-w-[908px] mb-8">
         <h1 className="font-bold lg:text-3xl">Inventory</h1>
-        <Field id="approval" label="">
+        {/* <Field id="approval" label="">
           <Input
             id="approval"
             type="search"
@@ -32,7 +32,7 @@ const PharmacistInventory = () => {
         </Field>
         <Button variant="primary" className="text-[8px] lg:text-sm">
           + Add New Item
-        </Button>
+        </Button> */}
       </div>
       {loading ? (
         <div className="flex justify-center items-center mt-10">
@@ -48,8 +48,8 @@ const PharmacistInventory = () => {
               height={31}
             />
             <h3 className="text-xl lg:text-base font-semibold text-center mb-2">
-              {inventory.inventory?.numberOfMedicine -
-                inventory.inventory.numberOfMedicineSold}
+              {inventory?.inventory?.numberOfMedicine -
+                inventory?.inventory?.numberOfMedicineSold ?? 0}
             </h3>
             <p className="text-sm lg:text-xs font-medium text-center mb-1">
               Medicine Available
@@ -63,7 +63,10 @@ const PharmacistInventory = () => {
               View Inventory &gt;&gt;
             </span>
           </article>
-          <article className="bg-white pt-2 rounded-[4px] border border-green-2 lg:w-max relative min-w-[212px] min-h-[152px]">
+          <article
+            className="bg-white pt-2 rounded-[4px] border border-green-2 lg:w-max relative min-w-[212px] min-h-[152px]"
+            onClick={() => dispatch(setPharmacistCurrentTab("MedicineGroups"))}
+          >
             <Icon
               name="GreenCross"
               className="flex justify-center w-full mt-1 mb-2"
@@ -71,7 +74,7 @@ const PharmacistInventory = () => {
               height={31}
             />
             <h3 className="text-xl lg:text-base font-semibold text-center mb-2">
-              {inventory.inventory.numberOfMedicineGroup}
+              {inventory?.inventory?.numberOfCategory}
             </h3>
             <p className="text-sm lg:text-xs font-medium text-center mb-1">
               Medicine Groups

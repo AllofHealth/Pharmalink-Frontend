@@ -1,3 +1,5 @@
+import type { UploadImageInterface } from "@/actions/interfaces/Record/app.record.interface";
+
 export interface AllofHealthTableProps {
   children: React.ReactNode;
   labels: string[];
@@ -8,7 +10,7 @@ export interface AllofHealthTableProps {
   className?: string;
 }
 
-interface Patient {
+export interface Patient {
   _id: string;
   id: number;
   appointmentCount: number;
@@ -25,6 +27,11 @@ interface Patient {
   medicalRecords: [];
   familyMembers: [];
   __v: number;
+}
+
+export interface PatientApiResponse {
+  status: number;
+  patients: Patient[];
 }
 
 export interface GetPatientMessage {
@@ -134,6 +141,7 @@ export interface CreatePatientValues {
   address: string;
   city: string;
   walletAddress: string;
+  phoneNo: string;
   bloodGroup: string;
   genotype: string;
 }
@@ -166,6 +174,8 @@ export interface CreateInstitutionValues {
   phoneNo: string;
   location: string;
   description: string;
+  regNo: string;
+  type: string;
 }
 
 export type Institution = {
@@ -180,6 +190,7 @@ export type Institution = {
   profilePicture: string;
   description: string;
   status: string;
+  isVerified: boolean;
   category: string;
   doctors: any[];
   pharmacists: any[];
@@ -188,6 +199,7 @@ export type Institution = {
 
 export type InstitutionApiResponse = {
   success: number;
+  hospital: Institution[];
   hospitals: Institution[];
 };
 
@@ -279,17 +291,26 @@ export type UpdatePatientValues = {
   name: string;
 };
 
+type PrescriptionMedicine = {
+  productPrescribed: string;
+  productCategory: string;
+  productDosage: string;
+  practitionerNote: string;
+  date: string; // ISO date string
+  isDispensed: boolean;
+  _id: string;
+  __v: number;
+};
+
 export interface Prescription {
-  doctorName: string;
   recordId: number;
-  patientAddress: string;
+  doctorName: string;
   doctorAddress: string;
-  medicineName: string;
-  medicineId: string;
-  medicineGroup: string;
-  description: string;
-  sideEffects: string;
-  date: string;
+  institutionName: string;
+  patientName: string;
+  patientAddress: string;
+  medicine: PrescriptionMedicine[];
+  date: string; // ISO date string
   _id: string;
   __v: number;
 }
@@ -367,6 +388,7 @@ export interface InstitutionPractitioner {
   status: string;
   category: string;
   _id: string;
+  id: number;
 }
 
 export interface InstitutionPractitionersApiResponse {
@@ -424,11 +446,18 @@ export interface Medicine {
   __v: number;
 }
 
+export interface Product {
+  _id: string;
+  category: string;
+  description: string;
+  medications: Medicine[];
+}
+
 export interface Inventory {
   numberOfMedicine: number;
-  numberOfMedicineGroup: number;
+  numberOfCategory: number;
   numberOfMedicineSold: number;
-  medicines: Medicine[];
+  products: Product[];
   _id: string;
   __v: number;
 }
@@ -455,3 +484,55 @@ export type EditMedicineValues = {
 export type updatePharmacistValues = {
   name: string;
 };
+
+export interface VerificationDocuments {
+  identificationCard: string;
+  medicalLicense: string;
+}
+
+export interface Record {
+  diagnosis: string;
+  description: string;
+  testname: string;
+  referenceRange: string;
+  units: string;
+  comments: string;
+  heartbeat: string;
+  bloodPressure: string;
+  sugarLevel: string;
+  haemoglobin: string;
+  labImages: UploadImageInterface[];
+}
+
+interface GeneralReport {
+  bloodPressure: string;
+  haemoglobin: string;
+  heartBeat: string;
+  sugarLevel: string;
+}
+
+interface LabResults {
+  testName: string;
+  referenceRange: string;
+  units: string;
+  comments: string;
+}
+
+export interface PatientMedicalRecordFromChain {
+  content: string;
+  date: string;
+  diagnosis: string;
+  doctorsName: string;
+  generalReport: GeneralReport;
+  hospitalName: string;
+  labResults: LabResults;
+  recordImages: string[];
+}
+
+export interface NewMedicationFields {
+  name: string;
+  price: number;
+  quantity: number;
+  sideEffects: string;
+  category: string;
+}

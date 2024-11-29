@@ -9,6 +9,7 @@ import { createPatient } from "@/lib/mutations/auth";
 import useAxios from "@/lib/hooks/useAxios";
 import type { CreatePatientValues } from "@/lib/types";
 import { addPatient } from "@/actions/contract/patient/patient.service.c";
+import { useDispatch } from "react-redux";
 
 export default function PatientSignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +20,7 @@ export default function PatientSignUpForm() {
   const { address } = useAccount();
   const [patientId, setPatientId] = useState(0);
   const { axios } = useAxios({});
+  const dispatch = useDispatch();
 
   const createPatientId = async () => {
     const result = await addPatient();
@@ -40,6 +42,7 @@ export default function PatientSignUpForm() {
         axios,
         router,
         address,
+        dispatch,
       });
     }
     console.log(patientId);
@@ -135,6 +138,24 @@ export default function PatientSignUpForm() {
 
       <Form.Item
         className="mb-8"
+        name="phoneNo"
+        label={
+          <span className="text-[18px] font-normal text-text-black2">
+            Phone Number
+          </span>
+        }
+        rules={[{ required: true }]}
+      >
+        <Input
+          type="text"
+          name="phoneNo"
+          className="border p-3 rounded-xl h-14"
+          placeholder="E.g - +2348123456789"
+        />
+      </Form.Item>
+
+      <Form.Item
+        className="mb-8"
         name="city"
         label={
           <span className="text-[18px] font-normal text-text-black2">City</span>
@@ -163,7 +184,7 @@ export default function PatientSignUpForm() {
           type="text"
           name="bloodGroup"
           className="border p-3 rounded-xl h-14"
-          placeholder="Provide your Blood Group"
+          placeholder="Enter your Blood Group"
         />
       </Form.Item>
 
@@ -178,10 +199,10 @@ export default function PatientSignUpForm() {
         rules={[{ required: true }]}
       >
         <Input
-          type="text"
-          name="genotype"
+          type="genotype"
+          name="city"
           className="border p-3 rounded-xl h-14"
-          placeholder="Provide your Genotype"
+          placeholder="Enter your Genotype"
         />
       </Form.Item>
 

@@ -15,44 +15,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useAccount } from "wagmi";
 
 const PatientMedicalRecord = () => {
-  const records = [
-    {
-      date: "12/09/2021",
-      diagnosis: "Malaria",
-      doctor: "Dr. John Doe",
-      institution: "YongiDuu Hospital",
-      action: "View",
-    },
-    {
-      date: "12/09/2021",
-      diagnosis: "Malaria",
-      doctor: "Dr. John Doe",
-      institution: "YongiDuu Hospital",
-      action: "View",
-    },
-    {
-      date: "12/09/2021",
-      diagnosis: "Malaria",
-      doctor: "Dr. John Doe",
-      institution: "YongiDuu Hospital",
-      action: "View",
-    },
-    {
-      date: "12/09/2021",
-      diagnosis: "Malaria",
-      doctor: "Dr. John Doe",
-      institution: "YongiDuu Hospital",
-      action: "View",
-    },
-    {
-      date: "12/09/2021",
-      diagnosis: "Malaria",
-      doctor: "Dr. John Doe",
-      institution: "YongiDuu Hospital",
-      action: "View",
-    },
-  ];
-
   // const { address, isConnected } = useAccount();
   const patientRecordData = useSelector(
     (state: RootState) => state.doctor.currentPatientRecord
@@ -152,7 +114,7 @@ const PatientMedicalRecord = () => {
             <Button
               variant="primary"
               onClick={() =>
-                dispatch(setDoctorCurrentTab("patientMedicalRecordDetails"))
+                dispatch(setDoctorCurrentTab("EditPatientMedicalRecord"))
               }
             >
               Add to Record
@@ -235,7 +197,13 @@ const PatientMedicalRecord = () => {
           headClassName="bg-gray-5 rounded-t-md"
         >
           {medicalRecords?.medicalRecords?.map((record) => (
-            <tr className="h-16 text-blue4 font-medium" key={record._id}>
+            <tr
+              className="h-16 text-blue4 font-medium"
+              key={record._id}
+              onClick={() =>
+                dispatch(setDoctorCurrentTab("patientMedicalRecordDetails"))
+              }
+            >
               <td className="pl-2 lg:pl-7 text-xs lg:text-base">
                 {formatDate(record.date)}
               </td>

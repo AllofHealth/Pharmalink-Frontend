@@ -11,9 +11,13 @@ import PatientMedicalRecord from "@/page_components/doctor/patientMedicalRecord"
 import ViewPatientMedicalRecord from "@/page_components/doctor/viewPatientMedicalRecord";
 import DoctorWallet from "@/page_components/doctor/doctorWallet";
 import DoctorPrivacyAndSecurity from "@/page_components/doctor/doctorPrivacyAndSecurity";
+import EditPatientMedicalRecord from "@/page_components/doctor/editPatientMedicalRecord";
+import CreatePrescription from "@/page_components/doctor/createPrescription";
+import { useRouter } from "next/navigation";
 
 export default function Doctor() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const doctorCurrentTab = useSelector(
     (state: RootState) => state.doctor.doctorCurrentTab
   );
@@ -60,7 +64,10 @@ export default function Doctor() {
             Privacy and Security
           </Tabs.Trigger>
 
-          <span className="flex items-center gap-4 mt-60">
+          <span
+            className="flex items-center gap-4 mt-60"
+            onClick={() => router.push("/sign-in")}
+          >
             <LogOut />
             Log Out
           </span>
@@ -74,8 +81,14 @@ export default function Doctor() {
         <Tabs.Content value="Patient Medical Record" className="flex-1">
           <PatientMedicalRecord />
         </Tabs.Content>
+        <Tabs.Content value="EditPatientMedicalRecord" className="flex-1">
+          <EditPatientMedicalRecord />
+        </Tabs.Content>
         <Tabs.Content value="patientMedicalRecordDetails" className="flex-1">
           <ViewPatientMedicalRecord />
+        </Tabs.Content>
+        <Tabs.Content value="CreatePrescription" className="flex-1">
+          <CreatePrescription />
         </Tabs.Content>
         {/* <Tabs.Content value="Wallet" className="flex-1">
           <DoctorWallet />

@@ -30,7 +30,7 @@ const FamilyRegistration = () => {
       <div className="grid gap-4 lg:grid-cols-2">
         {loading ? (
           <BiLoaderAlt className="text-2xl text-center mx-auto" />
-        ) : familyMembers ? (
+        ) : familyMembers?.members.length !== 0 ? (
           <>
             {familyMembers?.members?.map((familyMember) => {
               return (
@@ -97,6 +97,10 @@ const FamilyRegistration = () => {
               );
             })}
           </>
+        ) : familyMembers?.members.length === 0 ? (
+          <div className="mt-12">
+            <p className="text-center font-bold text-3xl">No members found</p>
+          </div>
         ) : error ? (
           <p>Error fetching family members data...</p>
         ) : null}

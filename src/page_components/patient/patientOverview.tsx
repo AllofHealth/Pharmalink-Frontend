@@ -2,13 +2,17 @@ import { Icon } from "@/components/icon/Icon";
 import { useGetPatientByAddress } from "@/lib/queries/auth";
 import { useGetAllDoctors } from "@/lib/queries/doctor";
 import { useGetAllPatientPresciptions } from "@/lib/queries/patient";
+import { setCurrentPatientData } from "@/lib/redux/slices/patient/patientSlice";
 import type { GetPatientMessage } from "@/lib/types";
 import Image from "next/image";
+import { useEffect } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
+import { useDispatch } from "react-redux";
 import { useAccount } from "wagmi";
 
 const PatientOverview = () => {
   const { isConnected, address } = useAccount();
+  const dispatch = useDispatch();
 
   const { doctors, loading } = useGetAllDoctors();
   const { loading: loadingPatientData, patientData } = useGetPatientByAddress({
@@ -19,6 +23,11 @@ const PatientOverview = () => {
   const { patientPrescriptions } = useGetAllPatientPresciptions({
     walletAddress: address ? address : "",
   });
+
+  useEffect(() => {
+    dispatch(setCurrentPatientData(patientData as GetPatientMessage));
+  }, [patientData, dispatch]);
+
   return (
     <>
       {loadingPatientData ? (
@@ -27,24 +36,25 @@ const PatientOverview = () => {
         <section>
           <div className="my-4">
             <span className="text-base font-bold lg:text-3xl lg:font-extrabold">
-              Welcome, Mr. {(patientData as GetPatientMessage).patient.name}
+              Welcome, Mr.{" "}
+              {(patientData as GetPatientMessage).patient?.name ?? ""}
             </span>
             <p className="text-xs lg:text-base text-gray-7 my-2">
-              Have a nice day at work today!.
+              Your health journey is our priority.
             </p>
           </div>
           <div className="bg-gradient-to-r from-[#00758A] via-[#47CDD4] to-[#017489] flex justify-between rounded-2xl pl-4 mb-4 lg:pl-20">
             <div className="py-4 pr-2 h-max lg:pt-10">
               <div className="flex items-center gap-4 mb-4 lg:mb-8">
-                <Icon name="Asset" />
-                <div>
+                {/* <Icon name="Asset" /> */}
+                {/* <div>
                   <span className="text-base font-medium lg:text-2xl text-white">
                     Total assets
                   </span>
                   <p className="text-2xl lg:text-[40px] font-bold text-white">
                     $ 87.743
                   </p>
-                </div>
+                </div> */}
               </div>
               <div className="lg:flex lg:gap-4 ">
                 {/* <div className="bg-blue5 px-4 py-2 lg:py-4 rounded-2xl mb-4 lg:mb-0">
@@ -107,10 +117,10 @@ const PatientOverview = () => {
                         <p className="text-xs text-gray-8 font-semibold">
                           {doctor.specialty}
                         </p>
-                        <span className="flex items-center gap-4 p-1 text-[#407CE2]">
+                        {/* <span className="flex items-center gap-4 p-1 text-[#407CE2]">
                           <Icon name="StarBlue" />
                           4.7
-                        </span>
+                        </span> */}
                       </div>
                     </article>
                   ))}

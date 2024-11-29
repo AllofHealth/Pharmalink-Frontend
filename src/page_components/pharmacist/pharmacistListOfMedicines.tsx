@@ -11,66 +11,16 @@ import { toggleGrantAccessToSpecificRecordsModal } from "@/lib/redux/slices/moda
 import { setPatientCurrentTab } from "@/lib/redux/slices/patient/patientSlice";
 import {
   setCurrentMedicine,
+  setCurrentMedicineIndex,
   setPharmacistCurrentTab,
 } from "@/lib/redux/slices/pharmacist/pharmacistSlice";
-import type { Medicine } from "@/lib/types";
+import type { Medicine, Product } from "@/lib/types";
 import { useEffect, useRef, useState } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { useAccount } from "wagmi";
 
 const PharmacistListOfMedicines = () => {
-  const recordLists = [
-    {
-      medicineName: "Augmentin 625 Duo Tablet",
-      medicineId: "123456",
-      groupName: "Antibiotics",
-      stockInQty: "20",
-    },
-    {
-      medicineName: "Augmentin 625 Duo Tablet",
-      medicineId: "123456",
-      groupName: "Antibiotics",
-      stockInQty: "20",
-    },
-    {
-      medicineName: "Augmentin 625 Duo Tablet",
-      medicineId: "123456",
-      groupName: "Antibiotics",
-      stockInQty: "20",
-    },
-    {
-      medicineName: "Augmentin 625 Duo Tablet",
-      medicineId: "123456",
-      groupName: "Antibiotics",
-      stockInQty: "20",
-    },
-    {
-      medicineName: "Augmentin 625 Duo Tablet",
-      medicineId: "123456",
-      groupName: "Antibiotics",
-      stockInQty: "20",
-    },
-    {
-      medicineName: "Augmentin 625 Duo Tablet",
-      medicineId: "123456",
-      groupName: "Antibiotics",
-      stockInQty: "20",
-    },
-    {
-      medicineName: "Augmentin 625 Duo Tablet",
-      medicineId: "123456",
-      groupName: "Antibiotics",
-      stockInQty: "20",
-    },
-    {
-      medicineName: "Augmentin 625 Duo Tablet",
-      medicineId: "123456",
-      groupName: "Antibiotics",
-      stockInQty: "20",
-    },
-  ];
-
   const { address } = useAccount();
 
   const { loading, inventory, error } = useGetInventory({
@@ -79,10 +29,16 @@ const PharmacistListOfMedicines = () => {
 
   const dispatch = useDispatch();
 
-  const handleViewMedicine = (medicine: Medicine) => {
+  const handleViewMedicine = (medicine: Product, index: number) => {
     dispatch(setPharmacistCurrentTab("Medicine Detail"));
     dispatch(setCurrentMedicine(medicine));
+    dispatch(setCurrentMedicineIndex(index));
   };
+
+  const totalMedications = inventory?.inventory?.products.reduce(
+    (total, product) => total + product.medications.length,
+    0
+  );
 
   return (
     <div className="">
@@ -95,14 +51,13 @@ const PharmacistListOfMedicines = () => {
           <div className="flex gap-4 items-center justify-between">
             <div>
               <h1 className="font-bold lg:text-3xl mb-2">
-                Inventory &gt; List of Medicines (
-                {inventory.inventory?.medicines.length})
+                Inventory &gt; List of Medicines ({totalMedications})
               </h1>
               <p className="text-xs lg:text-xl text-gray-7 mb-2">
                 List of medicines available for sales.
               </p>
             </div>
-            <Field id="approval" label="">
+            {/* <Field id="approval" label="">
               <Input
                 id="approval"
                 type="search"
@@ -110,10 +65,11 @@ const PharmacistListOfMedicines = () => {
                 placeholder="Search"
                 className="h-10 w-20 lg:w-auto text-[10px] lg:text-sm"
               />
-            </Field>
+            </Field> */}
             <Button
               variant="primary"
               className="text-[8px] lg:text-sm max-h-11"
+              onClick={() => dispatch(setPharmacistCurrentTab("Medication"))}
             >
               + Add New Item
             </Button>
@@ -130,25 +86,25 @@ const PharmacistListOfMedicines = () => {
             caption="Approve Institution Table"
             headClassName="bg-gray-5 rounded-t-md"
           >
-            {inventory.inventory?.medicines?.map((medicine, index) => (
-              <tr
-                className="h-16 text-blue4 font-medium"
-                key={index}
-                onClick={() => handleViewMedicine(medicine)}
-              >
-                <td className="pl-2 lg:pl-7 text-xs lg:text-base">
-                  {medicine.name}
-                </td>
-                <td className=" text-xs lg:text-base">{medicine._id}</td>
-                <td className=" text-xs lg:text-base">
-                  {medicine.medicineGroup}
-                </td>
-                <td className=" text-xs lg:text-base">{medicine.quantity}</td>
-                <td className=" text-xs lg:text-base">
-                  View Full Detail &gt;&gt;
-                </td>
-              </tr>
-            ))}
+            {inventory?.inventory?.products?.map((product) =>
+              product.medications.map((medicine, index) => (
+                <tr
+                  className="h-16 text-blue4 font-medium"
+                  key={index}
+                  onClick={() => handleViewMedicine(product, index)}
+                >
+                  <td className="pl-2 lg:pl-7 text-xs lg:text-base">
+                    {medicine.name}
+                  </td>
+                  <td className="text-xs lg:text-base">{medicine._id}</td>
+                  <td className="text-xs lg:text-base">{product.category}</td>
+                  <td className="text-xs lg:text-base">{medicine.quantity}</td>
+                  <td className="text-xs lg:text-base">
+                    View Full Detail &gt;&gt;
+                  </td>
+                </tr>
+              ))
+            )}
           </AllOfHealthTable>
         </>
       ) : error ? (

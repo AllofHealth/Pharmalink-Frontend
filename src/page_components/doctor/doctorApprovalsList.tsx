@@ -3,11 +3,12 @@ import { Field } from "@/components/common/forms/Field";
 import { Input } from "@/components/common/forms/Input";
 import ApproveInstitutionModal from "@/components/modal/SystemAdmin/ApproveInstitutionModal";
 import AcceptRecordRequest from "@/components/modal/doctor/acceptRecordRequest";
+import { useGetDoctorByAddress } from "@/lib/queries/auth";
 import { useGetDoctorApprovalList } from "@/lib/queries/doctor";
 import type { RootState } from "@/lib/redux/rootReducer";
 import { setDoctorCurrentTab } from "@/lib/redux/slices/doctor/doctorSlice";
 import { toggleApproveRecordRequest } from "@/lib/redux/slices/modals/modalSlice";
-import type { Approval } from "@/lib/types";
+import type { Approval, GetDoctorMessage } from "@/lib/types";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
@@ -17,6 +18,15 @@ import { useAccount } from "wagmi";
 const DoctorApprovalsList = () => {
   const { isConnected, address } = useAccount();
   const [currentRecord, setCurrentRecord] = useState<Approval | null>();
+
+  const {
+    loading: loadingDoctorData,
+    doctorData,
+    error: errorDoctorData,
+  } = useGetDoctorByAddress({
+    connected: isConnected,
+    address: address ? address : "",
+  });
 
   const { loading, doctorApprovalList, error } = useGetDoctorApprovalList({
     address: address ? address : "",
@@ -46,6 +56,7 @@ const DoctorApprovalsList = () => {
     dispatch(toggleApproveRecordRequest());
     setCurrentRecord(approval);
   };
+
   return (
     <div className="max-w-[600px]">
       <div className="flex justify-between items-center mb-4">
@@ -60,11 +71,11 @@ const DoctorApprovalsList = () => {
           />
         </Field>
       </div>
-      {loading ? (
+      {loading || loadingDoctorData ? (
         <div className="flex justify-center items-center mt-10">
           <BiLoaderAlt className="text-2xl text center animate-spin" />
         </div>
-      ) : doctorApprovalList ? (
+      ) : (doctorData as GetDoctorMessage)?.doctor.status === "approved" ? (
         <AllOfHealthTable
           labels={["Patient's Name", "Approval type"]}
           caption="Approve Institution Table"
@@ -92,6 +103,24 @@ const DoctorApprovalsList = () => {
             </tr>
           ))}
         </AllOfHealthTable>
+      ) : (doctorData as GetDoctorMessage)?.doctor.status !== "approved" ? (
+        <div className="lg:flex justify-between items-center max-w-[80%] mx-auto">
+          <div className="max-w-[513px]">
+            <p className="text-base lg:text-3xl font-semibold text-blue2">
+              Doctor Not Yet Verified
+            </p>
+            <p className="text-sm lg:text-xl font-normal text-[#1E1E1E]">
+              This doctor is currently not verified and cannot perform any
+              doctor roles. Kindly wait to be verified.
+            </p>
+          </div>
+          <Image
+            src={"/assets/images/no-data-found.png"}
+            alt="No data for institutions"
+            width={396}
+            height={344}
+          />
+        </div>
       ) : error ? (
         <p>Error fetching data..</p>
       ) : null}

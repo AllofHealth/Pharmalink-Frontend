@@ -9,6 +9,7 @@ import { addPatientFamilyMember } from "@/actions/contract/patient/patient.servi
 import type { CreateFamilyMemberValues, GetPatientMessage } from "@/lib/types";
 import { useGetPatientByAddress } from "@/lib/queries/auth";
 import { createFamilyMember } from "@/lib/mutations/patient";
+import { useDispatch } from "react-redux";
 
 export default function FamilyRegistrationForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +20,7 @@ export default function FamilyRegistrationForm() {
   const { address, isConnected } = useAccount();
   const [familyMemberId, setFamilyMemberId] = useState(0);
   const { axios } = useAxios({});
+  const dispatch = useDispatch();
   const { patientData } = useGetPatientByAddress({
     connected: isConnected,
     address: address ? address : "",
@@ -46,6 +48,7 @@ export default function FamilyRegistrationForm() {
         axios,
         router,
         address,
+        dispatch,
       });
     }
     console.log(familyMemberId);

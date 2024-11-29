@@ -19,8 +19,7 @@ export default function DoctorSignUp() {
             Create an account
           </h2>
           <p className="text-base font-normal text-center max-w-[460px] mb-8">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
-            lobortis maximus
+            We are ready ready to empower your health Journey
           </p>
           <DoctorSignUpForm />
         </div>

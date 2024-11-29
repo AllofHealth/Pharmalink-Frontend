@@ -3,8 +3,11 @@ import { Icon } from "@/components/icon/Icon";
 import { useDispatch, useSelector } from "react-redux";
 import { type RootState } from "@/lib/redux/rootReducer";
 import { toggleGrantAccessToSpecificRecordsModal } from "@/lib/redux/slices/modals/modalSlice";
-import type { AllDoctor } from "@/lib/types";
-import { approveFamilyMemberMedicalRecordAccess } from "@/actions/contract/patient/patient.service.c";
+import type { AllDoctor, GetPatientMessage } from "@/lib/types";
+import {
+  approveFamilyMemberMedicalRecordAccess,
+  approveMedicalRecordAccess,
+} from "@/actions/contract/patient/patient.service.c";
 import useAxios from "@/lib/hooks/useAxios";
 import {
   requestFamilyMemberMedicalRecordApproval,
@@ -12,6 +15,8 @@ import {
 } from "@/lib/mutations/patient";
 import { useAccount } from "wagmi";
 import { setApprovalType } from "@/lib/redux/slices/patient/patientSlice";
+import { useGetPatientByAddress } from "@/lib/queries/auth";
+import type { RecordApprovalType } from "@/actions/interfaces/Patient/app.patient.interface";
 
 const GrantAccessToSpecificRecordsModal = ({
   container,
@@ -26,7 +31,7 @@ const GrantAccessToSpecificRecordsModal = ({
 }) => {
   const dispatch = useDispatch();
   const { axios } = useAxios({});
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
 
   const isGrantAccessToSpecificRecordsModalOpen = useSelector(
     (state: RootState) => state.modal.isGrantAccessToSpecificRecordsModalOpen
@@ -35,12 +40,17 @@ const GrantAccessToSpecificRecordsModal = ({
     (state: RootState) => state.patient.approveRequestFamilyMemberMedicalRecord
   );
 
+  const { loading: loadingPatientData, patientData } = useGetPatientByAddress({
+    connected: isConnected,
+    address: address ? address : "",
+  });
+
   const handleToggleModal = () => {
     dispatch(toggleGrantAccessToSpecificRecordsModal());
   };
 
   const handleRequestApprovalForMedicalRecord = async (
-    approvalType: string
+    approvalType: RecordApprovalType
   ) => {
     if (!address || !doctor?.walletAddress) {
       console.error("Address or doctor wallet address is undefined");
@@ -48,33 +58,54 @@ const GrantAccessToSpecificRecordsModal = ({
     }
 
     if (familyMemberId === 0) {
-      try {
-        await requestMedicalRecordApproval({
-          axios,
-          dispatch,
-          records: medicalRecords,
-          patientAddress: address,
-          doctorAddress: doctor.walletAddress,
-          approvalType,
-        });
-        dispatch(setApprovalType(approvalType));
-      } catch (error) {
-        console.error("Error requesting medical record approval", error);
+      const contractResponse = await approveMedicalRecordAccess(approvalType, {
+        practitionerAddress: doctor?.walletAddress ?? "",
+        patientId: (patientData as GetPatientMessage).patient.id,
+        recordId: Number(medicalRecords),
+        durationInSeconds: 36000,
+      });
+      console.log(contractResponse);
+
+      if (contractResponse) {
+        try {
+          await requestMedicalRecordApproval({
+            axios,
+            dispatch,
+            records: medicalRecords,
+            patientAddress: address,
+            doctorAddress: doctor.walletAddress,
+            approvalType,
+          });
+          dispatch(setApprovalType(approvalType));
+        } catch (error) {
+          console.error("Error requesting medical record approval", error);
+        }
       }
     } else {
-      try {
-        await requestFamilyMemberMedicalRecordApproval({
-          axios,
-          dispatch,
+      const contractResponse = await approveFamilyMemberMedicalRecordAccess(
+        approvalType,
+        {
+          practitionerAddress: doctor?.walletAddress ?? "",
           familyMemberId,
-          records: medicalRecords,
-          patientAddress: address,
-          doctorAddress: doctor.walletAddress,
-          approvalType,
-        });
-        dispatch(setApprovalType(approvalType));
-      } catch (error) {
-        console.error("Error requesting medical record approval", error);
+          recordId: Number(medicalRecords),
+          patientId: (patientData as GetPatientMessage).patient.id,
+        }
+      );
+      if (contractResponse) {
+        try {
+          await requestFamilyMemberMedicalRecordApproval({
+            axios,
+            dispatch,
+            familyMemberId,
+            records: medicalRecords,
+            patientAddress: address,
+            doctorAddress: doctor.walletAddress,
+            approvalType,
+          });
+          dispatch(setApprovalType(approvalType));
+        } catch (error) {
+          console.error("Error requesting medical record approval", error);
+        }
       }
     }
   };
@@ -105,13 +136,15 @@ const GrantAccessToSpecificRecordsModal = ({
             <div className="flex items-center justify-between gap-2">
               <Modal.Close
                 className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-white px-4 lg:py-3 lg:text-sm font-semibold text-black hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px] border border-black"
-                onClick={() => handleRequestApprovalForMedicalRecord("FULL")}
+                onClick={() =>
+                  handleRequestApprovalForMedicalRecord("view & modify")
+                }
               >
                 View and Modify
               </Modal.Close>
               <Modal.Close
                 className="w-[200px] lg:w-[250px] h-[30px] lg:h-auto rounded-[40px] bg-blue2 px-4 lg:py-3 lg:text-sm font-semibold text-white hover:shadow focus:outline-none focus-visible:rounded-[40px] disabled:bg-gray-1 text-[10px]"
-                onClick={() => handleRequestApprovalForMedicalRecord("READ")}
+                onClick={() => handleRequestApprovalForMedicalRecord("view")}
               >
                 View Only
               </Modal.Close>

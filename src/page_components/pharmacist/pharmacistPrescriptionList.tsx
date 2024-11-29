@@ -46,15 +46,14 @@ const PharmacistPrescriptionList = () => {
                 {formatDateToSlashDate(prescription.date)}
               </td>
               <td className=" text-xs lg:text-base">
-                {prescription.description}
+                {prescription.patientName}
               </td>
 
               <td className=" text-xs lg:text-base">
                 {prescription.doctorName}
               </td>
               <td className=" text-xs lg:text-base">
-                {/* {prescription.institution} */}
-                Your Hospital
+                {prescription.institutionName}
               </td>
             </tr>
           ))}

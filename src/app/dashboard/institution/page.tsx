@@ -8,9 +8,11 @@ import { setInstitutionCurrentTab } from "@/lib/redux/slices/institution/institu
 import InstitutionOverview from "@/page_components/institution/institutionOverview";
 import InstitutionWallet from "@/page_components/institution/institutionWallet";
 import InstitutionPrivacyAndSecurity from "@/page_components/institution/institutionPrivacyAndSecurity";
+import { useRouter } from "next/navigation";
 
 export default function Institution() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const institutionCurrentTab = useSelector(
     (state: RootState) => state.institution.institutionCurrentTab
   );
@@ -49,7 +51,10 @@ export default function Institution() {
             Privacy and Security
           </Tabs.Trigger>
 
-          <span className="flex items-center gap-4 mt-60">
+          <span
+            className="flex items-center gap-4 mt-60"
+            onClick={() => router.push("/sign-in")}
+          >
             <LogOut />
             Log Out
           </span>

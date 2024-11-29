@@ -2,6 +2,7 @@ import {
   toggleAccessGrantedSharePrescriptionModal,
   toggleSuccessfullyGrantedAccessToSpecificRecordsModal,
 } from "@/lib/redux/slices/modals/modalSlice";
+import { setPatientCurrentTab } from "@/lib/redux/slices/patient/patientSlice";
 import type {
   CreateFamilyMemberValues,
   UpdatePatientValues,
@@ -17,12 +18,14 @@ export const createFamilyMember = async ({
   axios,
   router,
   address,
+  dispatch,
 }: {
   familyMemberId: number;
   familyMemberValues: CreateFamilyMemberValues;
   axios: AxiosInstance;
   router: AppRouterInstance;
   address: string | undefined;
+  dispatch: Dispatch<UnknownAction>;
 }) => {
   try {
     const response = await axios.post(
@@ -42,6 +45,7 @@ export const createFamilyMember = async ({
 
     if (response.data) {
       toast.success("Family Member created successfully!.");
+      dispatch(setPatientCurrentTab("Family Registration"));
     }
   } catch (err: any) {
     if (err) {
@@ -138,10 +142,10 @@ export const requestMedicalRecordApproval = async ({
 }) => {
   try {
     const response = await axios.post(
-      `/api/patient/approveMedicalRecordAccess?doctorAddress=${doctorAddress}`,
+      `/api/patient/approveMedicalRecordAccess?walletAddress=${patientAddress}`,
       {
         recordId: records,
-        patientAddress,
+        doctorAddress,
         approvalType,
         approvalDurationInSec: 36000,
       }

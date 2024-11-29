@@ -10,6 +10,9 @@ const PharmacistInventoryMedicineDetail = () => {
   const medicine = useSelector(
     (state: RootState) => state.pharmacist.currentMedicine
   );
+  const medicineIndex = useSelector(
+    (state: RootState) => state.pharmacist.currentMedicineIndex
+  );
 
   const trimText = (text: string, maxLength: number = 10): string => {
     return text?.toString().length > maxLength
@@ -22,13 +25,14 @@ const PharmacistInventoryMedicineDetail = () => {
       <div className="flex gap-4 items-center justify-between">
         <div>
           <h1 className="font-bold lg:text-2xl mb-2">
-            Inventory &gt; List of Medicines &gt; {medicine?.name}
+            Inventory &gt; List of Medicines &gt;{" "}
+            {medicine?.medications[medicineIndex].name}
           </h1>
           {/* <p className="text-xs lg:text-xl text-gray-7 mb-2">
             List of medicines available for sales.
           </p> */}
         </div>
-        <Field id="approval" label="">
+        {/* <Field id="approval" label="">
           <Input
             id="approval"
             type="search"
@@ -36,7 +40,7 @@ const PharmacistInventoryMedicineDetail = () => {
             placeholder="Search"
             className="h-10 w-20 lg:w-auto text-[10px] lg:text-sm"
           />
-        </Field>
+        </Field> */}
         <Button
           variant="primary"
           className="text-[8px] lg:text-sm max-h-11"
@@ -49,17 +53,17 @@ const PharmacistInventoryMedicineDetail = () => {
         <div className="xl:flex xl:gap-4 max-w-[944px]">
           <article className="border rounded py-4 xl:w-[45%] mb-6">
             <h2 className="px-6 text-base font-semibold border-b pb-2">
-              Medicine Name: {medicine?.name}
+              Medicine Name: {medicine?.medications[medicineIndex].name}
             </h2>
             <div className="flex justify-between items-center px-6 py-4">
               <span>
                 <h3 className="text-xl font-bold">
-                  {trimText(medicine?._id ?? "")}
+                  {trimText(medicine?.medications[medicineIndex]._id ?? "")}
                 </h3>
                 <p className="text-sm font-medium">Medicine ID</p>
               </span>
               <span>
-                <h3 className="text-xl font-bold">{medicine?.medicineGroup}</h3>
+                <h3 className="text-xl font-bold">{medicine?.category}</h3>
                 <p className="text-sm font-medium">Medicine Group</p>
               </span>
             </div>
@@ -95,7 +99,9 @@ const PharmacistInventoryMedicineDetail = () => {
           <h2 className="px-6 text-base font-semibold border-b pb-2">
             Side Effects
           </h2>
-          <p className="py-4 px-6">{medicine?.sideEffects}</p>
+          <p className="py-4 px-6">
+            {medicine?.medications[medicineIndex].sideEffects}
+          </p>
         </article>
         {/* 
         <Button

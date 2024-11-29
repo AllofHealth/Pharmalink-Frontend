@@ -16,11 +16,10 @@ export default function InstitutionSignUp() {
         <Icon name="AllofHealthLogo" />
         <div>
           <h2 className="text-text-black1 text-[2rem] text-center font-medium mb-2">
-            Create an account
+            Institution Sign Up
           </h2>
           <p className="text-base font-normal text-center max-w-[460px] mb-8">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
-            lobortis maximus
+            Enhance your healthcare ecosystem
           </p>
           <InstitutionSignUpForm />
         </div>
