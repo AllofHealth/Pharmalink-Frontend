@@ -105,6 +105,7 @@ const EditPatientMedicalRecord = () => {
       haemoglobin: record.haemoglobin,
     },
     date: new Date(Date.now()),
+    images: record.labImages.map((img) => img.image),
   };
 
   // Step 1: Upload patient record to IPFS
