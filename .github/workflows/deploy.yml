@@ -48,3 +48,4 @@ jobs:
           script: |
             cd ~/Pharmalink-Frontend
             pm2 start "npm run start" --name frontend-app
+            # pm2 restart 
