@@ -1,4 +1,7 @@
-import { approveMedicalRecordAccess } from "@/actions/contract/patient/patient.service.c";
+import {
+  approveFamilyMemberMedicalRecordAccess,
+  approveMedicalRecordAccess,
+} from "@/actions/contract/patient/patient.service.c";
 import type { RecordApprovalType } from "@/actions/interfaces/Patient/app.patient.interface";
 import { AllOfHealthTable } from "@/components/allOfHealthTable/allOfHealth";
 import Button from "@/components/button/Button";
@@ -131,18 +134,31 @@ const ShareRecordToDoctor = () => {
         }
       }
     } else {
-      try {
-        await requestFamilyMemberMedicalRecordApproval({
-          axios,
-          dispatch,
+      const contractResponse = await approveFamilyMemberMedicalRecordAccess(
+        approvalType,
+        {
           familyMemberId,
-          records: [],
-          patientAddress: address,
-          doctorAddress: doctor ? doctor.walletAddress : "",
-          approvalType: "view & modify",
-        });
-      } catch (error) {
-        console.error("Error requesting medical record approval", error);
+          practitionerAddress: doctor?.walletAddress ?? "",
+          patientId: (patientData as GetPatientMessage).patient.id,
+          recordId: 0,
+          durationInSeconds: 36000,
+        }
+      );
+
+      if (contractResponse) {
+        try {
+          await requestFamilyMemberMedicalRecordApproval({
+            axios,
+            dispatch,
+            familyMemberId,
+            records: [],
+            patientAddress: address,
+            doctorAddress: doctor ? doctor.walletAddress : "",
+            approvalType: "view & modify",
+          });
+        } catch (error) {
+          console.error("Error requesting medical record approval", error);
+        }
       }
     }
   };

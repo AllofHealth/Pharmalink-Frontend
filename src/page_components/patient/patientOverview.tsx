@@ -36,8 +36,7 @@ const PatientOverview = () => {
         <section>
           <div className="my-4">
             <span className="text-base font-bold lg:text-3xl lg:font-extrabold">
-              Welcome, Mr.{" "}
-              {(patientData as GetPatientMessage).patient?.name ?? ""}
+              Welcome, {(patientData as GetPatientMessage).patient?.name ?? ""}
             </span>
             <p className="text-xs lg:text-base text-gray-7 my-2">
               Your health journey is our priority.

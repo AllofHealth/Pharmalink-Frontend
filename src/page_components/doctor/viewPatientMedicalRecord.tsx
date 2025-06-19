@@ -403,13 +403,15 @@ const ViewPatientMedicalRecord = () => {
         <h4 className="text-base lg:text-2xl mb-4">IMAGES</h4>
         <div className="flex items-center gap-4">
           {patientMedicalRecord?.recordImages ? (
-            <p className="font-bold uppercase text-2xl">No images</p>
-          ) : (
             patientMedicalRecord?.recordImages.map((image) => {
               return (
                 <div className="flex flex-col gap-4" key={image}>
                   <Image
-                    src="/assets/images/lab_result_img.jpg"
+                    src={
+                      image
+                        ? `https://ipfs.io/ipfs/${image}`
+                        : "/assets/images/lab_result_img.jpg"
+                    }
                     alt="Lab Image"
                     width={376}
                     height={414}
@@ -419,6 +421,8 @@ const ViewPatientMedicalRecord = () => {
                 </div>
               );
             })
+          ) : (
+            <p className="font-bold uppercase text-2xl">No images</p>
           )}
         </div>
       </div>
