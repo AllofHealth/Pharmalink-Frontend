@@ -13,6 +13,7 @@ import { WagmiProvider } from "wagmi";
 import {
   arbitrum,
   arbitrumSepolia,
+  liskSepolia,
   base,
   mainnet,
   optimism,
@@ -37,7 +38,7 @@ const config = getDefaultConfig({
     },
   ],
   chains: [
-    arbitrumSepolia,
+    liskSepolia,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [sepolia] : []),
   ],
   ssr: true,
