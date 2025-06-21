@@ -47,5 +47,6 @@ jobs:
           port: ${{ secrets.DO_PORT }}
           script: |
             cd ~/Pharmalink-Frontend
-            pm2 start "npm run start" --name frontend-app
-            # pm2 restart 
+            # pm2 start "npm run start" --name frontend-app
+            pm2 restart 3
+            pm2 save
