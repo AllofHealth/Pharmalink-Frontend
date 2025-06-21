@@ -50,7 +50,7 @@ export const createPatient = async ({
     if (response.data) {
       toast.success("Patient created successfully!. Please sign in.");
       dispatch(setPatientSignupValues(patientValues));
-      router.push("/sign-up/patient/otp");
+      router.push("/dashboard/patient");
       console.log(response);
     }
   } catch (err: any) {
@@ -94,7 +94,7 @@ export const createDoctor = async ({
     if (response.data) {
       toast.success("Doctor created successfully!. Please sign in.");
       dispatch(setDoctorSignUpValues(doctorValues));
-      router.push("/sign-up/doctor/otp");
+      router.push("/dashboard/doctor");
       console.log(response);
     }
   } catch (err: any) {
@@ -137,7 +137,7 @@ export const createPharmacist = async ({
     if (response.data) {
       toast.success("Pharmacist created successfully!. Please sign in.");
       dispatch(setPharmacistSignUpValues(pharmacistValues));
-      router.push("/sign-up/pharmacist/otp");
+      router.push("/dashboard/pharmacist");
       console.log(response);
     }
   } catch (err: any) {
@@ -218,7 +218,7 @@ export const createInstitution = async ({
 
     if (response.data) {
       toast.success("Institution created successfully!. Please sign in.");
-      router.push("/sign-up/institution/otp");
+      router.push("/dashboard/institution");
       dispatch(setCurrentInstitution(response.data.hospital));
       dispatch(setInstitutionSignUpValues(institutionValues));
       console.log(response);

@@ -13,8 +13,8 @@ import { WagmiProvider } from "wagmi";
 import {
   arbitrum,
   arbitrumSepolia,
-  liskSepolia,
   base,
+  liskSepolia,
   mainnet,
   optimism,
   polygon,
